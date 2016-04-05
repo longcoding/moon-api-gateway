@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="undefined-gateway:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="undefined-gateway.war">
+      <element id="artifact" artifact-name="undefined-gateway:war exploded" />
+    </root>
+  </artifact>
+</component>
