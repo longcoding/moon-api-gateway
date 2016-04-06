@@ -1,4 +1,4 @@
-package com.longcoding.undefined.config;
+package com.longcoding.undefined.configs;
 
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
