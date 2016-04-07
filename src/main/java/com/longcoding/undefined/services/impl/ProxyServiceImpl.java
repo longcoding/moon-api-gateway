@@ -2,13 +2,13 @@ package com.longcoding.undefined.services.impl;
 
 import com.longcoding.undefined.helpers.netty.NettyClientFactory;
 import com.longcoding.undefined.services.ProxyService;
-import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.client.api.Result;
 import org.eclipse.jetty.client.util.BufferingResponseListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 import play.libs.Json;
@@ -26,28 +26,29 @@ public class ProxyServiceImpl implements ProxyService {
     @Autowired
     NettyClientFactory nettyClientFactory;
 
-    private DeferredResult<HttpEntity> deferredResult;
+    private DeferredResult<ResponseEntity> deferredResult;
     private Request request;
 
-    public void requestProxyService(DeferredResult<HttpEntity> deferredResult) {
+    public void requestProxyService(DeferredResult<ResponseEntity> deferredResult) {
 
         this.deferredResult = deferredResult;
-        Request request = nettyClientFactory.getNettyClient().newRequest(setURI());
+        //Request request = nettyClientFactory.getNettyClient().newRequest(setURI());
+        //setHeaderParam(request).send(bufferingResponseListener());
 
-        setHeaderParam(request).send(bufferingResponseListener());
         
+        //System.out.println("release");
     }
 
-    private BufferingResponseListener bufferingResponseListener() {
+    private Response.Listener bufferingResponseListener() {
         return new BufferingResponseListener() {
             @Override
             public void onComplete(Result result) {
                 if (!result.isFailed()) {
-                    HttpEntity httpEntity = new HttpEntity(Json.parse(getContentAsString(Charset.forName("UTF-8"))));
-                    deferredResult.setResult(httpEntity);
+                    ResponseEntity responseEntity = new ResponseEntity(Json.parse(getContentAsString(Charset.forName("UTF-8"))), HttpStatus.OK);
+                    deferredResult.setResult(responseEntity);
                 }
             }
-        }
+        };
     }
 
     private Request setHeaderParam(Request request) {

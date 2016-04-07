@@ -1,6 +1,6 @@
 package com.longcoding.undefined.services;
 
-import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
 
 /**
@@ -8,6 +8,6 @@ import org.springframework.web.context.request.async.DeferredResult;
  */
 public interface ProxyService {
 
-    void requestProxyService(DeferredResult<HttpEntity> deferredResult);
+    void requestProxyService(DeferredResult<ResponseEntity> deferredResult);
 
 }
