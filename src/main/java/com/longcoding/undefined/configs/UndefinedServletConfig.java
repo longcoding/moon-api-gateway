@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.longcoding.undefined.interceptors.impl.InitializeInterceptor;
 import com.longcoding.undefined.interceptors.impl.PathAndPrepareRedisInterceptor;
 import com.longcoding.undefined.interceptors.impl.RatelimitInterceptor;
 import com.longcoding.undefined.interceptors.impl.ExecuteRedisValidationInterceptor;
@@ -24,6 +25,10 @@ import java.util.List;
 public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
 
     @Bean
+    public InitializeInterceptor initializeInterceptor() {
+        return new InitializeInterceptor();
+    }
+    @Bean
     public PathAndPrepareRedisInterceptor pathAndPrepareRedisInterceptor() {
         return new PathAndPrepareRedisInterceptor();
     }
@@ -38,6 +43,7 @@ public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(initializeInterceptor());
         registry.addInterceptor(pathAndPrepareRedisInterceptor());
         registry.addInterceptor(ratelimitInterceptor());
         registry.addInterceptor(executeRedisValidationInterceptor());

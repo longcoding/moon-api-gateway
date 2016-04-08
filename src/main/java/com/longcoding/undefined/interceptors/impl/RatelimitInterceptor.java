@@ -14,12 +14,12 @@ public class RatelimitInterceptor extends RedisBaseValidationInterceptor<Respons
 
     @Override
     public boolean setCondition(Response<String> storedValue) {
-
+        if (storedValue.get().equals("testAppId")) return true;
         return false;
     }
 
     @Override
     public Response<String> setPipelineCommand(Pipeline pipeline) {
-        return null;
+        return pipeline.hget("appKeys", "3333-3653-8548");
     }
 }

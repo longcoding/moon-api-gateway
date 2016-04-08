@@ -55,7 +55,7 @@ public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
                 futureValue = (futureMethodQueue.get(className));
                 if (futureValue.get() != null) {
                     RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
-                    objectBean.executeJudge(futureValue.get());
+                    objectBean.executeJudge(futureValue);
                 }
             }
             //return false;

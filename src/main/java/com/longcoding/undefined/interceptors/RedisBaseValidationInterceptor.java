@@ -1,5 +1,6 @@
 package com.longcoding.undefined.interceptors;
 
+import com.google.common.base.CaseFormat;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.RedisValidator;
 import redis.clients.jedis.Pipeline;
@@ -35,7 +36,7 @@ public abstract class RedisBaseValidationInterceptor<T, U> extends AbstractBaseI
 
         this.redisValidator = (RedisValidator) request.getAttribute(Const.OBJECT_GET_REDIS_VALIDATION);
         this.futureValue = setPipelineCommand(redisValidator.getPipeline());
-        redisValidator.offerFutureMethodQueue(getClass().getSimpleName(), futureValue);
+        redisValidator.offerFutureMethodQueue(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, getClass().getSimpleName()), futureValue);
 
         return true;
     }

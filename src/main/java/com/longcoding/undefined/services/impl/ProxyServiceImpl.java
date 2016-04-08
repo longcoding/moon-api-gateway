@@ -36,7 +36,7 @@ public class ProxyServiceImpl implements ProxyService {
         //Request request = nettyClientFactory.getNettyClient().newRequest(setURI());
         //setHeaderParam(request).send(bufferingResponseListener());
 
-
+    
 
 
         
