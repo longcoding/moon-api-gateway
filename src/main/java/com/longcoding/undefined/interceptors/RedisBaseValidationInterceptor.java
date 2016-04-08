@@ -42,9 +42,7 @@ public abstract class RedisBaseValidationInterceptor<T, U> extends AbstractBaseI
     }
 
     public boolean executeJudge(U storedValue) {
-
         return setCondition(storedValue)? onSuccess() : onFailure();
-
     }
 
 }

@@ -27,7 +27,7 @@ public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
     private ApplicationContext context;
 
     private HttpServletRequest request;
-    private static final ExecutorService executor = Executors.newFixedThreadPool(80);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(50);
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

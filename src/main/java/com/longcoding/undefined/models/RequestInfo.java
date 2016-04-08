@@ -1,6 +1,5 @@
 package com.longcoding.undefined.models;
 
-import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpEntity;
 
 import java.util.Map;
@@ -8,18 +7,19 @@ import java.util.Map;
 /**
  * Created by longcoding on 16. 4. 8..
  */
-@EqualsAndHashCode
 public class RequestInfo {
 
     private String requestId, appId, appKey;
-    private String serviceId, openApiId, apiVersion;
+    private String serviceId, apiId, apiVersion;
     private String clientIp, userAgent;
-    private String requestURI, requestURL, requestMethod, requestProtocal;
+    private String requestURI, requestURL, requestMethod, requestProtocol;
 
     private String accept;
 
     private Map<String, String> queryStringMap;
     private Map<String, String> headers;
+
+    private Map<String, String> pathParams;
 
     private boolean isOpenApi;
 
@@ -27,6 +27,14 @@ public class RequestInfo {
 
     private int requestDataSize;
     private HttpEntity multipartTypeEntity;
+
+    public Map<String, String> getPathParams() {
+        return pathParams;
+    }
+
+    public void setPathParams(Map<String, String> pathParams) {
+        this.pathParams = pathParams;
+    }
 
     public String getRequestId() {
         return requestId;
@@ -60,12 +68,12 @@ public class RequestInfo {
         this.serviceId = serviceId;
     }
 
-    public String getOpenApiId() {
-        return openApiId;
+    public String getApiId() {
+        return apiId;
     }
 
-    public void setOpenApiId(String openApiId) {
-        this.openApiId = openApiId;
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 
     public String getApiVersion() {
@@ -180,11 +188,11 @@ public class RequestInfo {
         this.requestMethod = requestMethod;
     }
 
-    public String getRequestProtocal() {
-        return requestProtocal;
+    public String getRequestProtocol() {
+        return requestProtocol;
     }
 
-    public void setRequestProtocal(String requestProtocal) {
-        this.requestProtocal = requestProtocal;
+    public void setRequestProtocol(String requestProtocol) {
+        this.requestProtocol = requestProtocol;
     }
 }

@@ -6,7 +6,8 @@ import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.helpers.RedisValidator;
 import com.longcoding.undefined.models.RequestInfo;
-import com.longcoding.undefined.models.ehcache.APIMatcher;
+import com.longcoding.undefined.models.ehcache.ApiInfoCache;
+import com.longcoding.undefined.models.ehcache.ApiMatchCache;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,32 +26,36 @@ public class PathAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
     @Autowired
     EhcacheFactory ehcacheFactory;
 
-    private APIMatcher apiMatcher;
-
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
 
         String categoryValue = classifyCategory(requestInfo.getRequestURL(), false);
-        String requestProtocalAndMethod = requestInfo.getRequestProtocal() + requestInfo.getRequestMethod();
-        this.apiMatcher = ehcacheFactory.getApiIdDistinctionCache().get(categoryValue);
-        Integer protocalAndMethodType = apiMatcher.getProtocalAndMethod().get(requestProtocalAndMethod);
+        String requestProtocolAndMethod = requestInfo.getRequestProtocol() + requestInfo.getRequestMethod();
+        ApiMatchCache apiMatchCache = ehcacheFactory.getApiIdDistinctionCache().get(categoryValue);
+        Integer protocolAndMethodType = apiMatchCache.getProtocalAndMethod().get(requestProtocolAndMethod);
 
-        ConcurrentHashMap<String, Integer> apiList = getProperApiList(categoryValue, protocalAndMethodType);
+        ConcurrentHashMap<String, Integer> apiList = getProperApiList(categoryValue, protocolAndMethodType, apiMatchCache);
 
+        String apiId = null;
         Pattern apiPattern = null;
         boolean isMatched = false;
         for (String api : apiList.keySet()) {
             apiPattern = Pattern.compile(api);
             if ( apiPattern.matcher(requestInfo.getRequestURL()).matches() == true ){
-                requestInfo.setAppId(apiList.get(api).toString());
+                apiId = apiList.get(api).toString();
+                requestInfo.setApiId(apiId);
                 isMatched = true;
                 break;
             }
         }
 
+        ApiInfoCache apiInfoCache = ehcacheFactory.getApiInfoCache().get(apiId);
+        requestInfo.setServiceId(apiInfoCache.getServiceId());
+
         if (!isMatched) {
+            //TODO : occur ERROR
             return false;
         }
 
@@ -58,23 +63,23 @@ public class PathAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
         return true;
     }
 
-    private ConcurrentHashMap<String, Integer> getProperApiList(String categoryValue, Integer protocalAndMethodType) {
+    private ConcurrentHashMap<String, Integer> getProperApiList(String categoryValue, Integer protocalAndMethodType, ApiMatchCache apiMatchCache) {
         if (protocalAndMethodType.equals(Const.API_MATCH_HTTP_GET_MAP)) {
-            return apiMatcher.getHttpGetMap();
+            return apiMatchCache.getHttpGetMap();
         } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTP_POST_MAP)) {
-            return apiMatcher.getHttpPostMap();
+            return apiMatchCache.getHttpPostMap();
         } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTP_PUT_MAP)) {
-            return apiMatcher.getHttpPutMap();
+            return apiMatchCache.getHttpPutMap();
         } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTP_DELETE_MAP)) {
-            return apiMatcher.getHttpDeleteMap();
+            return apiMatchCache.getHttpDeleteMap();
         } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTPS_GET_MAP)) {
-            return apiMatcher.getHttpsGetMap();
+            return apiMatchCache.getHttpsGetMap();
         } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTPS_POST_MAP)) {
-            return apiMatcher.getHttpsPostMap();
+            return apiMatchCache.getHttpsPostMap();
         } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTPS_PUT_MAP)) {
-            return apiMatcher.getHttpsPutMap();
+            return apiMatchCache.getHttpsPutMap();
         } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTPS_DELETE_MAP)) {
-            return apiMatcher.getHttpsDeleteMap();
+            return apiMatchCache.getHttpsDeleteMap();
         }
         //TODO: occur error
         return null;

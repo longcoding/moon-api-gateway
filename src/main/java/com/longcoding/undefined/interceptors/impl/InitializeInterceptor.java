@@ -1,6 +1,7 @@
 package com.longcoding.undefined.interceptors.impl;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -19,7 +21,7 @@ import java.util.UUID;
  */
 public class InitializeInterceptor extends AbstractBaseInterceptor {
 
-    private static final String PROTOCAL_DELIMITER = "://";
+    private static final String PROTOCOL_DELIMITER = "://";
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -31,14 +33,15 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         requestInfo.setRequestMethod(request.getMethod());
         requestInfo.setRequestURI(request.getRequestURI());
         requestInfo.setUserAgent(request.getHeader("user-agent"));
+        requestInfo.setHeaders(createHeaderMap(request));
 
-        String[] requestURL = request.getRequestURL().toString().split(PROTOCAL_DELIMITER);
-        requestInfo.setRequestProtocal(requestURL[0]);
+        String[] requestURL = request.getRequestURL().toString().split(PROTOCOL_DELIMITER);
+        requestInfo.setRequestProtocol(requestURL[0]);
         requestInfo.setRequestURL(requestURL[1]);
 
         String queryString = new String(Strings.nullToEmpty(request.getQueryString()).getBytes(StandardCharsets.ISO_8859_1.name()), Const.SERVER_DEFAULT_ENCODING_TYPE);
         URLDecoder.decode(queryString, Const.SERVER_DEFAULT_ENCODING_TYPE);
-        requestInfo.setQueryStringMap(createQueryString(queryString));
+        requestInfo.setQueryStringMap(createQueryStringMap(queryString));
 
         String accept = request.getParameter("accept");
         requestInfo.setAccept(accept != null ? accept : MediaType.APPLICATION_JSON_UTF8_VALUE);
@@ -48,7 +51,7 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         return true;
     }
 
-    public static Map<String, String> createQueryString(String queryString) {
+    private Map<String, String> createQueryStringMap(String queryString) {
 
         if (queryString.isEmpty()) return null;
 
@@ -62,4 +65,21 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
 
         return queryMap;
     }
+
+    private Map<String, String> createHeaderMap(HttpServletRequest request) {
+
+        Enumeration<String> headerKeys = request.getHeaderNames();
+        Map<String, String> headers = Maps.newHashMap();
+
+        while ( headerKeys.hasMoreElements() ) {
+            String headerKey = headerKeys.nextElement();
+            String headerValue = request.getHeader(headerKey);
+
+            headers.put(headerKey, headerValue);
+        }
+
+        return headers;
+    }
+
+
 }

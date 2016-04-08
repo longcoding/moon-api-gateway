@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.longcoding.undefined.interceptors.impl.InitializeInterceptor;
-import com.longcoding.undefined.interceptors.impl.PathAndPrepareRedisInterceptor;
-import com.longcoding.undefined.interceptors.impl.RatelimitInterceptor;
-import com.longcoding.undefined.interceptors.impl.ExecuteRedisValidationInterceptor;
+import com.google.common.collect.Lists;
+import com.longcoding.undefined.interceptors.impl.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -16,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +39,14 @@ public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
     public ExecuteRedisValidationInterceptor executeRedisValidationInterceptor() {
         return new ExecuteRedisValidationInterceptor();
     }
+    @Bean
+    public ExtractRequestInterceptor extractRequestInterceptor() {
+        return new ExtractRequestInterceptor();
+    }
+    @Bean
+    public HeaderAndQueryValidationInterceptor headerAndQueryValidationInterceptor() { return new HeaderAndQueryValidationInterceptor(); }
+    @Bean
+    public PrepareProxyInterceptor prepareProxyInterceptor() { return new PrepareProxyInterceptor(); }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -47,6 +54,9 @@ public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(pathAndPrepareRedisInterceptor());
         registry.addInterceptor(ratelimitInterceptor());
         registry.addInterceptor(executeRedisValidationInterceptor());
+        registry.addInterceptor(extractRequestInterceptor());
+        registry.addInterceptor(headerAndQueryValidationInterceptor());
+        registry.addInterceptor(prepareProxyInterceptor());
     }
 
     @Bean
@@ -67,4 +77,5 @@ public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
     public void configureMessageConverters( List<HttpMessageConverter<?>> converters ) {
         converters.add(converter());
     }
+    
 }

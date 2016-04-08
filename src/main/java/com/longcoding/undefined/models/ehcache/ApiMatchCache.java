@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by longcoding on 16. 4. 8..
  */
 @EqualsAndHashCode
-public class APIMatcher implements Serializable, Cloneable {
+public class ApiMatchCache implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -674636554549347122L;
 
@@ -25,7 +25,7 @@ public class APIMatcher implements Serializable, Cloneable {
     private ConcurrentHashMap<String, Integer> httpsPutMap;
     private ConcurrentHashMap<String, Integer> httpsDeleteMap;
 
-    public APIMatcher() {
+    public ApiMatchCache() {
         protocalAndMethod = new ConcurrentHashMap<>();
 
         httpGetMap = new ConcurrentHashMap<>();
