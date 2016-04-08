@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by longcoding on 16. 4. 5..
  */
@@ -19,10 +21,10 @@ public class ResponseController {
     ProxyService proxyService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public DeferredResult<ResponseEntity> responseHttpResult() {
+    public DeferredResult<ResponseEntity> responseHttpResult(HttpServletRequest request) {
 
         DeferredResult deferredResult = new DeferredResult();
-        proxyService.requestProxyService(deferredResult);
+        proxyService.requestProxyService(request, deferredResult);
 
         return deferredResult;
     }

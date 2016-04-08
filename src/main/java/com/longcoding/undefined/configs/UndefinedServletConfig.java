@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.longcoding.undefined.interceptors.impl.test1;
-import com.longcoding.undefined.interceptors.impl.test2;
-import com.longcoding.undefined.interceptors.impl.test3;
-import com.longcoding.undefined.interceptors.impl.test4;
+import com.longcoding.undefined.interceptors.impl.PathAndPrepareRedisInterceptor;
+import com.longcoding.undefined.interceptors.impl.RatelimitInterceptor;
+import com.longcoding.undefined.interceptors.impl.ExecuteRedisValidationInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -25,28 +24,23 @@ import java.util.List;
 public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
 
     @Bean
-    public test1 test1() {
-        return new test1();
+    public PathAndPrepareRedisInterceptor pathAndPrepareRedisInterceptor() {
+        return new PathAndPrepareRedisInterceptor();
     }
     @Bean
-    public test2 test2() {
-        return new test2();
+    public RatelimitInterceptor ratelimitInterceptor() {
+        return new RatelimitInterceptor();
     }
     @Bean
-    public test3 test3() {
-        return new test3();
-    }
-    @Bean
-    public test4 test4() {
-        return new test4();
+    public ExecuteRedisValidationInterceptor executeRedisValidationInterceptor() {
+        return new ExecuteRedisValidationInterceptor();
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(test1());
-        registry.addInterceptor(test2());
-        registry.addInterceptor(test3());
-        registry.addInterceptor(test4());
+        registry.addInterceptor(pathAndPrepareRedisInterceptor());
+        registry.addInterceptor(ratelimitInterceptor());
+        registry.addInterceptor(executeRedisValidationInterceptor());
     }
 
     @Bean

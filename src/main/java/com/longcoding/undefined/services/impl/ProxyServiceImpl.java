@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 import play.libs.Json;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -29,11 +30,14 @@ public class ProxyServiceImpl implements ProxyService {
     private DeferredResult<ResponseEntity> deferredResult;
     private Request request;
 
-    public void requestProxyService(DeferredResult<ResponseEntity> deferredResult) {
+    public void requestProxyService(HttpServletRequest request, DeferredResult<ResponseEntity> deferredResult) {
 
         this.deferredResult = deferredResult;
         //Request request = nettyClientFactory.getNettyClient().newRequest(setURI());
         //setHeaderParam(request).send(bufferingResponseListener());
+
+
+
 
         
         //System.out.println("release");
