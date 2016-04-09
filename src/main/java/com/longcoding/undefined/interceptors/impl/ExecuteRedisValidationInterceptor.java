@@ -27,41 +27,47 @@ public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
     private ApplicationContext context;
 
     private HttpServletRequest request;
-    private static final ExecutorService executor = Executors.newFixedThreadPool(50);
+    //private static final ExecutorService executor = Executors.newFixedThreadPool(50);
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        this.request = request;
-        executor.execute(() -> {
+        System.out.println(getClass());
 
-            RedisValidator redisValidator = (RedisValidator) request.getAttribute(Const.OBJECT_GET_REDIS_VALIDATION);
+        return true;
 
-            try {
-                redisValidator.getPipeline().sync();
-                redisValidator.getPipeline().close();
-            } catch (JedisConnectionException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                redisValidator.getJedis().close();
-            }
+        //TODO : BUG FIX
 
-            LinkedHashMap<String, Response<String>> futureMethodQueue = redisValidator.getFutureMethodQueue();
+//        this.request = request;
+//        //executor.execute(() -> {
+//
+//            RedisValidator redisValidator = (RedisValidator) request.getAttribute(Const.OBJECT_GET_REDIS_VALIDATION);
+//
+//            try {
+//                redisValidator.getPipeline().sync();
+//                redisValidator.getPipeline().close();
+//            } catch (JedisConnectionException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } finally {
+//                redisValidator.getJedis().close();
+//            }
+//
+//            LinkedHashMap<String, Response<String>> futureMethodQueue = redisValidator.getFutureMethodQueue();
+//
+//            Response<String> futureValue;
+//            for (String className : futureMethodQueue.keySet()) {
+//                futureValue = (futureMethodQueue.get(className));
+//                if (futureValue.get() != null) {
+//                    RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
+//                    objectBean.executeJudge(futureValue);
+//                }
+//            }
+//            //return false;
+//       // });
 
-            Response<String> futureValue;
-            for (String className : futureMethodQueue.keySet()) {
-                futureValue = (futureMethodQueue.get(className));
-                if (futureValue.get() != null) {
-                    RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
-                    objectBean.executeJudge(futureValue);
-                }
-            }
-            //return false;
-        });
-
-       return true;
+//       return true;
 
     }
 }

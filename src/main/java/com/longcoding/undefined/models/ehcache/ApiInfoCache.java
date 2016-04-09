@@ -28,6 +28,8 @@ public class ApiInfoCache implements Serializable, Cloneable {
     private String inboundMethod;
     private String outboundMethod;
 
+    private String protocol;
+
 
     private boolean isOpenApi;
 
@@ -39,6 +41,7 @@ public class ApiInfoCache implements Serializable, Cloneable {
                         String inboundURL, String outboundURL,
                         String inboundMethod,
                         String outboundMethod,
+                        String protocol,
                         boolean isOpenApi) {
         this.apiId = apiId;
         this.apiName = apiName;
@@ -49,6 +52,7 @@ public class ApiInfoCache implements Serializable, Cloneable {
         this.outboundURL = outboundURL;
         this.inboundMethod = inboundMethod;
         this.outboundMethod = outboundMethod;
+        this.protocol = protocol;
         this.isOpenApi = isOpenApi;
     }
 
@@ -130,5 +134,13 @@ public class ApiInfoCache implements Serializable, Cloneable {
 
     public void setOutboundMethod(String outboundMethod) {
         this.outboundMethod = outboundMethod;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
     }
 }

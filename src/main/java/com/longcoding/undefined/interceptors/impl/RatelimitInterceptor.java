@@ -11,7 +11,7 @@ import redis.clients.jedis.Response;
  * Created by longcoding on 16. 4. 7..
  */
 public class RatelimitInterceptor extends RedisBaseValidationInterceptor<Response<String>, Response<String>> {
-
+    
     @Override
     public boolean setCondition(Response<String> storedValue) {
         if (storedValue.get().equals("testAppId")) return true;

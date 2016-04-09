@@ -18,7 +18,7 @@ public class HttpHelper {
         return URL.split(CONST_UTIL_EXTRACT_URL);
     }
 
-    public static String createURI(String protocol, String url, Map<String, String> map) {
+    public static String createURI(String protocol, String url) {
 
         StringBuffer requestURLBuffer =
                 new StringBuffer()
@@ -26,22 +26,29 @@ public class HttpHelper {
                         .append(DELIMITER_PROTOCOL)
                         .append(url);
 
+        return requestURLBuffer.toString();
+    }
+
+    public static String convertMap2StringQueryParams(Map<String,String> params) {
+
         //TODO : wish upgrade logic.
         int index = 0;
-        int lastIndex = map.size();
+        int lastIndex = params.size();
         StringBuffer queryStringBuffer = new StringBuffer();
-        for (String queryKey : map.keySet()) {
+        for (String queryKey : params.keySet()) {
             if (index++ > 0 && index <= lastIndex) queryStringBuffer.append(DELIMITER_QUERY_STRING_END);
-            queryStringBuffer.append(queryKey).append(DELIMITER_QUERY_STRING).append(map.get(queryKey));
+            queryStringBuffer.append(queryKey).append(DELIMITER_QUERY_STRING).append(params.get(queryKey));
         }
 
-        String queryString = null;
-        try {
-            queryString = URLEncoder.encode(queryStringBuffer.toString(), Const.SERVER_DEFAULT_ENCODING_TYPE);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        //TODO : FIX BUG
+//        String queryString = null;
+//        try {
+//            queryString = URLEncoder.encode(queryStringBuffer.toString(), Const.SERVER_DEFAULT_ENCODING_TYPE);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
 
-        return requestURLBuffer.toString() + "?" + queryString;
+        return queryStringBuffer.toString();
+
     }
 }

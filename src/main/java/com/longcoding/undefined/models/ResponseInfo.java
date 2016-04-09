@@ -14,6 +14,7 @@ public class ResponseInfo {
     private String requestMethod;
     private String requestAccept;
     private URI requestURI;
+    private String requestProtocol;
 
     private Map<String, String> queryStringMap;
     private Map<String, String> headers;
@@ -147,5 +148,13 @@ public class ResponseInfo {
 
     public void setRequestURI(URI requestURI) {
         this.requestURI = requestURI;
+    }
+
+    public String getRequestProtocol() {
+        return requestProtocol;
+    }
+
+    public void setRequestProtocol(String requestProtocol) {
+        this.requestProtocol = requestProtocol;
     }
 }

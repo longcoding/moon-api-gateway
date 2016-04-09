@@ -62,8 +62,9 @@ public class EhcacheFactory {
         ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
         queryParams.put("version", true);
         String inboundURL = "localhost:8080/undefined/:first/:second/ff";
-        String outboundURL = "www.naver.com/:second/ff/:first";
-        ApiInfoCache apiInfoCache = new ApiInfoCache("15151502", "HelloAPI", "9999", null, queryParams, inboundURL, outboundURL, "GET", "GET", true);
+        //String outboundURL = "www.naver.com/:second/ff/:first";
+        String outboundURL = "172.19.107.67:9011/11st/common/categories";
+        ApiInfoCache apiInfoCache = new ApiInfoCache("15151502", "HelloAPI", "9999", null, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
         getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
 
         ServiceInfoCache serviceInfoCache = new ServiceInfoCache("9999", "undefinedService", 1000, 10000);

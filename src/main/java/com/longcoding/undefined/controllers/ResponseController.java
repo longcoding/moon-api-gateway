@@ -22,15 +22,17 @@ public class ResponseController {
     @Autowired
     ProxyService proxyService;
 
-//    @RequestMapping(method = RequestMethod.GET)
-//    public DeferredResult<ResponseEntity> responseHttpResult(HttpServletRequest request) {
     @RequestMapping(method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public void responseHttpResult(HttpServletRequest request) {
+    public DeferredResult<ResponseEntity> responseHttpResult(HttpServletRequest request) {
+//    @RequestMapping(method = RequestMethod.GET)
+//    @ResponseStatus(HttpStatus.OK)
+//    public void responseHttpResult(HttpServletRequest request) {
 
-//        DeferredResult deferredResult = new DeferredResult();
-//        proxyService.requestProxyService(request, deferredResult);
+        System.out.println("dfdf");
 
-//        return deferredResult;
+        DeferredResult deferredResult = new DeferredResult();
+        proxyService.requestProxyService(request, deferredResult);
+
+        return deferredResult;
     }
 }

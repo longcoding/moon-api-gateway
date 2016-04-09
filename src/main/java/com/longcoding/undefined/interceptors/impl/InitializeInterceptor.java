@@ -6,6 +6,7 @@ import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import org.springframework.http.MediaType;
+import org.springframework.util.MimeTypeUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,8 @@ import java.util.UUID;
  */
 public class InitializeInterceptor extends AbstractBaseInterceptor {
 
+
+
     private static final String PROTOCOL_DELIMITER = "://";
 
     @Override
@@ -29,10 +32,10 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         RequestInfo requestInfo = new RequestInfo();
 
         requestInfo.setRequestId(UUID.randomUUID().toString());
-        requestInfo.setClientIp(request.getParameter("remoteIp"));
+        requestInfo.setClientIp(request.getRemoteHost());
         requestInfo.setRequestMethod(request.getMethod());
         requestInfo.setRequestURI(request.getRequestURI());
-        requestInfo.setUserAgent(request.getHeader("user-agent"));
+        requestInfo.setUserAgent(request.getHeader(Const.REQUEST_USER_AGENT));
         requestInfo.setHeaders(createHeaderMap(request));
 
         String[] requestURL = request.getRequestURL().toString().split(PROTOCOL_DELIMITER);
@@ -40,11 +43,11 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         requestInfo.setRequestURL(requestURL[1]);
 
         String queryString = new String(Strings.nullToEmpty(request.getQueryString()).getBytes(StandardCharsets.ISO_8859_1.name()), Const.SERVER_DEFAULT_ENCODING_TYPE);
-        URLDecoder.decode(queryString, Const.SERVER_DEFAULT_ENCODING_TYPE);
+        queryString = URLDecoder.decode(queryString, Const.SERVER_DEFAULT_ENCODING_TYPE);
         requestInfo.setQueryStringMap(createQueryStringMap(queryString));
 
-        String accept = request.getParameter("accept");
-        requestInfo.setAccept(accept != null ? accept : MediaType.APPLICATION_JSON_UTF8_VALUE);
+        String accept = request.getParameter(Const.REQUEST_ACCEPT);
+        requestInfo.setAccept(accept != null ? accept : MimeTypeUtils.APPLICATION_JSON_VALUE);
 
         request.setAttribute(Const.REQUEST_INFO_DATA, requestInfo);
 
