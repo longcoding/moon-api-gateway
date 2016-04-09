@@ -42,7 +42,6 @@ public class ProxyServiceImpl implements ProxyService {
 
         this.responseInfo = (ResponseInfo) request.getAttribute(Const.RESPONSE_INFO_DATA);
         Request proxyRequest = nettyClientFactory.getNettyClient().newRequest(responseInfo.getRequestURI());
-        System.out.println(responseInfo.getRequestURI());
 
         setHeaderAndQueryInfo(proxyRequest, responseInfo).send(bufferingResponseListener());
 
@@ -60,7 +59,6 @@ public class ProxyServiceImpl implements ProxyService {
 
         Map<String, String> requestQueryParams = responseInfo.getQueryStringMap();
         for ( String queryKey : requestQueryParams.keySet() ) {
-            System.out.println(queryKey + "   " + requestQueryParams.get(queryKey));
             request.param(queryKey, requestQueryParams.get(queryKey));
         }
 
@@ -79,6 +77,7 @@ public class ProxyServiceImpl implements ProxyService {
                         responseEntity =
                                 new ResponseEntity(Json.parse(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
                     } else {
+                        System.out.println("잘못된 요청");
                         //TODO : occur ERROR
                     }
                     deferredResult.setResult(responseEntity);

@@ -56,11 +56,11 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
 
     private Map<String, String> createQueryStringMap(String queryString) {
 
-        if (queryString.isEmpty()) return null;
+        Map<String, String> queryMap = new HashMap<>();
+
+        if (queryString.isEmpty()) return queryMap;
 
         String[] queryParams = queryString.split("&");
-
-        Map<String, String> queryMap = new HashMap<>();
         for (String param : queryParams) {
             String[] seperatedParam = param.split("=");
             queryMap.put(seperatedParam[0], (seperatedParam[1] !=null)? seperatedParam[1]:"");

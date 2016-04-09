@@ -1,9 +1,11 @@
 package com.longcoding.undefined.helpers.netty;
 
-import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.MessageManager;
 import org.eclipse.jetty.client.HttpClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -13,22 +15,31 @@ import java.util.concurrent.Executors;
 @Component
 public class NettyClientFactory {
 
-    private static final ExecutorService executor;
-    private static final HttpClient httpClient = new HttpClient();
+    @Autowired
+    MessageManager messageManager;
 
-    static {
-        executor = Executors.newFixedThreadPool(100);
+
+    private static ExecutorService executor;
+    private static HttpClient httpClient;
+
+    @PostConstruct
+    private void initializeNettyClient() {
+
+        int THREAD_POOL_COUNT = messageManager.getIntProperty("undefined.netty.thread.count");
+        int NETTY_MAX_CONNECTION = messageManager.getIntProperty("undefined.netty.max.connection");
+        long NETTY_HTTP_TIMEOUT = messageManager.getLongProperty("undefined.netty.http.timeout");
+
+        executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
+        httpClient = new HttpClient();
         try {
-            httpClient.setMaxConnectionsPerDestination(Const.NETTY_MAX_CONNECTION);
+            httpClient.setMaxConnectionsPerDestination(NETTY_MAX_CONNECTION);
+            httpClient.setConnectTimeout(NETTY_HTTP_TIMEOUT);
             httpClient.setExecutor(executor);
-            httpClient.setConnectTimeout(Const.NETTY_HTTP_TIMEOUT);
             httpClient.start();
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
-
-    private NettyClientFactory() {}
 
     public HttpClient getNettyClient() {
         return httpClient;

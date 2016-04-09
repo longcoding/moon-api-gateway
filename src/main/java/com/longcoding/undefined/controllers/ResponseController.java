@@ -2,11 +2,9 @@ package com.longcoding.undefined.controllers;
 
 import com.longcoding.undefined.services.ProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -24,11 +22,6 @@ public class ResponseController {
 
     @RequestMapping(method = RequestMethod.GET)
     public DeferredResult<ResponseEntity> responseHttpResult(HttpServletRequest request) {
-//    @RequestMapping(method = RequestMethod.GET)
-//    @ResponseStatus(HttpStatus.OK)
-//    public void responseHttpResult(HttpServletRequest request) {
-
-        System.out.println("dfdf");
 
         DeferredResult deferredResult = new DeferredResult();
         proxyService.requestProxyService(request, deferredResult);

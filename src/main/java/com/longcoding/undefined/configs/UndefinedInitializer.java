@@ -1,5 +1,6 @@
 package com.longcoding.undefined.configs;
 
+import com.longcoding.undefined.helpers.Const;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -28,7 +29,7 @@ public class UndefinedInitializer extends AbstractAnnotationConfigDispatcherServ
     @Override
     protected Filter[] getServletFilters() {
         CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
-        encodingFilter.setEncoding("UTF-8");
+        encodingFilter.setEncoding(Const.SERVER_DEFAULT_ENCODING_TYPE);
         encodingFilter.setForceEncoding(true);
         return new Filter[] { encodingFilter };
     }
