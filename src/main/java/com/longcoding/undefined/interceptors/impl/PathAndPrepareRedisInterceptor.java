@@ -55,7 +55,6 @@ public class PathAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
         requestInfo.setServiceId(apiInfoCache.getServiceId());
 
         if (!isMatched) {
-            //TODO : occur ERROR
             return false;
         }
 

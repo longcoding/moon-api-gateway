@@ -24,8 +24,6 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
     @Autowired
     EhcacheFactory ehcacheFactory;
 
-
-
     private static Pattern pathMandatoryDelimiter = Pattern.compile("^:[a-zA-Z0-9]+");
 
     @Override

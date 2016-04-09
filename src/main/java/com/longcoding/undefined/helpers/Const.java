@@ -10,6 +10,8 @@ public class Const {
     public static final String REQUEST_INFO_DATA = "requestInfo";
     public static final String RESPONSE_INFO_DATA = "responseInfo";
 
+    public static final String ERROR_MEESAGE = "message";
+
     public static final String OBJECT_GET_REDIS_VALIDATION = "redisValidation";
 
     public static final String SERVER_DEFAULT_ENCODING_TYPE = StandardCharsets.UTF_8.name();
