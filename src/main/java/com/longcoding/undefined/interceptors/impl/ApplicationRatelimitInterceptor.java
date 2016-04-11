@@ -15,8 +15,6 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
 
     @Override
     public boolean setCondition(Map<String, Response<Long>> storedValue) {
-        logger.info(storedValue.get(Const.REDIS_APP_RATELIMIT_MINUTELY).get() + "   "
-        + storedValue.get(Const.REDIS_APP_RATELIMIT_DAILY).get());
         if ( storedValue.get(Const.REDIS_APP_RATELIMIT_MINUTELY).get() < 0 ) return false;
         if ( storedValue.get(Const.REDIS_APP_RATELIMIT_DAILY).get() < 0 ) return false;
 
@@ -25,10 +23,6 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
 
     @Override
     public Map<String, Response<Long>> setJedisMultiCommand(Transaction jedisMulti) {
-
-        logger.error(this.requestInfo.getServiceId());
-        logger.error(this.requestInfo.getApiId());
-        logger.error(this.requestInfo.getAppId());
 
         Response<Long> applicationDailyRateLimit =
                 jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_DAILY, this.requestInfo.getServiceId(), -1);
@@ -41,6 +35,7 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
         appRatelimit.put(Const.REDIS_APP_RATELIMIT_MINUTELY, applicationMinutelyRateLimit);
 
         return appRatelimit;
+
     }
 
     @Override

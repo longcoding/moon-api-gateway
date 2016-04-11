@@ -5,6 +5,8 @@ import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.netty.NettyClientFactory;
 import com.longcoding.undefined.models.ResponseInfo;
 import com.longcoding.undefined.services.ProxyService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.client.api.Result;
@@ -28,6 +30,8 @@ import java.util.Map;
 @Service
 public class ProxyServiceImpl implements ProxyService {
 
+    protected final Logger logger = LogManager.getLogger(ProxyServiceImpl.class);
+
     @Autowired
     NettyClientFactory nettyClientFactory;
 
@@ -40,6 +44,8 @@ public class ProxyServiceImpl implements ProxyService {
 
         this.deferredResult = deferredResult;
 
+        long start = System.currentTimeMillis();
+
         this.responseInfo = (ResponseInfo) request.getAttribute(Const.RESPONSE_INFO_DATA);
         Request proxyRequest = nettyClientFactory.getNettyClient().newRequest(responseInfo.getRequestURI());
 
@@ -49,9 +55,11 @@ public class ProxyServiceImpl implements ProxyService {
                 if (!result.isFailed()) {
                     ResponseEntity responseEntity = null;
 
+                    logger.debug("Http Time " + (System.currentTimeMillis() - start));
+
                     HttpFields responseHeaders = result.getResponse().getHeaders();
                     //TODO: not contain. compare equals.
-                    if ( responseHeaders.contains(Const.REQUEST_RESPONSE_CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) ){
+                    if (responseHeaders.contains(Const.REQUEST_RESPONSE_CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)) {
                         responseEntity =
                                 new ResponseEntity(Json.parse(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
                     } else {
@@ -60,6 +68,7 @@ public class ProxyServiceImpl implements ProxyService {
                     deferredResult.setResult(responseEntity);
                 }
             }
+
             @Override
             public void onFailure(Response response, Throwable failure) {
                 deferredResult.setErrorResult(new ProxyServiceFailException("", failure));
@@ -69,13 +78,14 @@ public class ProxyServiceImpl implements ProxyService {
 
     }
 
-    private Request setHeaderAndQueryInfo(Request request, ResponseInfo responseInfo) {
+    private static Request setHeaderAndQueryInfo(Request request, ResponseInfo responseInfo) {
         Map<String, String> requestHeaders = responseInfo.getHeaders();
 
         for ( String headerKey : requestHeaders.keySet() ) {
             request.header(headerKey, requestHeaders.get(headerKey));
         }
 
+        request.method(request.getMethod());
         request.accept(responseInfo.getRequestAccept());
         request.header(Const.REQUEST_RESPONSE_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
 

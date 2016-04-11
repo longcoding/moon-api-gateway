@@ -19,7 +19,6 @@ public class ServiceCapacityInterceptor extends RedisBaseValidationInterceptor<R
 
     @Override
     public boolean setCondition(Response<Long> storedValue) throws JedisDataException, NullPointerException {
-        logger.error("서비스 : " + storedValue.get());
         if (storedValue.get() < 0) return false;
         return true;
     }

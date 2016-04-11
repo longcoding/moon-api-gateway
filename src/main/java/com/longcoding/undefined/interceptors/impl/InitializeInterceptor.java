@@ -78,10 +78,10 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         Map<String, String> headers = Maps.newHashMap();
 
         while ( headerKeys.hasMoreElements() ) {
-            String headerKey = headerKeys.nextElement().toLowerCase();
+            String headerKey = headerKeys.nextElement();
             String headerValue = request.getHeader(headerKey);
 
-            headers.put(headerKey, headerValue);
+            headers.put(headerKey.toLowerCase(), headerValue);
         }
 
         return headers;

@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URISyntaxException;
 
 /**
  * Created by longcoding on 16. 4. 6..

@@ -1,5 +1,6 @@
 package com.longcoding.undefined.interceptors.impl;
 
+import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.EhcacheFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
@@ -24,7 +25,6 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
 
-        logger.info(requestInfo.getApiId());
         ApiInfoCache apiInfoCache = ehcacheFactory.getApiInfoCache().get(requestInfo.getApiId());
 
         Map<String, Boolean> headers = apiInfoCache.getHeaders();
@@ -35,15 +35,16 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
 
         //There are all lowerCase in ehcache.
         for (String header : headers.keySet()) {
-            if (!requestHeaders.containsKey(header)) {
+            if (headers.get(header).equals(true) && !requestHeaders.containsKey(header)) {
                 generateException(400, header + " - required header is missing.");
                 return false;
             }
         }
 
         for (String queryParam : queryParams.keySet()) {
-            if (!requestQueryParams.containsKey(queryParam)) {
+            if (queryParams.get(queryParam).equals(true) && !requestQueryParams.containsKey(queryParam)) {
                 generateException(400, queryParam + " - required queryParam is missing.");
+                return false;
             }
         }
 

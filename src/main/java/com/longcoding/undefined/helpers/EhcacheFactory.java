@@ -62,8 +62,8 @@ public class EhcacheFactory {
         ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
         queryParams.put("version", true);
         ConcurrentHashMap<String, Boolean> headers = new ConcurrentHashMap<>();
-        headers.put("Accept".toLowerCase(), true);
-        headers.put("x-custom".toLowerCase(), true);
+        headers.put("Content-Type".toLowerCase(), true);
+        headers.put("appKey".toLowerCase(), true);
         String inboundURL = "localhost:8080/undefined/:first/:second/ff";
         //String outboundURL = "www.naver.com/:second/ff/:first";
         String outboundURL = "172.19.107.67:9011/11st/common/categories";
