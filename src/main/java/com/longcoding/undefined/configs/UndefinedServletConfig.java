@@ -30,8 +30,8 @@ public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
         return new PathAndPrepareRedisInterceptor();
     }
     @Bean
-    public RatelimitInterceptor ratelimitInterceptor() {
-        return new RatelimitInterceptor();
+    public ServiceCapacityInterceptor serviceCapacityInterceptor() {
+        return new ServiceCapacityInterceptor();
     }
     @Bean
     public ExecuteRedisValidationInterceptor executeRedisValidationInterceptor() {
@@ -50,7 +50,7 @@ public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(initializeInterceptor());
         registry.addInterceptor(pathAndPrepareRedisInterceptor());
-        registry.addInterceptor(ratelimitInterceptor());
+        registry.addInterceptor(serviceCapacityInterceptor());
         registry.addInterceptor(executeRedisValidationInterceptor());
         registry.addInterceptor(extractRequestInterceptor());
         registry.addInterceptor(headerAndQueryValidationInterceptor());

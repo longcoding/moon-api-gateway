@@ -3,8 +3,12 @@ package com.longcoding.undefined.interceptors;
 import com.google.common.base.CaseFormat;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.RedisValidator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
+import redis.clients.jedis.Transaction;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,20 +17,22 @@ import java.io.Serializable;
 /**
  * Created by longcoding on 16. 4. 7..
  */
-public abstract class RedisBaseValidationInterceptor<T, U> extends AbstractBaseInterceptor {
+public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInterceptor {
+
+    protected final Logger logger = LogManager.getLogger(getClass());
 
     private volatile T futureValue;
     private RedisValidator redisValidator;
 
-    public abstract boolean setCondition(U storedValue);
+    public abstract boolean setCondition(T storedValue);
 
-    public abstract T setPipelineCommand(Pipeline pipeline);
+    public abstract T setJedisMultiCommand(Transaction jedisMulti);
 
-    public boolean onSuccess() {
+    protected boolean onSuccess(Transaction jedisMulti) {
         return true;
     }
 
-    private boolean onFailure() {
+    protected boolean onFailure(Transaction jedisMulti) {
         return false;
     }
 
@@ -35,14 +41,14 @@ public abstract class RedisBaseValidationInterceptor<T, U> extends AbstractBaseI
                                           HttpServletResponse response, Object handler) throws Exception {
 
         this.redisValidator = (RedisValidator) request.getAttribute(Const.OBJECT_GET_REDIS_VALIDATION);
-        this.futureValue = setPipelineCommand(redisValidator.getPipeline());
+        this.futureValue = setJedisMultiCommand(redisValidator.getJedisMulti());
         redisValidator.offerFutureMethodQueue(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, getClass().getSimpleName()), futureValue);
 
         return true;
     }
 
-    public boolean executeJudge(U storedValue) {
-        return setCondition(storedValue)? onSuccess() : onFailure();
+    public boolean executeJudge(T storedValue, Transaction jedisMulti) {
+        return setCondition(storedValue)? onSuccess(jedisMulti) : onFailure(jedisMulti);
     }
 
 }

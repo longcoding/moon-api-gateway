@@ -35,4 +35,10 @@ public class Const {
     public static final String HEADER_CUSTOMIZE_REMOTE_IP = "x-remote-ip";
     public static final String HEADER_CUSTOMIZE_REMOTE_AGENT = "x-user-agent";
 
+    public static final String REDIS_SERVICE_CAPACITY_MINUTELY = "service_capacity_minutely";
+    public static final String REDIS_SERVICE_CAPACITY_DAILY = "service_capacity_daily";
+
+    public static final String REDIS_APP_RATELIMIT_MINUTELY = "app_ratelimit_minutely";
+    public static final String REDIS_APP_RATELIMIT_DAILY = "app_ratelimit_daily";
+
 }

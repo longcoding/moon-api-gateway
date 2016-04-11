@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
+import redis.clients.jedis.Transaction;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -17,8 +18,8 @@ import java.util.LinkedHashMap;
 public class RedisValidator<T> {
 
     private Jedis jedis;
-    private Pipeline pipeline;
-    private Pipeline failurePipeline;
+    private Transaction jedisMulti;
+
 
     private volatile LinkedHashMap<String, T> futureMethodQueue;
 
@@ -26,7 +27,7 @@ public class RedisValidator<T> {
 
     public RedisValidator(JedisFactory jedisFactory) {
         this.jedis = jedisFactory.getInstance();
-        this.pipeline = jedis.pipelined();
+        this.jedisMulti = jedis.multi();
         this.futureMethodQueue = new LinkedHashMap<>();
     }
 
@@ -40,10 +41,8 @@ public class RedisValidator<T> {
         return jedis;
     }
 
-    public Pipeline getPipeline() {
-        return pipeline;
+    public Transaction getJedisMulti() {
+        return jedisMulti;
     }
-
-    public Pipeline getFailurePipeline() { return pipeline; }
 
 }

@@ -31,7 +31,7 @@ public class ResponseController {
 
     @PostConstruct
     private void initializeProxyService() {
-        PROXY_SERVICE_TIMEOUT = messageManager.getLongProperty("undefined.netty.http.timeout");
+        PROXY_SERVICE_TIMEOUT = messageManager.getLongProperty("undefined.service.proxy.timeout");
     }
 
     @RequestMapping(method = RequestMethod.GET)
