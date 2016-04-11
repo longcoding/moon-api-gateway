@@ -1,7 +1,5 @@
 package com.longcoding.undefined.services.impl;
 
-import com.longcoding.undefined.exceptions.ExceptionMessage;
-import com.longcoding.undefined.exceptions.GeneralException;
 import com.longcoding.undefined.exceptions.ProxyServiceFailException;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.netty.NettyClientFactory;

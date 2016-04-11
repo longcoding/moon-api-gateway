@@ -47,7 +47,7 @@ public class EhcacheFactory {
 
     @PostConstruct
     public void prepareTestJob() {
-        getAppDistinctionCache().put("3333-3653-8548", "4321");
+        getAppDistinctionCache().put("9af18d4a-3a2e-3653-8548-b611580ba585", "4321");
         getApiIdDistinctionCache().put("undefined", new ApiMatchCache());
         getApiIdDistinctionCache().get("undefined").getProtocalAndMethod().put("httpGET", 0);
         getApiIdDistinctionCache().get("undefined").getHttpGetMap().put("localhost:8080/undefine-9]+/ff", 15151502);
@@ -56,18 +56,21 @@ public class EhcacheFactory {
         getApiIdDistinctionCache().get("undefined").getHttpGetMap().put("localhost:8080/undefine-12249]+/ff", 15151502);
         getApiIdDistinctionCache().get("undefined").getHttpGetMap().put("localhost:8080/undefined/[a-zA-Z0-9]+/[a-zA-Z0-9]+/ff", 15151502);
 
-        AppInfoCache appInfoCache = new AppInfoCache("4321", "3333-3653-8548", "testApp", 1000000, 1000000);
+        AppInfoCache appInfoCache = new AppInfoCache("4321", "3333-3653-8548", "app", 1000000, 1000000);
         getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache);
 
         ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
         queryParams.put("version", true);
+        ConcurrentHashMap<String, Boolean> headers = new ConcurrentHashMap<>();
+        headers.put("Accept".toLowerCase(), true);
+        headers.put("x-custom".toLowerCase(), true);
         String inboundURL = "localhost:8080/undefined/:first/:second/ff";
         //String outboundURL = "www.naver.com/:second/ff/:first";
         String outboundURL = "172.19.107.67:9011/11st/common/categories";
-        ApiInfoCache apiInfoCache = new ApiInfoCache("15151502", "HelloAPI", "9999", null, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
+        ApiInfoCache apiInfoCache = new ApiInfoCache("15151502", "HelloAPI", "9999", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
         getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
 
-        ServiceInfoCache serviceInfoCache = new ServiceInfoCache("9999", "undefinedService", 1000, 10000);
+        ServiceInfoCache serviceInfoCache = new ServiceInfoCache("9999", "undefined", 1000, 10000);
         getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
     }
 

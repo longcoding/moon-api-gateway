@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapter {
 
-    private final Logger logger = LogManager.getLogger(getClass());
+    protected final Logger logger = LogManager.getLogger(getClass());
 
     private int errorCode;
     private String errorMessage;

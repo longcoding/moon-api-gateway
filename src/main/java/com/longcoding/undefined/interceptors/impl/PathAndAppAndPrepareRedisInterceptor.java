@@ -7,17 +7,19 @@ import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
 import com.longcoding.undefined.models.ehcache.ApiMatchCache;
+import com.longcoding.undefined.models.ehcache.AppInfoCache;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
  * Created by longcoding on 16. 4. 7..
  */
-public class PathAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
+public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
 
     @Autowired
     MessageManager messageManager;
@@ -28,12 +30,23 @@ public class PathAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
     @Autowired
     EhcacheFactory ehcacheFactory;
 
+    private static final String HEADER_APP_KEY = "appKey";
     private static final String ERROR_MEESAGE_PATH_VALID= "subdomin or service path is unclear";
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+
+        String appKey = appKeyValidation(requestInfo.getQueryStringMap(), requestInfo.getHeaders());
+        if (appKey != null){
+            String appId = ehcacheFactory.getAppDistinctionCache().get(appKey);
+            if (appId != null) {
+                requestInfo.setAppId(appId);
+            } else {
+                generateException(403, "");
+            }
+        }
 
         String categoryValue = classifyCategory(requestInfo.getRequestURL(),
                 messageManager.getBooleanProperty("undefined.service.recognize.subdomain"));
@@ -115,5 +128,23 @@ public class PathAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
     private void prepareRedisInterceptor(HttpServletRequest request) {
         RedisValidator redisValidator = new RedisValidator(jedisFactory);
         request.setAttribute(Const.OBJECT_GET_REDIS_VALIDATION, redisValidator);
+    }
+
+    private String appKeyValidation(Map<String, String> queryStringMap, Map<String, String> headerMap) {
+
+        String appKey = null;
+        for ( String header : headerMap.keySet() ) {
+            if ( header.equalsIgnoreCase(HEADER_APP_KEY) ) {
+                return headerMap.get(header);
+            }
+        }
+
+        for ( String queryString : queryStringMap.keySet() ){
+            if ( queryString.equalsIgnoreCase(HEADER_APP_KEY) ) {
+                return queryStringMap.get(queryString);
+            }
+        }
+
+        return null;
     }
 }

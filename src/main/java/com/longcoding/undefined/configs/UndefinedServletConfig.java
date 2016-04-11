@@ -26,8 +26,8 @@ public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
         return new InitializeInterceptor();
     }
     @Bean
-    public PathAndPrepareRedisInterceptor pathAndPrepareRedisInterceptor() {
-        return new PathAndPrepareRedisInterceptor();
+    public PathAndAppAndPrepareRedisInterceptor pathAndPrepareRedisInterceptor() {
+        return new PathAndAppAndPrepareRedisInterceptor();
     }
     @Bean
     public ServiceCapacityInterceptor serviceCapacityInterceptor() {

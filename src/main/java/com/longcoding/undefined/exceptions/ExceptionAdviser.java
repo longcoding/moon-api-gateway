@@ -37,7 +37,8 @@ public class ExceptionAdviser {
     @ExceptionHandler(RatelimitFailException.class)
     public ResponseEntity<JsonNode> ratelimtFailException(RatelimitFailException e) {
         ObjectNode objectNode = play.libs.Json.newObject();
-        objectNode.put(Const.ERROR_MEESAGE, e.getExceptionMessage().getErrorMessage());
+        objectNode.put(Const.ERROR_MEESAGE, messageManager.getProperty("502"));
+        objectNode.put(Const.DETAIL_ERROR_MEESAGE, e.getExceptionMessage().getErrorMessage());
         return new ResponseEntity(objectNode, HttpStatus.BAD_GATEWAY);
     }
 

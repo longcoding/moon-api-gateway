@@ -25,10 +25,15 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
 
     @Override
     public Map<String, Response<Long>> setJedisMultiCommand(Transaction jedisMulti) {
+
+        logger.error(this.requestInfo.getServiceId());
+        logger.error(this.requestInfo.getApiId());
+        logger.error(this.requestInfo.getAppId());
+
         Response<Long> applicationDailyRateLimit =
-                jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_DAILY, "app", -1);
+                jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_DAILY, this.requestInfo.getServiceId(), -1);
         Response<Long> applicationMinutelyRateLimit =
-                jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_MINUTELY, "app", -1);
+                jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_MINUTELY, this.requestInfo.getServiceId(), -1);
 
 
         Map<String, Response<Long>> appRatelimit = Maps.newHashMap();
@@ -40,9 +45,9 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
 
     @Override
     protected boolean onFailure(Transaction jedisMulti) {
-        jedisMulti.hincrBy(Const.REDIS_SERVICE_CAPACITY_DAILY, "undefined", 1);
-        jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_DAILY, "app", 1);
-        jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_MINUTELY, "app", 1);
+        jedisMulti.hincrBy(Const.REDIS_SERVICE_CAPACITY_DAILY, requestInfo.getServiceId(), 1);
+        jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_DAILY, requestInfo.getAppId(), 1);
+        jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_MINUTELY, requestInfo.getAppId(), 1);
         return false;
     }
 }

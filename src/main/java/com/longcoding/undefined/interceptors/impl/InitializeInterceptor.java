@@ -3,8 +3,10 @@ package com.longcoding.undefined.interceptors.impl;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.EhcacheFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.util.MimeTypeUtils;
 
@@ -22,9 +24,10 @@ import java.util.UUID;
  */
 public class InitializeInterceptor extends AbstractBaseInterceptor {
 
-
-
     private static final String PROTOCOL_DELIMITER = "://";
+
+    @Autowired
+    EhcacheFactory ehcacheFactory;
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -63,7 +66,7 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         String[] queryParams = queryString.split("&");
         for (String param : queryParams) {
             String[] seperatedParam = param.split("=");
-            queryMap.put(seperatedParam[0], (seperatedParam[1] !=null)? seperatedParam[1]:"");
+            queryMap.put(seperatedParam[0].toLowerCase(), (seperatedParam[1] !=null)? seperatedParam[1]:"");
         }
 
         return queryMap;
@@ -75,7 +78,7 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         Map<String, String> headers = Maps.newHashMap();
 
         while ( headerKeys.hasMoreElements() ) {
-            String headerKey = headerKeys.nextElement();
+            String headerKey = headerKeys.nextElement().toLowerCase();
             String headerValue = request.getHeader(headerKey);
 
             headers.put(headerKey, headerValue);

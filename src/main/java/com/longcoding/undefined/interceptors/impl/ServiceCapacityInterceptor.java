@@ -26,7 +26,7 @@ public class ServiceCapacityInterceptor extends RedisBaseValidationInterceptor<R
 
     @Override
     public Response<Long> setJedisMultiCommand(Transaction jedisMulti) {
-        return jedisMulti.hincrBy(Const.REDIS_SERVICE_CAPACITY_DAILY, "undefined", -1);
+        return jedisMulti.hincrBy(Const.REDIS_SERVICE_CAPACITY_DAILY, this.requestInfo.getServiceId(), -1);
     }
 
 }

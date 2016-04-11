@@ -1,5 +1,6 @@
 package com.longcoding.undefined.interceptors.impl;
 
+import com.longcoding.undefined.exceptions.RatelimitFailException;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.helpers.MessageManager;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by longcoding on 16. 4. 7..
@@ -47,8 +49,8 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
 
     @PostConstruct
     private void initializeInterceptor() {
-        int THREAD_POOL_COUNT = messageManager.getIntProperty("undefined.redis.interceptor.async.thread.count");
-        executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
+        //int THREAD_POOL_COUNT = messageManager.getIntProperty("undefined.redis.interceptor.async.thread.count");
+        //executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
     }
 
     @Override
@@ -56,53 +58,50 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
 
         this.request = request;
 
-        executor.execute(() -> {
+        RedisValidator redisValidator = (RedisValidator) request.getAttribute(Const.OBJECT_GET_REDIS_VALIDATION);
 
-            long startTime = System.currentTimeMillis();
+        try {
+            redisValidator.getJedisMulti().exec();
+            redisValidator.getJedisMulti().close();
+        } catch (JedisConnectionException e) {
+            logger.error(e);
+            generateException(503, "Validation Service is exhausted");
+        } catch (IOException e) {
+            logger.error(e);
+            generateException(503, "Validation Service is exhausted");
+        } finally {
+            redisValidator.getJedis().close();
+        }
 
-            RedisValidator redisValidator = (RedisValidator) request.getAttribute(Const.OBJECT_GET_REDIS_VALIDATION);
+        LinkedHashMap<String, T> futureMethodQueue = redisValidator.getFutureMethodQueue();
 
+        Jedis jedis = jedisFactory.getInstance();
+        Transaction jedisMulti = jedis.multi();
+
+        T futureValue;
+        boolean interceptorResult = false;
+        for (String className : futureMethodQueue.keySet()) {
+            futureValue = (futureMethodQueue.get(className));
             try {
-                redisValidator.getJedisMulti().exec();
-                redisValidator.getJedisMulti().close();
-            } catch (JedisConnectionException e) {
-                logger.error(e);
+                RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
+                interceptorResult = objectBean.executeJudge(futureValue, null);
+            } catch (JedisDataException e) {
+                //This is Jedis Bug. I wish it will be fixed.
                 generateException(503, "Validation Service is exhausted");
-            } catch (IOException e) {
-                logger.error(e);
-                generateException(503, "Validation Service is exhausted");
-            } finally {
-                redisValidator.getJedis().close();
+            } catch (NullPointerException e) {
+                generateException(400, "appKey is not exist or service is exhausted.");
             }
-
-            LinkedHashMap<String, T> futureMethodQueue = redisValidator.getFutureMethodQueue();
-
-            Jedis jedis = jedisFactory.getInstance();
-            Transaction jedisMulti = jedis.multi();
-
-            T futureValue;
-            for (String className : futureMethodQueue.keySet()) {
-                futureValue = (futureMethodQueue.get(className));
-                try {
-                    RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
-                    objectBean.executeJudge(futureValue, null);
-                } catch (JedisDataException e) {
-                    //This is Jedis Bug. I wish it will be fixed.
-                    generateException(503, "Validation Service is exhausted");
-                } catch (NullPointerException e) {
-                    generateException(400, "appKey is not exist or service is exhausted.");
-                }
+            if (!interceptorResult){
+                generateException(502, "");
+                jedisMulti.exec();
+                jedis.close();
+                return false;
             }
-            jedisMulti.exec();
-            jedis.close();
+        }
+        jedisMulti.exec();
+        jedis.close();
 
-            if (logger.isDebugEnabled()){
-                logger.debug("Thread Time : " + (System.currentTimeMillis() - startTime));
-            }
-
-        });
-
-       return true;
+        return true;
 
     }
 }
