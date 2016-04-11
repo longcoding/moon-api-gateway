@@ -73,7 +73,6 @@ public class ProxyServiceImpl implements ProxyService {
             public void onFailure(Response response, Throwable failure) {
                 deferredResult.setErrorResult(new ProxyServiceFailException("", failure));
             }
-
         });
 
     }

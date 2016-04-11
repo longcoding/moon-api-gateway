@@ -9,6 +9,7 @@ import org.ehcache.CacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -19,6 +20,9 @@ import javax.annotation.PreDestroy;
  */
 @Component
 public class EhcacheFactory {
+
+    @Autowired
+    MessageManager messageManager;
 
     private static String CACHE_APP_DISTINCTION =  "appDistinctionCache";
     private static String CACHE_API_ID_DISTINCTION = "apiIdDistinctionCache";
@@ -31,7 +35,6 @@ public class EhcacheFactory {
     private static Cache<String, String> appDistinctionCache;
     private static Cache<String, ApiMatchCache> apiIdDistinctionCache;
 
-    //TODO
     private static Cache<String, AppInfoCache> appInfoCache;
     private static Cache<String, ApiInfoCache> apiInfoCache;
     private static Cache<String, ServiceInfoCache> serviceInfoCache;
@@ -43,35 +46,6 @@ public class EhcacheFactory {
         appInfoCache = cacheManager.createCache(CACHE_APP_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, AppInfoCache.class).build());
         apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiInfoCache.class).build());
         serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceInfoCache.class).build());
-    }
-
-    @PostConstruct
-    public void prepareTestJob() {
-        getAppDistinctionCache().put("9af18d4a-3a2e-3653-8548-b611580ba585", "4321");
-        getApiIdDistinctionCache().put("undefined", new ApiMatchCache());
-        getApiIdDistinctionCache().get("undefined").getProtocalAndMethod().put("httpGET", 0);
-        getApiIdDistinctionCache().get("undefined").getHttpGetMap().put("localhost:8080/undefine-9]+/ff", 15151502);
-        getApiIdDistinctionCache().get("undefined").getHttpGetMap().put("localhost:8080/undefine-229]+/ff", 15151502);
-        getApiIdDistinctionCache().get("undefined").getHttpGetMap().put("localhost:8080/undefine-911]+/ff", 15151502);
-        getApiIdDistinctionCache().get("undefined").getHttpGetMap().put("localhost:8080/undefine-12249]+/ff", 15151502);
-        getApiIdDistinctionCache().get("undefined").getHttpGetMap().put("localhost:8080/undefined/[a-zA-Z0-9]+/[a-zA-Z0-9]+/ff", 15151502);
-
-        AppInfoCache appInfoCache = new AppInfoCache("4321", "3333-3653-8548", "app", 1000000, 1000000);
-        getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache);
-
-        ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
-        queryParams.put("version", true);
-        ConcurrentHashMap<String, Boolean> headers = new ConcurrentHashMap<>();
-        headers.put("Content-Type".toLowerCase(), true);
-        headers.put("appKey".toLowerCase(), true);
-        String inboundURL = "localhost:8080/undefined/:first/:second/ff";
-        //String outboundURL = "www.naver.com/:second/ff/:first";
-        String outboundURL = "172.19.107.67:9011/11st/common/categories";
-        ApiInfoCache apiInfoCache = new ApiInfoCache("15151502", "HelloAPI", "9999", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
-        getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
-
-        ServiceInfoCache serviceInfoCache = new ServiceInfoCache("9999", "undefined", 1000, 10000);
-        getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
     }
 
     public Cache<String, String> getAppDistinctionCache() {
@@ -97,5 +71,38 @@ public class EhcacheFactory {
     @PreDestroy
     public void releaseResource() {
         cacheManager.close();
+    }
+
+    @PostConstruct
+    public void activationTest() {
+        if (messageManager.getBooleanProperty("undefined.service.test.active")){
+            insertEhcacheTestCase();
+        }
+    }
+
+    private void insertEhcacheTestCase() {
+        Cache<String, String> appIdDistinction = getAppDistinctionCache();
+        appIdDistinction.put("1000-1000-1000-1000", "100");
+        Cache<String, ApiMatchCache> apiDistinction = getApiIdDistinctionCache();
+        apiDistinction.put("navertv", new ApiMatchCache());
+        apiDistinction.get("navertv").getProtocalAndMethod().put("httpGET", 0);
+        apiDistinction.get("navertv").getHttpGetMap().put("localhost:8080/undefined/[a-zA-Z0-9]+/test", 2000);
+
+        AppInfoCache appInfoCache = new AppInfoCache("100", "1000-1000-1000-1000", "app", 1000000, 1000000);
+        getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache);
+
+        ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
+        queryParams.put("version", true);
+        ConcurrentHashMap<String, Boolean> headers = new ConcurrentHashMap<>();
+        headers.put("Content-Type".toLowerCase(), true);
+        headers.put("appKey".toLowerCase(), true);
+        String inboundURL = "localhost:8080/undefined/:first/test";
+        //String outboundURL = "172.19.107.67:9011/11st/common/categories";
+        String outboundURL = "10.213.50.1:8080/undefined/test/:first";
+        ApiInfoCache apiInfoCache = new ApiInfoCache("2000", "TestAPI", "3000", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
+        getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
+
+        ServiceInfoCache serviceInfoCache = new ServiceInfoCache("3000", "undefined", 10000, 10000);
+        getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
     }
 }

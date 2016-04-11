@@ -11,7 +11,6 @@ import redis.clients.jedis.Pipeline;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.nio.channels.Pipe;
 
 /**
  * Created by longcoding on 16. 4. 7..
@@ -47,26 +46,14 @@ public class JedisFactory {
 
         jedisPool = new JedisPool(jedisPoolConfig, jedisHost, jedisPort, jedisTimeout);
 
-        //test for develop
-        if (true) {
-            testJob();
+        if (messageManager.getBooleanProperty("undefined.service.test.active")){
+            insertJedisTestCase();
         }
-    }
-
-    private void testJob() {
-        Jedis jedis = getInstance();
-        Pipeline pipeline = jedis.pipelined();
-        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_DAILY, "9999", "10000000");
-        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_MINUTELY, "9999", "1000000");
-        pipeline.hset(Const.REDIS_APP_RATELIMIT_DAILY, "app", "1000000");
-        pipeline.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, "app", "1000000");
-        pipeline.sync();
-        jedis.close();
     }
 
     public Jedis getInstance() {
         if (logger.isDebugEnabled()){
-            logger.info("Active : " + jedisPool.getNumActive() + "    Idle : " + jedisPool.getNumIdle());
+            logger.debug("Active : " + jedisPool.getNumActive() + "    Idle : " + jedisPool.getNumIdle());
         }
 
         return jedisPool.getResource();
@@ -77,4 +64,14 @@ public class JedisFactory {
         jedisPool.close();
     }
 
+    private void insertJedisTestCase() {
+        Jedis jedis = getInstance();
+        Pipeline pipeline = jedis.pipelined();
+        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_DAILY, "1000", "100000");
+        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_MINUTELY, "1000", "10000");
+        pipeline.hset(Const.REDIS_APP_RATELIMIT_DAILY, "100", "100000");
+        pipeline.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, "100", "10000");
+        pipeline.sync();
+        jedis.close();
+    }
 }
