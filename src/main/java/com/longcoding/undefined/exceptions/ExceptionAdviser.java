@@ -48,12 +48,23 @@ public class ExceptionAdviser {
         return new ResponseEntity(objectNode, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ProxyServiceFailException.class)
+    public ResponseEntity<JsonNode> proxyServiceFailException(ProxyServiceFailException e) {
+        logger.error(getStackTrace(e));
+        ObjectNode objectNode = play.libs.Json.newObject();
+        objectNode.put(Const.ERROR_MEESAGE, messageManager.getProperty("504"));
+        objectNode.put(Const.DETAIL_ERROR_MEESAGE, e.getMessage());
+        return new ResponseEntity(objectNode, HttpStatus.GATEWAY_TIMEOUT);
+    }
+
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<JsonNode> generalException(GeneralException e) {
-        ObjectNode objectNode = play.libs.Json.newObject();
-        objectNode.put(Const.ERROR_MEESAGE, e.getExceptionMessage().getErrorMessage());
-        return new ResponseEntity(objectNode, HttpStatus.valueOf(e.getExceptionMessage().getErrorCode()));
+        String errorCode = String.valueOf(e.getExceptionMessage().getErrorCode());
 
+        ObjectNode objectNode = play.libs.Json.newObject();
+        objectNode.put(Const.ERROR_MEESAGE, messageManager.getProperty(errorCode));
+        objectNode.put(Const.DETAIL_ERROR_MEESAGE, e.getExceptionMessage().getErrorMessage());
+        return new ResponseEntity(objectNode, HttpStatus.valueOf(e.getExceptionMessage().getErrorCode()));
     }
 
     private static StringWriter getStackTrace(Exception e) {

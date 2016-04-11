@@ -1,5 +1,8 @@
 package com.longcoding.undefined.services.impl;
 
+import com.longcoding.undefined.exceptions.ExceptionMessage;
+import com.longcoding.undefined.exceptions.GeneralException;
+import com.longcoding.undefined.exceptions.ProxyServiceFailException;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.netty.NettyClientFactory;
 import com.longcoding.undefined.models.ResponseInfo;
@@ -30,10 +33,10 @@ public class ProxyServiceImpl implements ProxyService {
     @Autowired
     NettyClientFactory nettyClientFactory;
 
-
-
     private DeferredResult<ResponseEntity> deferredResult;
     private ResponseInfo responseInfo;
+
+    private static final String ERROR_MESSAGE_WRONG_CONTENT_TYPE = "Content-Type is not matched";
 
     public void requestProxyService(HttpServletRequest request, DeferredResult<ResponseEntity> deferredResult) {
 
@@ -54,15 +57,14 @@ public class ProxyServiceImpl implements ProxyService {
                         responseEntity =
                                 new ResponseEntity(Json.parse(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
                     } else {
-                        System.out.println("잘못된 요청");
-                        //TODO : occur ERROR
+                        deferredResult.setErrorResult(new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE));
                     }
                     deferredResult.setResult(responseEntity);
                 }
             }
             @Override
             public void onFailure(Response response, Throwable failure) {
-                //TODO : occur ERROR
+                deferredResult.setErrorResult(new ProxyServiceFailException("", failure));
             }
 
         });

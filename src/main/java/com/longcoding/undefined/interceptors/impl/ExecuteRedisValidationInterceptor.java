@@ -1,5 +1,7 @@
 package com.longcoding.undefined.interceptors.impl;
 
+import com.longcoding.undefined.exceptions.ExceptionMessage;
+import com.longcoding.undefined.exceptions.GeneralException;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.MessageManager;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
@@ -59,11 +61,9 @@ public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
                 redisValidator.getPipeline().sync();
                 redisValidator.getPipeline().close();
             } catch (JedisConnectionException e) {
-                //TODO: occur ERROR
-                logger.error(e);
+                throw new GeneralException(new ExceptionMessage(503, messageManager.getProperty("503")));
             } catch (IOException e) {
-                //TODO: occur ERROR
-                logger.error(e);
+                throw new GeneralException(new ExceptionMessage(503, messageManager.getProperty("503")));
             } finally {
                 redisValidator.getJedis().close();
             }
@@ -77,6 +77,8 @@ public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
                     if (futureValue.get() != null) {
                         RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
                         objectBean.executeJudge(futureValue);
+                    }else {
+                        throw new GeneralException(new ExceptionMessage(503, messageManager.getProperty("503")));
                     }
                 }
             }

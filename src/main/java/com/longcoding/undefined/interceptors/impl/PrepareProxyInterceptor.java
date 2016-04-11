@@ -58,28 +58,6 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
         return storedURL;
     }
 
-    private Map<String, String> extractPathParams(String requestURL, String storedURL) {
-
-        String[] requestUrlTokens = HttpHelper.extractURL(requestURL);
-        String[] storedUrlTokens = HttpHelper.extractURL(storedURL);
-
-        if (requestUrlTokens.length != storedUrlTokens.length ) {
-            //TODO: occur ERROR
-        }
-
-        Map<String, String> pathParams = Maps.newHashMap();
-
-        int index;
-        for (index=0; index < storedUrlTokens.length; index++) {
-            if (pathMandatoryDelimiter.matcher(storedUrlTokens[index]).matches()) {
-                pathParams.put(storedUrlTokens[index], requestUrlTokens[index]);
-            }
-        }
-
-        return pathParams;
-    }
-
-
     private Map<String, String> createRequestHeaderMap(RequestInfo requestInfo) {
 
         Map<String, String> outboundRequestHeaders = Maps.newHashMap();

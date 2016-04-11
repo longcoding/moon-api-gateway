@@ -11,6 +11,7 @@ public class Const {
     public static final String RESPONSE_INFO_DATA = "responseInfo";
 
     public static final String ERROR_MEESAGE = "message";
+    public static final String DETAIL_ERROR_MEESAGE = "detail_message";
 
     public static final String OBJECT_GET_REDIS_VALIDATION = "redisValidation";
 

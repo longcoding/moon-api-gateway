@@ -1,10 +1,9 @@
 package com.longcoding.undefined.interceptors.impl;
 
-import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.EhcacheFactory;
-import com.longcoding.undefined.helpers.JedisFactory;
+import com.longcoding.undefined.exceptions.ExceptionMessage;
+import com.longcoding.undefined.exceptions.GeneralException;
+import com.longcoding.undefined.helpers.*;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
-import com.longcoding.undefined.helpers.RedisValidator;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
 import com.longcoding.undefined.models.ehcache.ApiMatchCache;
@@ -21,17 +20,23 @@ import java.util.regex.Pattern;
 public class PathAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
 
     @Autowired
+    MessageManager messageManager;
+
+    @Autowired
     JedisFactory jedisFactory;
 
     @Autowired
     EhcacheFactory ehcacheFactory;
+
+    private static final String ERROR_MEESAGE_PATH_VALID= "subdomin or service path is unclear";
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
 
-        String categoryValue = classifyCategory(requestInfo.getRequestURL(), false);
+        String categoryValue = classifyCategory(requestInfo.getRequestURL(),
+                messageManager.getBooleanProperty("undefined.service.recognize.subdomain"));
         String requestProtocolAndMethod = requestInfo.getRequestProtocol() + requestInfo.getRequestMethod();
         ApiMatchCache apiMatchCache = ehcacheFactory.getApiIdDistinctionCache().get(categoryValue);
         Integer protocolAndMethodType = apiMatchCache.getProtocalAndMethod().get(requestProtocolAndMethod);
@@ -51,12 +56,13 @@ public class PathAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
             }
         }
 
-        ApiInfoCache apiInfoCache = ehcacheFactory.getApiInfoCache().get(apiId);
-        requestInfo.setServiceId(apiInfoCache.getServiceId());
-
         if (!isMatched) {
+            generateException(404, ERROR_MEESAGE_PATH_VALID);
             return false;
         }
+
+        ApiInfoCache apiInfoCache = ehcacheFactory.getApiInfoCache().get(apiId);
+        requestInfo.setServiceId(apiInfoCache.getServiceId());
 
         prepareRedisInterceptor(request);
         return true;
@@ -80,7 +86,8 @@ public class PathAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
         } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTPS_DELETE_MAP)) {
             return apiMatchCache.getHttpsDeleteMap();
         }
-        //TODO: occur error
+
+        generateException(405, "");
         return null;
     }
 
@@ -100,7 +107,7 @@ public class PathAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
 
         String[] category = requestURL.split(delimiter);
         if ( category.length < 1 ) {
-            //TODO:occur ERROR
+            generateException(404, ERROR_MEESAGE_PATH_VALID);
         }
         return category[index];
     }
