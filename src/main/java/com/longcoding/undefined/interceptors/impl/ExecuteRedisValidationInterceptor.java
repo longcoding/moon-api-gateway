@@ -1,6 +1,7 @@
 package com.longcoding.undefined.interceptors.impl;
 
 import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.MessageManager;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.interceptors.RedisBaseValidationInterceptor;
 import com.longcoding.undefined.helpers.RedisValidator;
@@ -11,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -30,14 +32,25 @@ public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
     @Autowired
     private ApplicationContext context;
 
+    @Autowired
+    MessageManager messageManager;
+
     private HttpServletRequest request;
-    private static final ExecutorService executor = Executors.newFixedThreadPool(50);
+    private static ExecutorService executor;
+
+
+    @PostConstruct
+    private void initializeInterceptor() {
+        int THREAD_POOL_COUNT = messageManager.getIntProperty("undefined.redis.interceptor.async.thread.count");
+        executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
+    }
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         //TODO : BUG FIX
         this.request = request;
+
         executor.execute(() -> {
 
             RedisValidator redisValidator = (RedisValidator) request.getAttribute(Const.OBJECT_GET_REDIS_VALIDATION);
@@ -46,8 +59,10 @@ public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
                 redisValidator.getPipeline().sync();
                 redisValidator.getPipeline().close();
             } catch (JedisConnectionException e) {
+                //TODO: occur ERROR
                 logger.error(e);
             } catch (IOException e) {
+                //TODO: occur ERROR
                 logger.error(e);
             } finally {
                 redisValidator.getJedis().close();
@@ -58,9 +73,11 @@ public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
             Response<String> futureValue;
             for (String className : futureMethodQueue.keySet()) {
                 futureValue = (futureMethodQueue.get(className));
-                if (futureValue.get() != null) {
-                    RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
-                    objectBean.executeJudge(futureValue);
+                if ( redisValidator.getJedis().isConnected() == false ){
+                    if (futureValue.get() != null) {
+                        RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
+                        objectBean.executeJudge(futureValue);
+                    }
                 }
             }
         });

@@ -19,7 +19,6 @@ import play.libs.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -43,7 +42,30 @@ public class ProxyServiceImpl implements ProxyService {
         this.responseInfo = (ResponseInfo) request.getAttribute(Const.RESPONSE_INFO_DATA);
         Request proxyRequest = nettyClientFactory.getNettyClient().newRequest(responseInfo.getRequestURI());
 
-        setHeaderAndQueryInfo(proxyRequest, responseInfo).send(bufferingResponseListener());
+        setHeaderAndQueryInfo(proxyRequest, responseInfo).send(new BufferingResponseListener() {
+            @Override
+            public void onComplete(Result result) {
+                if (!result.isFailed()) {
+                    ResponseEntity responseEntity = null;
+
+                    HttpFields responseHeaders = result.getResponse().getHeaders();
+                    //TODO: not contain. compare equals.
+                    if ( responseHeaders.contains(Const.REQUEST_RESPONSE_CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) ){
+                        responseEntity =
+                                new ResponseEntity(Json.parse(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
+                    } else {
+                        System.out.println("잘못된 요청");
+                        //TODO : occur ERROR
+                    }
+                    deferredResult.setResult(responseEntity);
+                }
+            }
+            @Override
+            public void onFailure(Response response, Throwable failure) {
+                //TODO : occur ERROR
+            }
+
+        });
 
     }
 
@@ -63,27 +85,6 @@ public class ProxyServiceImpl implements ProxyService {
         }
 
         return request;
-    }
-
-    private Response.Listener bufferingResponseListener() {
-        return new BufferingResponseListener() {
-            @Override
-            public void onComplete(Result result) {
-                if (!result.isFailed()) {
-                    ResponseEntity responseEntity = null;
-
-                    HttpFields responseHeaders = result.getResponse().getHeaders();
-                    if ( responseHeaders.contains(Const.REQUEST_RESPONSE_CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) ){
-                        responseEntity =
-                                new ResponseEntity(Json.parse(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
-                    } else {
-                        System.out.println("잘못된 요청");
-                        //TODO : occur ERROR
-                    }
-                    deferredResult.setResult(responseEntity);
-                }
-            }
-        };
     }
 
 }

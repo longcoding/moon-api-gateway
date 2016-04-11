@@ -18,6 +18,8 @@ public class RedisValidator<T> {
 
     private Jedis jedis;
     private Pipeline pipeline;
+    private Pipeline failurePipeline;
+
     private volatile LinkedHashMap<String, T> futureMethodQueue;
 
     private RedisValidator() {}
@@ -41,5 +43,7 @@ public class RedisValidator<T> {
     public Pipeline getPipeline() {
         return pipeline;
     }
+
+    public Pipeline getFailurePipeline() { return pipeline; }
 
 }
