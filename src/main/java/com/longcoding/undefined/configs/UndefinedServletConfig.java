@@ -45,12 +45,15 @@ public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
     public HeaderAndQueryValidationInterceptor headerAndQueryValidationInterceptor() { return new HeaderAndQueryValidationInterceptor(); }
     @Bean
     public PrepareProxyInterceptor prepareProxyInterceptor() { return new PrepareProxyInterceptor(); }
+    @Bean
+    public ApplicationRatelimitInterceptor applicationRatelimitInterceptor() { return new ApplicationRatelimitInterceptor(); }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(initializeInterceptor());
         registry.addInterceptor(pathAndPrepareRedisInterceptor());
         registry.addInterceptor(serviceCapacityInterceptor());
+        registry.addInterceptor(applicationRatelimitInterceptor());
         registry.addInterceptor(executeRedisValidationInterceptor());
         registry.addInterceptor(extractRequestInterceptor());
         registry.addInterceptor(headerAndQueryValidationInterceptor());

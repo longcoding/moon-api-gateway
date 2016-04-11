@@ -56,7 +56,7 @@ public class JedisFactory {
     private void testJob() {
         Jedis jedis = getInstance();
         Pipeline pipeline = jedis.pipelined();
-        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_DAILY, "undefined", "5");
+        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_DAILY, "undefined", "50000");
         pipeline.hset(Const.REDIS_SERVICE_CAPACITY_MINUTELY, "undefined", "10000");
         pipeline.hset(Const.REDIS_APP_RATELIMIT_DAILY, "app", "10000");
         pipeline.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, "app", "1000");

@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by longcoding on 16. 4. 7..
  */
-public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
+public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseInterceptor {
 
     private static final Logger logger = LogManager.getLogger(ExecuteRedisValidationInterceptor.class);
 
@@ -54,7 +54,6 @@ public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        //TODO : BUG FIX
         this.request = request;
 
         executor.execute(() -> {
@@ -76,17 +75,17 @@ public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
                 redisValidator.getJedis().close();
             }
 
-            LinkedHashMap<String, Response<String>> futureMethodQueue = redisValidator.getFutureMethodQueue();
+            LinkedHashMap<String, T> futureMethodQueue = redisValidator.getFutureMethodQueue();
 
             Jedis jedis = jedisFactory.getInstance();
             Transaction jedisMulti = jedis.multi();
 
-            Response<String> futureValue;
+            T futureValue;
             for (String className : futureMethodQueue.keySet()) {
                 futureValue = (futureMethodQueue.get(className));
                 try {
                     RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
-                    objectBean.executeJudge(futureValue, jedisMulti);
+                    objectBean.executeJudge(futureValue, null);
                 } catch (JedisDataException e) {
                     //This is Jedis Bug. I wish it will be fixed.
                     generateException(503, "Validation Service is exhausted");
@@ -94,12 +93,12 @@ public class ExecuteRedisValidationInterceptor extends AbstractBaseInterceptor {
                     generateException(400, "appKey is not exist or service is exhausted.");
                 }
             }
-
             jedisMulti.exec();
-            jedisMulti.flushAll();
             jedis.close();
 
-            logger.debug("Thread Time : " + (System.currentTimeMillis() - startTime));
+            if (logger.isDebugEnabled()){
+                logger.debug("Thread Time : " + (System.currentTimeMillis() - startTime));
+            }
 
         });
 

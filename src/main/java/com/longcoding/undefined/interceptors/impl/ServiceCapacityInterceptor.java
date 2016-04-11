@@ -19,13 +19,14 @@ public class ServiceCapacityInterceptor extends RedisBaseValidationInterceptor<R
 
     @Override
     public boolean setCondition(Response<Long> storedValue) throws JedisDataException, NullPointerException {
+        logger.error("서비스 : " + storedValue.get());
         if (storedValue.get() < 0) return false;
         return true;
     }
 
     @Override
     public Response<Long> setJedisMultiCommand(Transaction jedisMulti) {
-        return jedisMulti.hincrBy(Const.REDIS_SERVICE_CAPACITY_DAILY, "undefined", -1l);
+        return jedisMulti.hincrBy(Const.REDIS_SERVICE_CAPACITY_DAILY, "undefined", -1);
     }
 
 }
