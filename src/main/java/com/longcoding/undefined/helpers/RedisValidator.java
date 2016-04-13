@@ -21,7 +21,7 @@ public class RedisValidator<T> {
     private Transaction jedisMulti;
 
 
-    private volatile LinkedHashMap<String, T> futureMethodQueue;
+    private LinkedHashMap<String, T> futureMethodQueue;
 
     private RedisValidator() {}
 

@@ -82,13 +82,13 @@ public class EhcacheFactory {
 
     private void insertEhcacheTestCase() {
         Cache<String, String> appIdDistinction = getAppDistinctionCache();
-        appIdDistinction.put("1000-1000-1000-1000", "100");
+        appIdDistinction.put("9af18d4a-3a2e-3653-8548-b611580ba585", "100");
         Cache<String, ApiMatchCache> apiDistinction = getApiIdDistinctionCache();
-        apiDistinction.put("navertv", new ApiMatchCache());
-        apiDistinction.get("navertv").getProtocalAndMethod().put("httpGET", 0);
-        apiDistinction.get("navertv").getHttpGetMap().put("localhost:8080/undefined/[a-zA-Z0-9]+/test", 2000);
+        apiDistinction.put("undefined", new ApiMatchCache());
+        apiDistinction.get("undefined").getProtocalAndMethod().put("httpGET", 0);
+        apiDistinction.get("undefined").getHttpGetMap().put("localhost:8080/undefined/[a-zA-Z0-9]+/test", 2000);
 
-        AppInfoCache appInfoCache = new AppInfoCache("100", "1000-1000-1000-1000", "app", 1000000, 1000000);
+        AppInfoCache appInfoCache = new AppInfoCache("100", "9af18d4a-3a2e-3653-8548-b611580ba585", "app", 1000000, 1000000);
         getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache);
 
         ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
@@ -97,8 +97,8 @@ public class EhcacheFactory {
         headers.put("Content-Type".toLowerCase(), true);
         headers.put("appKey".toLowerCase(), true);
         String inboundURL = "localhost:8080/undefined/:first/test";
-        //String outboundURL = "172.19.107.67:9011/11st/common/categories";
-        String outboundURL = "10.213.50.1:8080/undefined/test/:first";
+        String outboundURL = "172.19.107.67:9011/11st/common/categories";
+        //String outboundURL = "10.213.50.1:8080/undefined/test/:first";
         ApiInfoCache apiInfoCache = new ApiInfoCache("2000", "TestAPI", "3000", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
         getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
 

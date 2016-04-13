@@ -41,7 +41,7 @@ public class ResponseController {
     @RequestMapping(value = "/**")
     public DeferredResult<ResponseEntity> responseHttpResult(HttpServletRequest request) {
 
-        DeferredResult deferredResult = new DeferredResult(PROXY_SERVICE_TIMEOUT);
+        DeferredResult deferredResult = new DeferredResult();
         proxyService.requestProxyService(request, deferredResult);
 
         return deferredResult;

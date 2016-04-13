@@ -33,20 +33,30 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
         Map<String, String> requestHeaders = requestInfo.getHeaders();
         Map<String, String> requestQueryParams = requestInfo.getQueryStringMap();
 
+        Map<String, String> proxyRequestHeaders = Maps.newHashMap();
+        Map<String, String> proxyRequestQueryParams = Maps.newHashMap();
+
         //There are all lowerCase in ehcache.
         for (String header : headers.keySet()) {
-            if (headers.get(header).equals(true) && !requestHeaders.containsKey(header)) {
+            if (requestHeaders.containsKey(header)) {
+                proxyRequestHeaders.put(header, requestHeaders.get(header));
+            } else if (headers.get(header).equals(true)) {
                 generateException(400, header + " - required header is missing.");
                 return false;
             }
         }
 
         for (String queryParam : queryParams.keySet()) {
-            if (queryParams.get(queryParam).equals(true) && !requestQueryParams.containsKey(queryParam)) {
+            if (requestQueryParams.containsKey(queryParam)) {
+                proxyRequestQueryParams.put(queryParam, requestQueryParams.get(queryParam));
+            } else if (queryParams.get(queryParam).equals(true)) {
                 generateException(400, queryParam + " - required queryParam is missing.");
                 return false;
             }
         }
+
+        requestInfo.setHeaders(proxyRequestHeaders);
+        requestInfo.setQueryStringMap(proxyRequestQueryParams);
 
         return true;
     }

@@ -12,6 +12,7 @@ import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.client.api.Result;
 import org.eclipse.jetty.client.util.BufferingResponseListener;
 import org.eclipse.jetty.http.HttpFields;
+import org.eclipse.jetty.http.HttpHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,7 +31,7 @@ import java.util.Map;
 @Service
 public class ProxyServiceImpl implements ProxyService {
 
-    protected final Logger logger = LogManager.getLogger(ProxyServiceImpl.class);
+    protected static final Logger logger = LogManager.getLogger(ProxyServiceImpl.class);
 
     @Autowired
     NettyClientFactory nettyClientFactory;
@@ -86,7 +87,7 @@ public class ProxyServiceImpl implements ProxyService {
 
         request.method(request.getMethod());
         request.accept(responseInfo.getRequestAccept());
-        request.header(Const.REQUEST_RESPONSE_CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
+        request.header(HttpHeader.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
 
         Map<String, String> requestQueryParams = responseInfo.getQueryStringMap();
         for ( String queryKey : requestQueryParams.keySet() ) {

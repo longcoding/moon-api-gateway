@@ -67,10 +67,10 @@ public class JedisFactory {
     private void insertJedisTestCase() {
         Jedis jedis = getInstance();
         Pipeline pipeline = jedis.pipelined();
-        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_DAILY, "1000", "100000");
-        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_MINUTELY, "1000", "10000");
-        pipeline.hset(Const.REDIS_APP_RATELIMIT_DAILY, "100", "100000");
-        pipeline.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, "100", "10000");
+        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_DAILY, "3000", "1000000");
+        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_MINUTELY, "3000", "1000000");
+        pipeline.hset(Const.REDIS_APP_RATELIMIT_DAILY, "100", "10000000");
+        pipeline.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, "100", "1000000");
         pipeline.sync();
         jedis.close();
     }

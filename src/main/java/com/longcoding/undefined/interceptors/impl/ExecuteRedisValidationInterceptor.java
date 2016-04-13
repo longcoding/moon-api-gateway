@@ -84,7 +84,7 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
             futureValue = (futureMethodQueue.get(className));
             try {
                 RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
-                interceptorResult = objectBean.executeJudge(futureValue, null);
+                interceptorResult = objectBean.executeJudge(futureValue, jedisMulti);
             } catch (JedisDataException e) {
                 //This is Jedis Bug. I wish it will be fixed.
                 generateException(503, "Validation Service is exhausted");

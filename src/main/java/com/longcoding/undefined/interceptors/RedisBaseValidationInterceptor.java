@@ -10,6 +10,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
+import redis.clients.jedis.exceptions.JedisDataException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,11 +31,11 @@ public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInte
 
     public abstract T setJedisMultiCommand(Transaction jedisMulti);
 
-    protected boolean onSuccess(Transaction jedisMulti) {
+    protected boolean onSuccess(T storedValue, Transaction jedisMulti) {
         return true;
     }
 
-    protected boolean onFailure(Transaction jedisMulti) {
+    protected boolean onFailure(T storedValue, Transaction jedisMulti) {
         return false;
     }
 
@@ -51,7 +52,7 @@ public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInte
     }
 
     public boolean executeJudge(T storedValue, Transaction jedisMulti) {
-        return setCondition(storedValue)? onSuccess(jedisMulti) : onFailure(jedisMulti);
+        return setCondition(storedValue)? onSuccess(storedValue, jedisMulti) : onFailure(storedValue, jedisMulti);
     }
 
 }
