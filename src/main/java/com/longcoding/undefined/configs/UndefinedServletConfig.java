@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.longcoding.undefined.helpers.EhcacheFactory;
 import com.longcoding.undefined.interceptors.impl.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,6 +48,10 @@ public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
     public PrepareProxyInterceptor prepareProxyInterceptor() { return new PrepareProxyInterceptor(); }
     @Bean
     public ApplicationRatelimitInterceptor applicationRatelimitInterceptor() { return new ApplicationRatelimitInterceptor(); }
+    @Bean
+    public EhcacheFactory ehcacheFactory() {
+        return new EhcacheFactory();
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
