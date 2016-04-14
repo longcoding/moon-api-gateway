@@ -37,7 +37,7 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         requestInfo.setRequestId(UUID.randomUUID().toString());
         requestInfo.setClientIp(request.getRemoteHost());
         requestInfo.setRequestMethod(request.getMethod());
-        requestInfo.setRequestURI(request.getRequestURI());
+        requestInfo.setRequestURI(request.getRequestURI().toLowerCase());
         requestInfo.setUserAgent(request.getHeader(Const.REQUEST_USER_AGENT));
         requestInfo.setHeaders(createHeaderMap(request));
 

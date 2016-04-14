@@ -1,15 +1,19 @@
 package com.longcoding.undefined.interceptors.impl;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.EhcacheFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
+import org.eclipse.jetty.http.HttpHeader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +23,14 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
 
     @Autowired
     EhcacheFactory ehcacheFactory;
+
+    private static List<String> optionHeaders;
+
+    static {
+        optionHeaders = Lists.newArrayList();
+        optionHeaders.add(HttpHeaders.ACCEPT_CHARSET);
+        optionHeaders.add(HttpHeaders.ACCEPT_ENCODING);
+    }
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -38,7 +50,7 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
 
         //There are all lowerCase in ehcache.
         for (String header : headers.keySet()) {
-            if (requestHeaders.containsKey(header)) {
+            if (requestHeaders.containsKey(header) || optionHeaders.contains(header)) {
                 proxyRequestHeaders.put(header, requestHeaders.get(header));
             } else if (headers.get(header).equals(true)) {
                 generateException(400, header + " - required header is missing.");
@@ -60,4 +72,5 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
 
         return true;
     }
+
 }

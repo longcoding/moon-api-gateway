@@ -1,18 +1,15 @@
 package com.longcoding.undefined.interceptors.impl;
 
-import com.longcoding.undefined.exceptions.ExceptionMessage;
-import com.longcoding.undefined.exceptions.GeneralException;
 import com.longcoding.undefined.helpers.*;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
-import com.longcoding.undefined.models.ehcache.ApiMatchCache;
-import com.longcoding.undefined.models.ehcache.AppInfoCache;
-import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
+import org.ehcache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -51,18 +48,21 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         String categoryValue = classifyCategory(requestInfo.getRequestURL(),
                 messageManager.getBooleanProperty("undefined.service.recognize.subdomain"));
         String requestProtocolAndMethod = requestInfo.getRequestProtocol() + requestInfo.getRequestMethod();
-        ApiMatchCache apiMatchCache = ehcacheFactory.getApiIdDistinctionCache().get(categoryValue);
-        Integer protocolAndMethodType = apiMatchCache.getProtocalAndMethod().get(requestProtocolAndMethod);
 
-        ConcurrentHashMap<String, Integer> apiList = getProperApiList(categoryValue, protocolAndMethodType, apiMatchCache);
+        Cache<String, String> apiList = ehcacheFactory.getApiIdCache(requestProtocolAndMethod);
+        if ( apiList == null ) {
+            generateException(405, "");
+        }
 
         String apiId = null;
-        Pattern apiPattern = null;
+        Pattern apiPattern;
         boolean isMatched = false;
-        for (String api : apiList.keySet()) {
-            apiPattern = Pattern.compile(api);
+        Iterator<Cache.Entry<String, String>> apiListIterator = apiList.iterator();
+        while (apiListIterator.hasNext()) {
+            Cache.Entry<String, String> apiInfo = apiListIterator.next();
+            apiPattern = Pattern.compile(apiInfo.getKey());
             if ( apiPattern.matcher(requestInfo.getRequestURL()).matches() == true ){
-                apiId = apiList.get(api).toString();
+                apiId = apiInfo.getValue();
                 requestInfo.setApiId(apiId);
                 isMatched = true;
                 break;
@@ -79,29 +79,6 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 
         prepareRedisInterceptor(request);
         return true;
-    }
-
-    private ConcurrentHashMap<String, Integer> getProperApiList(String categoryValue, Integer protocalAndMethodType, ApiMatchCache apiMatchCache) {
-        if (protocalAndMethodType.equals(Const.API_MATCH_HTTP_GET_MAP)) {
-            return apiMatchCache.getHttpGetMap();
-        } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTP_POST_MAP)) {
-            return apiMatchCache.getHttpPostMap();
-        } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTP_PUT_MAP)) {
-            return apiMatchCache.getHttpPutMap();
-        } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTP_DELETE_MAP)) {
-            return apiMatchCache.getHttpDeleteMap();
-        } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTPS_GET_MAP)) {
-            return apiMatchCache.getHttpsGetMap();
-        } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTPS_POST_MAP)) {
-            return apiMatchCache.getHttpsPostMap();
-        } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTPS_PUT_MAP)) {
-            return apiMatchCache.getHttpsPutMap();
-        } else if (protocalAndMethodType.equals(Const.API_MATCH_HTTPS_DELETE_MAP)) {
-            return apiMatchCache.getHttpsDeleteMap();
-        }
-
-        generateException(405, "");
-        return null;
     }
 
     private String classifyCategory(String requestURL, boolean isDelimiterSubdomain) {

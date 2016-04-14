@@ -33,6 +33,8 @@ public class ProxyServiceImpl implements ProxyService {
 
     protected static final Logger logger = LogManager.getLogger(ProxyServiceImpl.class);
 
+    private static final String CONST_CONTENT_TYPE_EXTRACT_DELIMITER = ";";
+
     @Autowired
     NettyClientFactory nettyClientFactory;
 
@@ -59,10 +61,15 @@ public class ProxyServiceImpl implements ProxyService {
                     logger.debug("Http Time " + (System.currentTimeMillis() - start));
 
                     HttpFields responseHeaders = result.getResponse().getHeaders();
-                    //TODO: not contain. compare equals.
-                    if (responseHeaders.contains(Const.REQUEST_RESPONSE_CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)) {
-                        responseEntity =
-                                new ResponseEntity(Json.parse(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
+                    if (responseHeaders.contains(HttpHeader.CONTENT_TYPE)) {
+                        String contentTypeValue = responseHeaders.get(HttpHeader.CONTENT_TYPE);
+                        if ( contentTypeValue.split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0]
+                                .equals(responseInfo.getRequestAccept().split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0])){
+                            responseEntity =
+                                    new ResponseEntity(Json.parse(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
+                        } else {
+                            deferredResult.setErrorResult(new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE));
+                        }
                     } else {
                         deferredResult.setErrorResult(new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE));
                     }
@@ -87,7 +94,6 @@ public class ProxyServiceImpl implements ProxyService {
 
         request.method(request.getMethod());
         request.accept(responseInfo.getRequestAccept());
-        request.header(HttpHeader.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
 
         Map<String, String> requestQueryParams = responseInfo.getQueryStringMap();
         for ( String queryKey : requestQueryParams.keySet() ) {

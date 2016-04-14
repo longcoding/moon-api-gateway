@@ -1,7 +1,6 @@
 package com.longcoding.undefined.helpers;
 
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
-import com.longcoding.undefined.models.ehcache.ApiMatchCache;
 import com.longcoding.undefined.models.ehcache.AppInfoCache;
 import com.longcoding.undefined.models.ehcache.ServiceInfoCache;
 import org.ehcache.Cache;
@@ -25,7 +24,6 @@ public class EhcacheFactory {
     MessageManager messageManager;
 
     private static String CACHE_APP_DISTINCTION =  "appDistinctionCache";
-    private static String CACHE_API_ID_DISTINCTION = "apiIdDistinctionCache";
 
     private static String CACHE_APP_INFO = "appInfoCache";
     private static String CACHE_API_INFO = "apiInfoCache";
@@ -33,39 +31,72 @@ public class EhcacheFactory {
 
     private static CacheManager cacheManager;
     private static Cache<String, String> appDistinctionCache;
-    private static Cache<String, ApiMatchCache> apiIdDistinctionCache;
 
     private static Cache<String, AppInfoCache> appInfoCache;
     private static Cache<String, ApiInfoCache> apiInfoCache;
     private static Cache<String, ServiceInfoCache> serviceInfoCache;
 
+    private static Cache<String, String> apiMatchHttpGet;
+    private static Cache<String, String> apiMatchHttpPost;
+    private static Cache<String, String> apiMatchHttpPut;
+    private static Cache<String, String> apiMatchHttpDelete;
+
+    private static Cache<String, String> apiMatchHttpsGet;
+    private static Cache<String, String> apiMatchHttpsPost;
+    private static Cache<String, String> apiMatchHttpsPut;
+    private static Cache<String, String> apiMatchHttpsDelete;
+
     static {
         cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
         appDistinctionCache = cacheManager.createCache(CACHE_APP_DISTINCTION, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
-        apiIdDistinctionCache = cacheManager.createCache(CACHE_API_ID_DISTINCTION, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiMatchCache.class).build());
         appInfoCache = cacheManager.createCache(CACHE_APP_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, AppInfoCache.class).build());
         apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiInfoCache.class).build());
         serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceInfoCache.class).build());
+
+        apiMatchHttpGet = cacheManager.createCache(Const.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
+        apiMatchHttpPost = cacheManager.createCache(Const.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
+        apiMatchHttpPut = cacheManager.createCache(Const.API_MATCH_HTTP_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
+        apiMatchHttpDelete = cacheManager.createCache(Const.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
+
+        apiMatchHttpsGet = cacheManager.createCache(Const.API_MATCH_HTTPS_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
+        apiMatchHttpsPost = cacheManager.createCache(Const.API_MATCH_HTTPS_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
+        apiMatchHttpsPut = cacheManager.createCache(Const.API_MATCH_HTTPS_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
+        apiMatchHttpsDelete = cacheManager.createCache(Const.API_MATCH_HTTPS_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
     }
 
     public Cache<String, String> getAppDistinctionCache() {
         return appDistinctionCache;
     }
 
-    public Cache<String, ApiMatchCache> getApiIdDistinctionCache() {
-        return apiIdDistinctionCache;
-    }
-
     public Cache<String, AppInfoCache> getAppInfoCache() {
         return appInfoCache;
     }
 
-    public Cache<String, ApiInfoCache> getApiInfoCache() {
-        return apiInfoCache;
-    }
+    public Cache<String, ApiInfoCache> getApiInfoCache() { return apiInfoCache; }
 
     public Cache<String, ServiceInfoCache> getServiceInfoCache() {
         return serviceInfoCache;
+    }
+
+    public Cache<String, String> getApiIdCache(String protocolAndMethod) {
+        if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+            return apiMatchHttpGet;
+        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+            return apiMatchHttpPost;
+        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+            return apiMatchHttpPut;
+        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+            return apiMatchHttpDelete;
+        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+            return apiMatchHttpsGet;
+        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+            return apiMatchHttpsPost;
+        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+            return apiMatchHttpsPut;
+        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+            return apiMatchHttpsDelete;
+        }
+        return null;
     }
 
     @PreDestroy
@@ -83,11 +114,7 @@ public class EhcacheFactory {
     private void insertEhcacheTestCase() {
         Cache<String, String> appIdDistinction = getAppDistinctionCache();
         appIdDistinction.put("9af18d4a-3a2e-3653-8548-b611580ba585", "100");
-        Cache<String, ApiMatchCache> apiDistinction = getApiIdDistinctionCache();
-        apiDistinction.put("undefined", new ApiMatchCache());
-        apiDistinction.get("undefined").getProtocalAndMethod().put("httpGET", 0);
-        apiDistinction.get("undefined").getHttpGetMap().put("localhost:8080/undefined/[a-zA-Z0-9]+/test", 2000);
-
+        apiMatchHttpGet.put("localhost:8080/undefined/[a-zA-Z0-9]+/test", "2000");
         AppInfoCache appInfoCache = new AppInfoCache("100", "9af18d4a-3a2e-3653-8548-b611580ba585", "app", 1000000, 1000000);
         getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache);
 
@@ -105,4 +132,5 @@ public class EhcacheFactory {
         ServiceInfoCache serviceInfoCache = new ServiceInfoCache("3000", "undefined", 10000, 10000);
         getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
     }
+
 }
