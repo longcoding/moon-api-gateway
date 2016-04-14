@@ -17,10 +17,10 @@ public class AppInfoCache implements Serializable, Cloneable {
     private String appKey;
     private String appName;
 
-    private int dailyRateLimit;
-    private int minutelyRateLimit;
+    private String dailyRateLimit;
+    private String minutelyRateLimit;
 
-    public AppInfoCache(String appId, String appKey, String appName, int dailyRateLimit, int minutelyRateLimit) {
+    public AppInfoCache(String appId, String appKey, String appName, String dailyRateLimit, String minutelyRateLimit) {
         this.appId = appId;
         this.appKey = appKey;
         this.appName = appName;
@@ -52,19 +52,19 @@ public class AppInfoCache implements Serializable, Cloneable {
         this.appName = appName;
     }
 
-    public int getDailyRateLimit() {
+    public String getDailyRateLimit() {
         return dailyRateLimit;
     }
 
-    public void setDailyRateLimit(int dailyRateLimit) {
+    public void setDailyRateLimit(String dailyRateLimit) {
         this.dailyRateLimit = dailyRateLimit;
     }
 
-    public int getMinutelyRateLimit() {
+    public String getMinutelyRateLimit() {
         return minutelyRateLimit;
     }
 
-    public void setMinutelyRateLimit(int minutelyRateLimit) {
+    public void setMinutelyRateLimit(String minutelyRateLimit) {
         this.minutelyRateLimit = minutelyRateLimit;
     }
 }

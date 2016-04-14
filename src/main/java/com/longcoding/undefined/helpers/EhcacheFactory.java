@@ -4,9 +4,12 @@ import com.longcoding.undefined.models.ehcache.ApiInfoCache;
 import com.longcoding.undefined.models.ehcache.AppInfoCache;
 import com.longcoding.undefined.models.ehcache.ServiceInfoCache;
 import org.ehcache.Cache;
-import org.ehcache.CacheManager;
+import org.ehcache.PersistentCacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.EntryUnit;
+import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +32,7 @@ public class EhcacheFactory {
     private static String CACHE_API_INFO = "apiInfoCache";
     private static String CACHE_SERVICE_INFO = "serviceInfoCache";
 
-    private static CacheManager cacheManager;
+    private static PersistentCacheManager cacheManager;
     private static Cache<String, String> appDistinctionCache;
 
     private static Cache<String, AppInfoCache> appInfoCache;
@@ -46,22 +49,31 @@ public class EhcacheFactory {
     private static Cache<String, String> apiMatchHttpsPut;
     private static Cache<String, String> apiMatchHttpsDelete;
 
+    private static String EHCACHE_PERSISTENCE_SPACE = System.getProperty("java.io.tmpdir");
+
     static {
-        cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
-        appDistinctionCache = cacheManager.createCache(CACHE_APP_DISTINCTION, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
-        appInfoCache = cacheManager.createCache(CACHE_APP_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, AppInfoCache.class).build());
-        apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiInfoCache.class).build());
-        serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceInfoCache.class).build());
+        cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
+                .with(CacheManagerBuilder.persistence(EHCACHE_PERSISTENCE_SPACE))
+                .build(true);
 
-        apiMatchHttpGet = cacheManager.createCache(Const.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
-        apiMatchHttpPost = cacheManager.createCache(Const.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
-        apiMatchHttpPut = cacheManager.createCache(Const.API_MATCH_HTTP_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
-        apiMatchHttpDelete = cacheManager.createCache(Const.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
+        ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
+                .heap(10000, EntryUnit.ENTRIES)
+                .disk(1000000, MemoryUnit.MB, false);
 
-        apiMatchHttpsGet = cacheManager.createCache(Const.API_MATCH_HTTPS_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
-        apiMatchHttpsPost = cacheManager.createCache(Const.API_MATCH_HTTPS_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
-        apiMatchHttpsPut = cacheManager.createCache(Const.API_MATCH_HTTPS_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
-        apiMatchHttpsDelete = cacheManager.createCache(Const.API_MATCH_HTTPS_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class).build());
+        appDistinctionCache = cacheManager.createCache(CACHE_APP_DISTINCTION, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        appInfoCache = cacheManager.createCache(CACHE_APP_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, AppInfoCache.class, resourcePoolsBuilder).build());
+        apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiInfoCache.class, resourcePoolsBuilder).build());
+        serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceInfoCache.class, resourcePoolsBuilder).build());
+
+        apiMatchHttpGet = cacheManager.createCache(Const.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        apiMatchHttpPost = cacheManager.createCache(Const.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        apiMatchHttpPut = cacheManager.createCache(Const.API_MATCH_HTTP_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        apiMatchHttpDelete = cacheManager.createCache(Const.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+
+        apiMatchHttpsGet = cacheManager.createCache(Const.API_MATCH_HTTPS_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        apiMatchHttpsPost = cacheManager.createCache(Const.API_MATCH_HTTPS_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        apiMatchHttpsPut = cacheManager.createCache(Const.API_MATCH_HTTPS_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        apiMatchHttpsDelete = cacheManager.createCache(Const.API_MATCH_HTTPS_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
     }
 
     public Cache<String, String> getAppDistinctionCache() {
@@ -115,7 +127,7 @@ public class EhcacheFactory {
         Cache<String, String> appIdDistinction = getAppDistinctionCache();
         appIdDistinction.put("9af18d4a-3a2e-3653-8548-b611580ba585", "100");
         apiMatchHttpGet.put("localhost:8080/undefined/[a-zA-Z0-9]+/test", "2000");
-        AppInfoCache appInfoCache = new AppInfoCache("100", "9af18d4a-3a2e-3653-8548-b611580ba585", "app", 1000000, 1000000);
+        AppInfoCache appInfoCache = new AppInfoCache("100", "9af18d4a-3a2e-3653-8548-b611580ba585", "app", "1000000", "1000000");
         getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache);
 
         ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
@@ -129,7 +141,7 @@ public class EhcacheFactory {
         ApiInfoCache apiInfoCache = new ApiInfoCache("2000", "TestAPI", "3000", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
         getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
 
-        ServiceInfoCache serviceInfoCache = new ServiceInfoCache("3000", "undefined", 10000, 10000);
+        ServiceInfoCache serviceInfoCache = new ServiceInfoCache("3000", "undefined", "10000", "10000");
         getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
     }
 

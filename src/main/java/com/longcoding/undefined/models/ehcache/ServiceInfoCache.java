@@ -15,10 +15,10 @@ public class ServiceInfoCache implements Serializable, Cloneable {
     private String serviceId;
     private String serviceName;
 
-    private int minutelyCapacity;
-    private int dailyCapacity;
+    private String minutelyCapacity;
+    private String dailyCapacity;
 
-    public ServiceInfoCache(String serviceId, String serviceName, int minutelyCapacity, int dailyCapacity) {
+    public ServiceInfoCache(String serviceId, String serviceName, String minutelyCapacity, String dailyCapacity) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.minutelyCapacity = minutelyCapacity;
@@ -41,19 +41,19 @@ public class ServiceInfoCache implements Serializable, Cloneable {
         this.serviceName = serviceName;
     }
 
-    public int getMinutelyCapacity() {
+    public String getMinutelyCapacity() {
         return minutelyCapacity;
     }
 
-    public void setMinutelyCapacity(int minutelyCapacity) {
+    public void setMinutelyCapacity(String minutelyCapacity) {
         this.minutelyCapacity = minutelyCapacity;
     }
 
-    public int getDailyCapacity() {
+    public String getDailyCapacity() {
         return dailyCapacity;
     }
 
-    public void setDailyCapacity(int dailyCapacity) {
+    public void setDailyCapacity(String dailyCapacity) {
         this.dailyCapacity = dailyCapacity;
     }
 }
