@@ -56,9 +56,11 @@ public class ProxyServiceImpl implements ProxyService {
             @Override
             public void onComplete(Result result) {
                 if (!result.isFailed()) {
-                    ResponseEntity responseEntity = null;
+                    ResponseEntity responseEntity;
 
-                    logger.debug("Http Time " + (System.currentTimeMillis() - start));
+                    if (logger.isDebugEnabled()){
+                        logger.debug("Http Time " + (System.currentTimeMillis() - start));
+                    }
 
                     HttpFields responseHeaders = result.getResponse().getHeaders();
                     if (responseHeaders.contains(HttpHeader.CONTENT_TYPE)) {
@@ -67,13 +69,10 @@ public class ProxyServiceImpl implements ProxyService {
                                 .equals(responseInfo.getRequestAccept().split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0])){
                             responseEntity =
                                     new ResponseEntity(Json.parse(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
-                        } else {
-                            deferredResult.setErrorResult(new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE));
+                            deferredResult.setResult(responseEntity);
                         }
-                    } else {
-                        deferredResult.setErrorResult(new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE));
                     }
-                    deferredResult.setResult(responseEntity);
+                    deferredResult.setErrorResult(new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE));
                 }
             }
 
