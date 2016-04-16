@@ -23,18 +23,18 @@ The Gateway is a network gateway created to provide a single access point for re
 ##Configuration
 There are 5 required setting to run undefined gateway in ehcache. `when cluster function is developed by future update. It will be easy to insert and sync the below data`
 
-first. 
-    - To set appDistinction Cache Object in EhcacheFactory Class. 
-    - This Cache convert 'appKey' to 'appId'. 
+A. first - 
+    * To set appDistinction Cache Object in EhcacheFactory Class. 
+    * This Cache convert 'appKey' to 'appId'. 
 
     Cache<String, String> appDistinction = getAppDistinctionCache();
     //(appKey, appId)
     //from appKey to appId
     appDistinction.put("1000-1000-1000-1000", "100");
 
-second. 
-    - To set AppInfoCache Cache Object in EhcacheFactory Class.
-    - The Gateway takes App information from AppInfoCache.
+B. second -
+    * To set AppInfoCache Cache Object in EhcacheFactory Class.
+    * The Gateway takes App information from AppInfoCache.
 
     //appId : 100
     //appKey : 1000-1000-1000-1000
@@ -44,9 +44,9 @@ second.
     AppInfoCache appInfoCache = new AppInfoCache("100", "1000-1000-1000-1000", "TestApp", "10000", "1500");
     getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache); 
 
-third. 
-    - To set ApiInfoCache Cache Object in EhcacheFactory Class.
-    - The Gateway takes Api information from ApiInfoCache. boolean variable means mandatory or not.
+C. third -  
+    * To set ApiInfoCache Cache Object in EhcacheFactory Class.
+    * The Gateway takes Api information from ApiInfoCache. boolean variable means mandatory or not.
 
     //Query Parameter Setting.
     ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
@@ -61,9 +61,9 @@ third.
     ApiInfoCache apiInfoCache = new ApiInfoCache("200", "TestAPI", "300", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
     getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
 
-fourth.
-    - To set ServiceInfoCache Cache Object in EhcacheFactory Class.
-    - The Gateway takes Service information from ServiceInfoCache.
+D. fourth -
+    * To set ServiceInfoCache Cache Object in EhcacheFactory Class.
+    * The Gateway takes Service information from ServiceInfoCache.
 
     //serviceId : 300
     //serviceName : stackoverflow
@@ -72,9 +72,9 @@ fourth.
     ServiceInfoCache serviceInfoCache = new ServiceInfoCache("300", "stackoverflow", "10000", "2000");
     getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
 
-fifth.
-    - To set appDistinction Cache Object in EhcacheFactory Class.
-    - The Gateway recognize request api by appDistinction.
+E. fifth -
+    * To set appDistinction Cache Object in EhcacheFactory Class.
+    * The Gateway recognize request api by appDistinction.
     
     //in case of httpGet
     apiMatchHttpGet.put("localhost:8080/stackoverflow/2.2/question/[a-zA-Z0-9]+", "200");
@@ -104,6 +104,8 @@ To run undefined-gateway
 
     maven clean -DskipTests jetty:run
 
+* you can also deploy on tomcat.
+
 To use restclient like Postman. To set method and scheme.
 
     GET, http 
@@ -120,13 +122,13 @@ or You can input URL like that.
 
     http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
-and input header fields. ( appkey is mandatory header.(or queryparam) )
+andthen input header fields. ( appkey is mandatory header.(or queryparam) )
 
     appkey, 1000-1000-1000-1000
     page, 5
     votes, 1
 
-Then execute request and check response code and content.
+To execute request and check response code and content.
 
 ##Future update
 * log function
