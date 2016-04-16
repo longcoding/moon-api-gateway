@@ -150,9 +150,9 @@ public class EhcacheFactory {
         //            option header : page, votes
         //
 
-        Cache<String, String> appIdDistinction = getAppDistinctionCache();
+        Cache<String, String> appDistinction = getAppDistinctionCache();
         //from appKey to appId
-        appIdDistinction.put("1000-1000-1000-1000", "100");
+        appDistinction.put("1000-1000-1000-1000", "100");
         //from inbound url(request url) to apiId
         apiMatchHttpGet.put("localhost:8080/stackoverflow/2.2/question/[a-zA-Z0-9]+", "200");
 
