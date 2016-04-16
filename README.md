@@ -1,14 +1,15 @@
 # undefined-gateway
 
 ##Introduction
-Asynchronous API Gateway with netty client, spring framework 4, servlet 3.
-The Gateway is a network gateway created to provide a single access point for real-time web based protocol elevation that supports load balancing, clustering, and lots of validation. It is designed to make the best performance to deliver open API.
+Asynchronous API Gateway with netty client, spring framework 4, servlet 3. <br />
+The Gateway is a network gateway created to provide a single access point for real-time web based protocol elevation that supports load balancing, clustering, and lots of validations. It is designed to make the best performance to deliver open API.
 
 ##Features
 * Lightweight API Gateway
 * High Performance/Scalability
 * Request Validation by Spring Interceptor(Easy to insert new validation)
     - Header, Query, Path.
+    - Appkey
     - Service Daily, Minutely Capacity.
     - App Daily, Minutely Ratelimit.
 * Use Asynchronous Http Client with Netty
@@ -21,20 +22,22 @@ The Gateway is a network gateway created to provide a single access point for re
 * Jedis 2.8
 
 ##Configuration
-There are 5 required setting to run undefined gateway in ehcache. `when cluster function is developed by future update. It will be easy to insert and sync the below data`
+There are 5 required settings to run undefined-gateway in ehcache. `when cluster function is developed by future update. It will be easy to insert and sync the below data.`
 
-A. first - 
-    * To set appDistinction Cache Object in EhcacheFactory Class. 
-    * This Cache convert 'appKey' to 'appId'. 
+A. first
+ <br />
+    - Set appDistinction Cache Object in EhcacheFactory Class.  <br />
+    - This Cache convert 'appKey' to 'appId'.
 
     Cache<String, String> appDistinction = getAppDistinctionCache();
     //(appKey, appId)
     //from appKey to appId
     appDistinction.put("1000-1000-1000-1000", "100");
 
-B. second -
-    * To set AppInfoCache Cache Object in EhcacheFactory Class.
-    * The Gateway takes App information from AppInfoCache.
+B. second
+ <br />
+    - Set AppInfoCache Cache Object in EhcacheFactory Class. <br />
+    - The Gateway brings App information from AppInfoCache.
 
     //appId : 100
     //appKey : 1000-1000-1000-1000
@@ -44,9 +47,10 @@ B. second -
     AppInfoCache appInfoCache = new AppInfoCache("100", "1000-1000-1000-1000", "TestApp", "10000", "1500");
     getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache); 
 
-C. third -  
-    * To set ApiInfoCache Cache Object in EhcacheFactory Class.
-    * The Gateway takes Api information from ApiInfoCache. boolean variable means mandatory or not.
+C. third
+ <br />
+    - Set ApiInfoCache Cache Object in EhcacheFactory Class. <br />
+    - The Gateway brings Api information from ApiInfoCache. boolean variable means mandatory or not.
 
     //Query Parameter Setting.
     ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
@@ -61,9 +65,10 @@ C. third -
     ApiInfoCache apiInfoCache = new ApiInfoCache("200", "TestAPI", "300", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
     getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
 
-D. fourth -
-    * To set ServiceInfoCache Cache Object in EhcacheFactory Class.
-    * The Gateway takes Service information from ServiceInfoCache.
+D. fourth
+ <br />
+    - Set ServiceInfoCache Cache Object in EhcacheFactory Class. <br />
+    - The Gateway brings Service information from ServiceInfoCache.
 
     //serviceId : 300
     //serviceName : stackoverflow
@@ -72,9 +77,10 @@ D. fourth -
     ServiceInfoCache serviceInfoCache = new ServiceInfoCache("300", "stackoverflow", "10000", "2000");
     getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
 
-E. fifth -
-    * To set appDistinction Cache Object in EhcacheFactory Class.
-    * The Gateway recognize request api by appDistinction.
+E. fifth
+ <br />
+    - Set appDistinction Cache Object in EhcacheFactory Class. <br />
+    - The Gateway recognizes request api by appDistinction.
     
     //in case of httpGet
     apiMatchHttpGet.put("localhost:8080/stackoverflow/2.2/question/[a-zA-Z0-9]+", "200");
@@ -100,35 +106,35 @@ Undefined-gateway supports the following protocol and method.
 
 #####Test Case - stackoverflow API.
 
-To run undefined-gateway
+Run undefined-gateway
 
     maven clean -DskipTests jetty:run
 
 * you can also deploy on tomcat.
 
-To use restclient like Postman. To set method and scheme.
+Use rest-client like Postman. To set method and scheme.
 
     GET, http 
 
-To input URL.
+Input URL.
 
     http://localhost:8080/stackoverflow/2.2/question/test
 
-To input URL parameter. ( site is mandatory query parameter )
+Input URL parameter. ( site is mandatory query parameter )
 
     site = stackoverflow
 
-or You can input URL like that.
+OR you can input URL like below.
 
     http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
-andthen input header fields. ( appkey is mandatory header.(or queryparam) )
+and then input header fields. ( appkey is mandatory header.(or queryparam) )
 
     appkey, 1000-1000-1000-1000
     page, 5
     votes, 1
 
-To execute request and check response code and content.
+Execute request and check response code and content.
 
 ##Future update
 * log function
