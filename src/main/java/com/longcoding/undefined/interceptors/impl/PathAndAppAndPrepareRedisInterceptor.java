@@ -35,23 +35,29 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
 
+        String appId = null;
         String appKey = appKeyValidation(requestInfo.getQueryStringMap(), requestInfo.getHeaders());
-        if (appKey != null){
-            String appId = ehcacheFactory.getAppDistinctionCache().get(appKey);
+        if (appKey != null) {
+            appId = ehcacheFactory.getAppDistinctionCache().get(appKey);
             if (appId != null) {
                 requestInfo.setAppId(appId);
-            } else {
-                generateException(403, "");
             }
         }
 
-        String categoryValue = classifyCategory(requestInfo.getRequestURL(),
-                messageManager.getBooleanProperty("undefined.service.recognize.subdomain"));
+        if ( appKey == null || appId == null ) {
+            generateException(403, "");
+            return false;
+        }
+
+        // for future update.
+//        String categoryValue = classifyCategory(requestInfo.getRequestURL(),
+//                messageManager.getBooleanProperty("undefined.service.recognize.subdomain"));
         String requestProtocolAndMethod = requestInfo.getRequestProtocol() + requestInfo.getRequestMethod();
 
         Cache<String, String> apiList = ehcacheFactory.getApiIdCache(requestProtocolAndMethod);
-        if ( apiList == null ) {
+        if ( apiList == null) {
             generateException(405, "");
+            return false;
         }
 
         String apiId = null;

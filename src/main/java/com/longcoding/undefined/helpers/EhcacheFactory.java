@@ -117,32 +117,63 @@ public class EhcacheFactory {
     }
 
     @PostConstruct
-    public void activationTest() {
+    public void activationTestCase() {
         if (messageManager.getBooleanProperty("undefined.service.test.active")){
             insertEhcacheTestCase();
         }
     }
 
     private void insertEhcacheTestCase() {
+
+        //Default Test Setting
+        //
+        //App name : TestApp
+        //App key : 1000-1000-1000-1000
+        //App Id : 100
+        //App daily ratelimit quota : 10000
+        //App minutely ratelimit quota : 1500
+        //
+        //
+        //Service Id : 300
+        //Service name : stackoverflow
+        //Service daily capacity quota : 10000
+        //Service minutely capacity quota : 2000
+        //
+        //
+        //Test #1 API api Id : 200
+        //            api name : TestAPI
+        //            inbound path : /stackoverflow/2.2/question/:path
+        //            outbound path : http://api.stackexchange.com/2.2/questions
+        //            mandatory queryparam : site
+        //            option queryparam : version
+        //            mandatory header : none
+        //            option header : page, votes
+        //
+
         Cache<String, String> appIdDistinction = getAppDistinctionCache();
-        appIdDistinction.put("9af18d4a-3a2e-3653-8548-b611580ba585", "100");
-        apiMatchHttpGet.put("localhost:8080/undefined/[a-zA-Z0-9]+/test", "2000");
-        AppInfoCache appInfoCache = new AppInfoCache("100", "9af18d4a-3a2e-3653-8548-b611580ba585", "app", "1000000", "1000000");
+        //from appKey to appId
+        appIdDistinction.put("1000-1000-1000-1000", "100");
+        //from inbound url(request url) to apiId
+        apiMatchHttpGet.put("localhost:8080/stackoverflow/2.2/question/[a-zA-Z0-9]+", "200");
+
+        //Insert AppInfo
+        //App Id : 100
+        AppInfoCache appInfoCache = new AppInfoCache("100", "1000-1000-1000-1000", "TestApp", "10000", "1500");
         getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache);
 
+        //Insert ApiInfo
         ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
-        queryParams.put("version", true);
+        queryParams.put("version", false);
+        queryParams.put("site", true);
         ConcurrentHashMap<String, Boolean> headers = new ConcurrentHashMap<>();
-        headers.put("Content-Type".toLowerCase(), true);
-        headers.put("appKey".toLowerCase(), true);
-        String inboundURL = "localhost:8080/undefined/:first/test";
-        String outboundURL = "172.19.107.67:9011/11st/common/categories";
-        //String outboundURL = "10.213.50.1:8080/undefined/test/:first";
-        ApiInfoCache apiInfoCache = new ApiInfoCache("2000", "TestAPI", "3000", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
+        headers.put("page", false);
+        headers.put("votes", false);
+        String inboundURL = "localhost:8080/stackoverflow/2.2/question/:first";
+        String outboundURL = "api.stackexchange.com/2.2/questions";
+        ApiInfoCache apiInfoCache = new ApiInfoCache("200", "TestAPI", "300", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
         getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
 
-        ServiceInfoCache serviceInfoCache = new ServiceInfoCache("3000", "undefined", "10000", "10000");
+        ServiceInfoCache serviceInfoCache = new ServiceInfoCache("300", "stackoverflow", "10000", "2000");
         getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
     }
-
 }

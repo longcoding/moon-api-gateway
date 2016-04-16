@@ -46,16 +46,9 @@ public class JedisFactory {
 
         jedisPool = new JedisPool(jedisPoolConfig, jedisHost, jedisPort, jedisTimeout);
 
-        if (messageManager.getBooleanProperty("undefined.service.test.active")){
-            insertJedisTestCase();
-        }
     }
 
     public Jedis getInstance() {
-        if (logger.isDebugEnabled()){
-            logger.debug("Active : " + jedisPool.getNumActive() + "    Idle : " + jedisPool.getNumIdle());
-        }
-
         return jedisPool.getResource();
     }
 
@@ -64,14 +57,4 @@ public class JedisFactory {
         jedisPool.close();
     }
 
-    private void insertJedisTestCase() {
-        Jedis jedis = getInstance();
-        Pipeline pipeline = jedis.pipelined();
-        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_DAILY, "3000", "1000000");
-        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_MINUTELY, "3000", "1000000");
-        pipeline.hset(Const.REDIS_APP_RATELIMIT_DAILY, "100", "10000000");
-        pipeline.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, "100", "1000000");
-        pipeline.sync();
-        jedis.close();
-    }
 }
