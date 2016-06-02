@@ -1,7 +1,7 @@
 # undefined-gateway
 
 ##Introduction
-Asynchronous API Gateway with netty client, spring framework 4, servlet 3. <br />
+Asynchronous API Gateway with spring framework 4, servlet 3, jetty client <br />
 The Gateway is a network gateway created to provide a single access point for real-time web based protocol elevation that supports load balancing, clustering, and lots of validations. It is designed to make the best performance to deliver open API.
 
 ##Features
@@ -12,7 +12,6 @@ The Gateway is a network gateway created to provide a single access point for re
     - Appkey
     - Service Daily, Minutely Capacity.
     - App Daily, Minutely Ratelimit.
-* Use Asynchronous Http Client with Netty
 * Use Asynchronous Processing in Servlet 3
 
 ##Dependency
