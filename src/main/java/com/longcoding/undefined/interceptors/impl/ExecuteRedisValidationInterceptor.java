@@ -66,9 +66,6 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
         } catch (JedisConnectionException e) {
             logger.error(e);
             generateException(503, "Validation Service is exhausted");
-        } catch (IOException e) {
-            logger.error(e);
-            generateException(503, "Validation Service is exhausted");
         } finally {
             redisValidator.getJedis().close();
         }

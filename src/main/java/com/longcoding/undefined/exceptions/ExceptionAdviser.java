@@ -1,6 +1,7 @@
 package com.longcoding.undefined.exceptions;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.MessageManager;
@@ -29,43 +30,43 @@ public class ExceptionAdviser {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<JsonNode> exception(Exception e) {
         logger.error(getStackTrace(e));
-        ObjectNode objectNode = play.libs.Json.newObject();
+        ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
         objectNode.put(Const.ERROR_MEESAGE, messageManager.getProperty("500"));
-        return new ResponseEntity(objectNode, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(objectNode, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(RatelimitFailException.class)
     public ResponseEntity<JsonNode> ratelimtFailException(RatelimitFailException e) {
-        ObjectNode objectNode = play.libs.Json.newObject();
+        ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
         objectNode.put(Const.ERROR_MEESAGE, messageManager.getProperty("502"));
         objectNode.put(Const.DETAIL_ERROR_MEESAGE, e.getExceptionMessage().getErrorMessage());
-        return new ResponseEntity(objectNode, HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(objectNode, HttpStatus.BAD_GATEWAY);
     }
 
     @ExceptionHandler(ValidationFailException.class)
     public ResponseEntity<JsonNode> validationFailException(ValidationFailException e) {
-        ObjectNode objectNode = play.libs.Json.newObject();
+        ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
         objectNode.put(Const.ERROR_MEESAGE, e.getExceptionMessage().getErrorMessage());
-        return new ResponseEntity(objectNode, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(objectNode, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ProxyServiceFailException.class)
     public ResponseEntity<JsonNode> proxyServiceFailException(ProxyServiceFailException e) {
         logger.error(getStackTrace(e));
-        ObjectNode objectNode = play.libs.Json.newObject();
+        ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
         objectNode.put(Const.ERROR_MEESAGE, messageManager.getProperty("504"));
         objectNode.put(Const.DETAIL_ERROR_MEESAGE, e.getMessage());
-        return new ResponseEntity(objectNode, HttpStatus.GATEWAY_TIMEOUT);
+        return new ResponseEntity<>(objectNode, HttpStatus.GATEWAY_TIMEOUT);
     }
 
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<JsonNode> generalException(GeneralException e) {
         String errorCode = String.valueOf(e.getExceptionMessage().getErrorCode());
 
-        ObjectNode objectNode = play.libs.Json.newObject();
+        ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
         objectNode.put(Const.ERROR_MEESAGE, messageManager.getProperty(errorCode));
         objectNode.put(Const.DETAIL_ERROR_MEESAGE, e.getExceptionMessage().getErrorMessage());
-        return new ResponseEntity(objectNode, HttpStatus.valueOf(e.getExceptionMessage().getErrorCode()));
+        return new ResponseEntity<>(objectNode, HttpStatus.valueOf(e.getExceptionMessage().getErrorCode()));
     }
 
     private static StringWriter getStackTrace(Exception e) {

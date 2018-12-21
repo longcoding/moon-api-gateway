@@ -15,10 +15,10 @@ The Gateway is a network gateway created to provide a single access point for re
 * Use Asynchronous Processing in Servlet 3
 
 ##Dependency
-* Spring Framework 5
-* Servlet 3
+* Spring Framework 5.1.3
+* Servlet 4
 * Ehcache 3
-* Jedis 2.8
+* Jedis 3.0
 
 ##Configuration
 There are 5 required settings to run undefined-gateway in ehcache. `when cluster function is developed by future update. It will be easy to insert and sync the below data.`
