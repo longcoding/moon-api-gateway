@@ -15,7 +15,7 @@ The Gateway is a network gateway created to provide a single access point for re
 * Use Asynchronous Processing in Servlet 3
 
 ##Dependency
-* Spring Framework 4.2.5
+* Spring Framework 5
 * Servlet 3
 * Ehcache 3
 * Jedis 2.8
@@ -143,7 +143,7 @@ Execute request and check response code and content.
     - by RabbitMq
 
 ##Contact
-For any inquiries, you can reach me at longcoding@gmail.com
+For any inquiries, you can reach me at longcoding@gmail.com 
 
 ##License
 undefined-gateway is released under the MIT license. See LICENSE for details.
