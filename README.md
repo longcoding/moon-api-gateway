@@ -7,7 +7,7 @@
 Asynchronous API Gateway with spring framework 4, servlet 3, jetty client <br />
 The Gateway is a network gateway created to provide a single access point for real-time web based protocol elevation that supports load balancing, clustering, and lots of validations. It is designed to make the best performance to deliver open API.
 
-##Features
+## Features
 * Lightweight API Gateway
 * High Performance/Scalability
 * Request Validation by Spring Interceptor(Easy to insert new validation)
@@ -17,13 +17,13 @@ The Gateway is a network gateway created to provide a single access point for re
     - App Daily, Minutely Ratelimit.
 * Use Asynchronous Processing in Servlet 3
 
-##Dependency
+## Dependency
 * Spring Framework 5.1.3
 * Servlet 4
 * Ehcache 3
 * Jedis 3.0
 
-##Configuration
+## Configuration
 There are 5 required settings to run undefined-gateway in ehcache. `when cluster function is developed by future update. It will be easy to insert and sync the below data.`
 
 A. first
@@ -104,9 +104,9 @@ Undefined-gateway supports the following protocol and method.
 * apiMatchHttpsPut (https - put)
 * apiMatchHttpsDelete (https - delete)
 
-##Usage/Test
+## Usage/Test
 
-#####Test Case - stackoverflow API.
+##### Test Case - stackoverflow API.
 
 Run undefined-gateway
 
@@ -138,15 +138,15 @@ and then input header fields. ( appkey is mandatory header.(or queryparam) )
 
 Execute request and check response code and content.
 
-##Future update
+## Future update
 * log function
 * Authentication for private API
 * Cluster
     - by Ehcache RMI replication
     - by RabbitMq
 
-##Contact
+## Contact
 For any inquiries, you can reach me at longcoding@gmail.com 
 
-##License
+## License
 undefined-gateway is released under the MIT license. See LICENSE for details.
