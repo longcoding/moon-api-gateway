@@ -1,4 +1,4 @@
-package com.longcoding.undefined.helpers.jetty;
+package com.longcoding.undefined.configs;
 
 import lombok.Getter;
 import lombok.Setter;

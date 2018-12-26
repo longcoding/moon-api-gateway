@@ -1,6 +1,6 @@
-package com.longcoding.undefined.helpers.jetty;
+package com.longcoding.undefined.helpers;
 
-import com.longcoding.undefined.helpers.MessageManager;
+import com.longcoding.undefined.configs.JettyClientConfig;
 import org.eclipse.jetty.client.HttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -28,11 +28,11 @@ public class JettyClientFactory {
 
     @PostConstruct
     private void initializeJettyClient() {
-        ExecutorService executor = Executors.newFixedThreadPool(jettyClientConfig.threadCount);
+        ExecutorService executor = Executors.newFixedThreadPool(jettyClientConfig.getThreadCount());
         httpClient = new HttpClient();
         try {
-            httpClient.setMaxConnectionsPerDestination(jettyClientConfig.maxConnection);
-            httpClient.setConnectTimeout(jettyClientConfig.timeout);
+            httpClient.setMaxConnectionsPerDestination(jettyClientConfig.getMaxConnection());
+            httpClient.setConnectTimeout(jettyClientConfig.getTimeout());
             httpClient.setExecutor(executor);
             httpClient.start();
         } catch(Exception e) {

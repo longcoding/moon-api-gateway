@@ -43,3 +43,14 @@ jetty-client:
   max-connection: 500
   timeout: 5000
 
+################################################################################
+# Undefined Service Config
+################################################################################
+
+undefined:
+  service:
+    recognize-subdomain: false
+    test-active: true
+    interceptor:
+      isasync: true
+      async.thread.count: 100

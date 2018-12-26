@@ -2,7 +2,7 @@ package com.longcoding.undefined.services.impl;
 
 import com.longcoding.undefined.exceptions.ProxyServiceFailException;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.jetty.JettyClientFactory;
+import com.longcoding.undefined.helpers.JettyClientFactory;
 import com.longcoding.undefined.models.ResponseInfo;
 import com.longcoding.undefined.services.ProxyService;
 import org.apache.logging.log4j.LogManager;

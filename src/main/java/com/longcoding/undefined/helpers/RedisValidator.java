@@ -1,9 +1,7 @@
 package com.longcoding.undefined.helpers;
 
-import com.longcoding.undefined.helpers.jedis.JedisFactory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 

@@ -1,7 +1,7 @@
 package com.longcoding.undefined.interceptors.impl;
 
 import com.longcoding.undefined.helpers.*;
-import com.longcoding.undefined.helpers.jedis.JedisFactory;
+import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
