@@ -27,17 +27,13 @@ public class UndefinedServletConfig implements WebMvcConfigurer {
         return new InitializeInterceptor();
     }
     @Bean
-    public PathAndAppAndPrepareRedisInterceptor pathAndPrepareRedisInterceptor() {
-        return new PathAndAppAndPrepareRedisInterceptor();
-    }
+    public PathAndAppAndPrepareRedisInterceptor pathAndPrepareRedisInterceptor() { return new PathAndAppAndPrepareRedisInterceptor(); }
     @Bean
     public ServiceCapacityInterceptor serviceCapacityInterceptor() {
         return new ServiceCapacityInterceptor();
     }
     @Bean
-    public ExecuteRedisValidationInterceptor executeRedisValidationInterceptor() {
-        return new ExecuteRedisValidationInterceptor();
-    }
+    public ExecuteRedisValidationInterceptor executeRedisValidationInterceptor() { return new ExecuteRedisValidationInterceptor(); }
     @Bean
     public ExtractRequestInterceptor extractRequestInterceptor() {
         return new ExtractRequestInterceptor();

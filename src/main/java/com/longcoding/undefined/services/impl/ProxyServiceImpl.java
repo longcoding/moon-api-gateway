@@ -2,7 +2,7 @@ package com.longcoding.undefined.services.impl;
 
 import com.longcoding.undefined.exceptions.ProxyServiceFailException;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.jetty.JettyClientFactory;
+import com.longcoding.undefined.helpers.JettyClientFactory;
 import com.longcoding.undefined.models.ResponseInfo;
 import com.longcoding.undefined.services.ProxyService;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
+import play.api.libs.json.JsValue;
 import play.api.libs.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +36,7 @@ public class ProxyServiceImpl implements ProxyService {
     private static final String CONST_CONTENT_TYPE_EXTRACT_DELIMITER = ";";
 
     @Autowired
-    JettyClientFactory nettyClientFactory;
+    JettyClientFactory jettyClientFactory;
 
     private DeferredResult<ResponseEntity> deferredResult;
     private ResponseInfo responseInfo;
@@ -49,13 +50,13 @@ public class ProxyServiceImpl implements ProxyService {
         long start = System.currentTimeMillis();
 
         this.responseInfo = (ResponseInfo) request.getAttribute(Const.RESPONSE_INFO_DATA);
-        Request proxyRequest = nettyClientFactory.getNettyClient().newRequest(responseInfo.getRequestURI());
+        Request proxyRequest = jettyClientFactory.getJettyClient().newRequest(responseInfo.getRequestURI());
 
         setHeaderAndQueryInfo(proxyRequest, responseInfo).send(new BufferingResponseListener() {
             @Override
             public void onComplete(Result result) {
                 if (!result.isFailed()) {
-                    ResponseEntity responseEntity;
+                    ResponseEntity<JsValue> responseEntity;
 
                     if (logger.isDebugEnabled()){
                         logger.debug("Http Time " + (System.currentTimeMillis() - start));
@@ -67,7 +68,7 @@ public class ProxyServiceImpl implements ProxyService {
                         if ( contentTypeValue.split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0]
                                 .equals(responseInfo.getRequestAccept().split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0])){
                             responseEntity =
-                                    new ResponseEntity(Json.parse(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
+                                    new ResponseEntity<>(Json.parse(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
                             deferredResult.setResult(responseEntity);
                         }
                     }

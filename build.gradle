@@ -25,9 +25,9 @@ apply plugin: 'io.spring.dependency-management'
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web') {
-		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+		//exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
 	}
-	compile('org.springframework.boot:spring-boot-starter-jetty')
+	//compile('org.springframework.boot:spring-boot-starter-jetty')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 
 	compileOnly('org.projectlombok:lombok')

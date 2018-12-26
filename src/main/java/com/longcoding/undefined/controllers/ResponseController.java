@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by longcoding on 16. 4. 5..
+ * Updated by longcoding on 18. 12. 26..
  */
 @RestController
 @RequestMapping(value = "/*")
@@ -28,17 +28,10 @@ public class ResponseController {
     @Autowired
     MessageManager messageManager;
 
-    private static long PROXY_SERVICE_TIMEOUT;
-
-    @PostConstruct
-    private void initializeProxyService() {
-        PROXY_SERVICE_TIMEOUT = messageManager.getLongProperty("undefined.service.proxy.timeout");
-    }
-
     @RequestMapping(value = "/**")
     public DeferredResult<ResponseEntity> responseHttpResult(HttpServletRequest request) {
 
-        DeferredResult deferredResult = new DeferredResult();
+        DeferredResult<ResponseEntity> deferredResult = new DeferredResult<>();
         proxyService.requestProxyService(request, deferredResult);
 
         return deferredResult;

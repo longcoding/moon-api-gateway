@@ -1,10 +1,9 @@
 package com.longcoding.undefined.helpers;
 
-import com.longcoding.undefined.helpers.jedis.JedisConfig;
+import com.longcoding.undefined.configs.ServiceConfig;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
 import com.longcoding.undefined.models.ehcache.AppInfoCache;
 import com.longcoding.undefined.models.ehcache.ServiceInfoCache;
-import lombok.Getter;
 import org.ehcache.Cache;
 import org.ehcache.PersistentCacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
@@ -25,9 +24,11 @@ import javax.annotation.PreDestroy;
  * Updated by longcoding on 18. 12. 26..
  */
 @Component
+@EnableConfigurationProperties(ServiceConfig.class)
 public class APISpecification {
 
-    private final MessageManager messageManager;
+    @Autowired
+    ServiceConfig serviceConfig;
 
     private static String CACHE_APP_DISTINCTION =  "appDistinctionCache";
 
@@ -79,11 +80,6 @@ public class APISpecification {
         apiMatchHttpsDelete = cacheManager.createCache(Const.API_MATCH_HTTPS_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
     }
 
-    @Autowired
-    public APISpecification(MessageManager messageManager) {
-        this.messageManager = messageManager;
-    }
-
     public Cache<String, String> getAppDistinctionCache() {
         return appDistinctionCache;
     }
@@ -126,9 +122,7 @@ public class APISpecification {
 
     @PostConstruct
     public void activationTestCase() {
-        if (messageManager.getBooleanProperty("undefined.service.test.active")){
-            insertEhcacheTestCase();
-        }
+        if (serviceConfig.isTestActive()) insertEhcacheTestCase();
     }
 
     private void insertEhcacheTestCase() {

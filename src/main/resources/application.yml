@@ -15,6 +15,10 @@ spring:
       force: true
     log-request-details: true
 
+################################################################################
+# Jedis Config
+################################################################################
+
 jedis-client:
   max-total: 500
   max-wait-millis: 5000
@@ -30,3 +34,23 @@ jedis-client:
   port: 6379
   timeout: 1000
 
+################################################################################
+# Jetty Config
+################################################################################
+
+jetty-client:
+  thread-count: 100
+  max-connection: 500
+  timeout: 5000
+
+################################################################################
+# Undefined Service Config
+################################################################################
+
+undefined:
+  service:
+    recognize-subdomain: false
+    test-active: true
+    interceptor:
+      isasync: true
+      async.thread.count: 100

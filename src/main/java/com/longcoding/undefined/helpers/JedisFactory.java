@@ -1,12 +1,9 @@
-package com.longcoding.undefined.helpers.jedis;
+package com.longcoding.undefined.helpers;
 
-import com.longcoding.undefined.helpers.MessageManager;
+import com.longcoding.undefined.configs.JedisConfig;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -35,20 +32,20 @@ public class JedisFactory {
     @PostConstruct
     private void initializeJedisPool() {
         jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxTotal(jedisConfig.maxTotal);
-        jedisPoolConfig.setMaxWaitMillis(jedisConfig.maxWaitMillis);
-        jedisPoolConfig.setMaxIdle(jedisConfig.maxidle);
-        jedisPoolConfig.setMinIdle(jedisConfig.minidle);
-        jedisPoolConfig.setNumTestsPerEvictionRun(jedisConfig.numTestsPerEvictionRun);
-        jedisPoolConfig.setTimeBetweenEvictionRunsMillis(jedisConfig.timeBetweenEvictionRunsMillis);
-        jedisPoolConfig.setBlockWhenExhausted(jedisConfig.blockWhenExhausted);
-        jedisPoolConfig.setTestOnBorrow(jedisConfig.testOnBorrow);
-        jedisPoolConfig.setTestOnReturn(jedisConfig.testOnReturn);
-        jedisPoolConfig.setTestWhileIdle(jedisConfig.testWhileIdle);
+        jedisPoolConfig.setMaxTotal(jedisConfig.getMaxTotal());
+        jedisPoolConfig.setMaxWaitMillis(jedisConfig.getMaxWaitMillis());
+        jedisPoolConfig.setMaxIdle(jedisConfig.getMaxidle());
+        jedisPoolConfig.setMinIdle(jedisConfig.getMinidle());
+        jedisPoolConfig.setNumTestsPerEvictionRun(jedisConfig.getNumTestsPerEvictionRun());
+        jedisPoolConfig.setTimeBetweenEvictionRunsMillis(jedisConfig.getTimeBetweenEvictionRunsMillis());
+        jedisPoolConfig.setBlockWhenExhausted(jedisConfig.isBlockWhenExhausted());
+        jedisPoolConfig.setTestOnBorrow(jedisConfig.isTestOnBorrow());
+        jedisPoolConfig.setTestOnReturn(jedisConfig.isTestOnReturn());
+        jedisPoolConfig.setTestWhileIdle(jedisConfig.isTestWhileIdle());
 
-        String jedisHost = jedisConfig.host;
-        int jedisPort = jedisConfig.port;
-        int jedisTimeout = jedisConfig.timeout;
+        String jedisHost = jedisConfig.getHost();
+        int jedisPort = jedisConfig.getPort();
+        int jedisTimeout = jedisConfig.getTimeout();
 
         jedisPool = new JedisPool(jedisPoolConfig, jedisHost, jedisPort, jedisTimeout);
     }
