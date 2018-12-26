@@ -15,6 +15,11 @@ spring:
       force: true
     log-request-details: true
 
+# SpringBoot default error page disable
+error:
+  whitelabel:
+    enabled: false
+
 ################################################################################
 # Jedis Config
 ################################################################################
@@ -54,3 +59,12 @@ undefined:
     interceptor:
       isasync: true
       async.thread.count: 100
+
+---
+spring:
+  profiles: local
+
+
+---
+spring:
+  profiles: dev
