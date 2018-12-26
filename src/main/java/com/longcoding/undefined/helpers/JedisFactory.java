@@ -34,8 +34,8 @@ public class JedisFactory {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxTotal(jedisConfig.getMaxTotal());
         jedisPoolConfig.setMaxWaitMillis(jedisConfig.getMaxWaitMillis());
-        jedisPoolConfig.setMaxIdle(jedisConfig.getMaxidle());
-        jedisPoolConfig.setMinIdle(jedisConfig.getMinidle());
+        jedisPoolConfig.setMaxIdle(jedisConfig.getMaxIdle());
+        jedisPoolConfig.setMinIdle(jedisConfig.getMinIdle());
         jedisPoolConfig.setNumTestsPerEvictionRun(jedisConfig.getNumTestsPerEvictionRun());
         jedisPoolConfig.setTimeBetweenEvictionRunsMillis(jedisConfig.getTimeBetweenEvictionRunsMillis());
         jedisPoolConfig.setBlockWhenExhausted(jedisConfig.isBlockWhenExhausted());
