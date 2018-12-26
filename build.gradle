@@ -29,6 +29,7 @@ dependencies {
 	}
 	//compile('org.springframework.boot:spring-boot-starter-jetty')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+    compileOnly ('org.springframework.boot:spring-boot-configuration-processor')
 
 	compileOnly('org.projectlombok:lombok')
 	annotationProcessor ('org.projectlombok:lombok')
@@ -63,5 +64,4 @@ dependencies {
 	compile('org.apache.httpcomponents:httpclient:4.5.6')
 
 	compile ('org.eclipse.jetty:jetty-client:9.4.14.v20181114')
-	annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
 }
