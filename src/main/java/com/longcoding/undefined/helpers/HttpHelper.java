@@ -19,14 +19,7 @@ public class HttpHelper {
     }
 
     public static String createURI(String protocol, String url) {
-
-        StringBuffer requestURLBuffer =
-                new StringBuffer()
-                        .append(protocol)
-                        .append(DELIMITER_PROTOCOL)
-                        .append(url);
-
-        return requestURLBuffer.toString();
+        return protocol + DELIMITER_PROTOCOL + url;
     }
 
     public static String convertMap2StringQueryParams(Map<String,String> params) {
