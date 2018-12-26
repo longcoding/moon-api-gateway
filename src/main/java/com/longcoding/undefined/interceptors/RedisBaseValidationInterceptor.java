@@ -2,7 +2,7 @@ package com.longcoding.undefined.interceptors;
 
 import com.google.common.base.CaseFormat;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.EhcacheConfigureFactory;
+import com.longcoding.undefined.helpers.APISpecification;
 import com.longcoding.undefined.helpers.RedisValidator;
 import com.longcoding.undefined.models.RequestInfo;
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +21,7 @@ public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInte
     protected final Logger logger = LogManager.getLogger(getClass());
 
     @Autowired
-    protected EhcacheConfigureFactory ehcacheFactory;
+    protected APISpecification ehcacheFactory;
 
     private volatile T futureValue;
     private RedisValidator redisValidator;

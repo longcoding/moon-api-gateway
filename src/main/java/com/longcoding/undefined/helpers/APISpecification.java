@@ -1,8 +1,10 @@
 package com.longcoding.undefined.helpers;
 
+import com.longcoding.undefined.helpers.jedis.JedisConfig;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
 import com.longcoding.undefined.models.ehcache.AppInfoCache;
 import com.longcoding.undefined.models.ehcache.ServiceInfoCache;
+import lombok.Getter;
 import org.ehcache.Cache;
 import org.ehcache.PersistentCacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
@@ -12,6 +14,7 @@ import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -19,10 +22,10 @@ import javax.annotation.PreDestroy;
 
 /**
  * Created by longcoding on 16. 4. 8..
+ * Updated by longcoding on 18. 12. 26..
  */
 @Component
-public class EhcacheConfigureFactory {
-
+public class APISpecification {
 
     private final MessageManager messageManager;
 
@@ -77,7 +80,7 @@ public class EhcacheConfigureFactory {
     }
 
     @Autowired
-    public EhcacheConfigureFactory(MessageManager messageManager) {
+    public APISpecification(MessageManager messageManager) {
         this.messageManager = messageManager;
     }
 

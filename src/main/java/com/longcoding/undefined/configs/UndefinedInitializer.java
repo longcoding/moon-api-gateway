@@ -9,7 +9,9 @@ import javax.servlet.Filter;
 
 /**
  * Created by longcoding on 16. 4. 5..
+ * Updated by longcoding on 18. 12. 26..
  */
+
 @EnableConfigurationProperties
 public class UndefinedInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 

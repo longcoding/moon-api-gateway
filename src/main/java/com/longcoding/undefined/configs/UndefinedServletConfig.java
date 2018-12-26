@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.longcoding.undefined.helpers.EhcacheConfigureFactory;
 import com.longcoding.undefined.interceptors.impl.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +17,7 @@ import java.util.List;
 
 /**
  * Created by longcoding on 16. 4. 5..
+ * Updated by longcoding on 18. 12. 26..
  */
 @Configuration
 public class UndefinedServletConfig implements WebMvcConfigurer {

@@ -6,9 +6,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.TimeZone;
 
+/**
+ * Created by longcoding on 18. 12. 26..
+ */
 
-@SpringBootConfiguration
 @SpringBootApplication
+@SpringBootConfiguration
 public class UndefinedApplication {
 
     public static void main(String[] args) {
