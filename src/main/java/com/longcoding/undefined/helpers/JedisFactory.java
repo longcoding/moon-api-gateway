@@ -26,12 +26,11 @@ public class JedisFactory {
 
     private JedisConfig jedisConfig;
 
-    private static JedisPoolConfig jedisPoolConfig;
     private static JedisPool jedisPool;
 
     @PostConstruct
     private void initializeJedisPool() {
-        jedisPoolConfig = new JedisPoolConfig();
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxTotal(jedisConfig.getMaxTotal());
         jedisPoolConfig.setMaxWaitMillis(jedisConfig.getMaxWaitMillis());
         jedisPoolConfig.setMaxIdle(jedisConfig.getMaxidle());

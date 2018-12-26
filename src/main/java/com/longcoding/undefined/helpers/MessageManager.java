@@ -7,9 +7,10 @@ import org.springframework.stereotype.Component;
 
 /**
  * Created by longcoding on 16. 4. 9..
+ * Updated by longcoding on 18. 12. 26..
  */
 @Component
-@PropertySource({"classpath:default-errormessage.properties"})
+@PropertySource({"classpath:error-message.properties"})
 public class MessageManager {
 
     @Autowired

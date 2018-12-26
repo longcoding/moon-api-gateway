@@ -68,7 +68,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         while (apiListIterator.hasNext()) {
             Cache.Entry<String, String> apiInfo = apiListIterator.next();
             apiPattern = Pattern.compile(apiInfo.getKey());
-            if ( apiPattern.matcher(requestInfo.getRequestURL()).matches() == true ){
+            if ( apiPattern.matcher(requestInfo.getRequestURL()).matches() ){
                 apiId = apiInfo.getValue();
                 requestInfo.setApiId(apiId);
                 isMatched = true;
@@ -94,7 +94,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         int index;
 
         //Use first path param to category
-        if ( isDelimiterSubdomain == false ) {
+        if ( !isDelimiterSubdomain ) {
             delimiter = "/";
             index = 1;
         } else {
