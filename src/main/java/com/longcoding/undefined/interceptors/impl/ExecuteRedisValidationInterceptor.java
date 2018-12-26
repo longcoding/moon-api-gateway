@@ -1,5 +1,6 @@
 package com.longcoding.undefined.interceptors.impl;
 
+import com.longcoding.undefined.configs.ServiceConfig;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.MessageManager;
 import com.longcoding.undefined.helpers.RedisValidator;
@@ -9,6 +10,7 @@ import com.longcoding.undefined.interceptors.RedisBaseValidationInterceptor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
@@ -20,12 +22,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by longcoding on 16. 4. 7..
  * Updated by longcoding on 18. 12. 26..
  */
 
+@EnableConfigurationProperties(ServiceConfig.class)
 public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseInterceptor {
 
     private static final Logger logger = LogManager.getLogger(ExecuteRedisValidationInterceptor.class);
@@ -34,7 +38,7 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
     ApplicationContext context;
 
     @Autowired
-    MessageManager messageManager;
+    ServiceConfig serviceConfig;
 
     @Autowired
     JedisFactory jedisFactory;
@@ -45,8 +49,8 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
 
     @PostConstruct
     private void initializeInterceptor() {
-        //int THREAD_POOL_COUNT = messageManager.getIntProperty("undefined.redis.interceptor.async.thread.count");
-        //executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
+        //executor = Executors.newFixedThreadPool(serviceConfig.async.threadCount);
+
     }
 
     @Override
