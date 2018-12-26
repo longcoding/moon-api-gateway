@@ -14,8 +14,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class JedisConfig {
     int maxTotal;
     int maxWaitMillis;
-    int maxidle;
-    int minidle;
+    int maxIdle;
+    int minIdle;
     int numTestsPerEvictionRun;
     int timeBetweenEvictionRunsMillis;
     boolean blockWhenExhausted;
