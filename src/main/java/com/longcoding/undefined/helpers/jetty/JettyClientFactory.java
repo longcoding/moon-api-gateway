@@ -3,6 +3,7 @@ package com.longcoding.undefined.helpers.jetty;
 import com.longcoding.undefined.helpers.MessageManager;
 import org.eclipse.jetty.client.HttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -14,28 +15,24 @@ import java.util.concurrent.Executors;
  * Updated by longcoding on 18. 12. 26..
  */
 @Component
+@EnableConfigurationProperties(JettyClientConfig.class)
 public class JettyClientFactory {
 
-    private final MessageManager messageManager;
-    private static HttpClient httpClient;
+    @Autowired
+    MessageManager messageManager;
 
     @Autowired
-    public JettyClientFactory(MessageManager messageManager) {
-        this.messageManager = messageManager;
-    }
+    JettyClientConfig jettyClientConfig;
+
+    private static HttpClient httpClient;
 
     @PostConstruct
-    private void initializeNettyClient() {
-
-        int THREAD_POOL_COUNT = messageManager.getIntProperty("undefined.netty.thread.count");
-        int NETTY_MAX_CONNECTION = messageManager.getIntProperty("undefined.netty.max.connection");
-        long NETTY_HTTP_TIMEOUT = messageManager.getLongProperty("undefined.netty.http.timeout");
-
-        ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
+    private void initializeJettyClient() {
+        ExecutorService executor = Executors.newFixedThreadPool(jettyClientConfig.threadCount);
         httpClient = new HttpClient();
         try {
-            httpClient.setMaxConnectionsPerDestination(NETTY_MAX_CONNECTION);
-            httpClient.setConnectTimeout(NETTY_HTTP_TIMEOUT);
+            httpClient.setMaxConnectionsPerDestination(jettyClientConfig.maxConnection);
+            httpClient.setConnectTimeout(jettyClientConfig.timeout);
             httpClient.setExecutor(executor);
             httpClient.start();
         } catch(Exception e) {
@@ -43,7 +40,7 @@ public class JettyClientFactory {
         }
     }
 
-    public HttpClient getNettyClient() {
+    public HttpClient getJettyClient() {
         return httpClient;
     }
 
