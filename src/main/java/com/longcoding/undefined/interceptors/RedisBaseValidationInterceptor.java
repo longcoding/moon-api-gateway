@@ -5,8 +5,6 @@ import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.APISpecification;
 import com.longcoding.undefined.helpers.RedisValidator;
 import com.longcoding.undefined.models.RequestInfo;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Transaction;
 
@@ -18,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInterceptor {
 
-    protected final Logger logger = LogManager.getLogger(getClass());
 
     @Autowired
     protected APISpecification ehcacheFactory;

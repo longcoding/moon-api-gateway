@@ -3,8 +3,6 @@ package com.longcoding.undefined.helpers;
 import com.longcoding.undefined.configs.JedisConfig;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
