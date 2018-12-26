@@ -1,10 +1,11 @@
 # undefined-gateway
 
+<<<<<<< HEAD
 ![feature](https://user-images.githubusercontent.com/38850896/50330803-f13e9600-053f-11e9-9b2b-cd2f1d5de76d.png)
 
 
 ## Introduction
-Asynchronous API Gateway with spring framework 5, servlet 4, jetty 9 client <br />
+Asynchronous API Gateway with Spring boot 2.1, Servlet 4, jetty 9 client <br />
 The Gateway is a network gateway created to provide a single access point for real-time web based protocol elevation that supports load balancing, clustering, and lots of validations. It is designed to make the best performance to deliver open API.
 
 ## Features
@@ -21,6 +22,7 @@ The Gateway is a network gateway created to provide a single access point for re
 * Spring Boot 2.1
 * Servlet 4
 * Ehcache 3
+* Jetty 9 client
 * Jedis 3.0
 
 ## Configuration
