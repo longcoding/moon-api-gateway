@@ -3,11 +3,10 @@ package com.longcoding.undefined.interceptors.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.EhcacheFactory;
+import com.longcoding.undefined.helpers.EhcacheConfigureFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
-import org.eclipse.jetty.http.HttpHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
@@ -22,7 +21,7 @@ import java.util.Map;
 public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor {
 
     @Autowired
-    EhcacheFactory ehcacheFactory;
+    EhcacheConfigureFactory ehcacheFactory;
 
     private static List<String> optionHeaders;
 

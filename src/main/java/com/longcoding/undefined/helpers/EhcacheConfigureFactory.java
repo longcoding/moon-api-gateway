@@ -21,7 +21,7 @@ import javax.annotation.PreDestroy;
  * Created by longcoding on 16. 4. 8..
  */
 @Component
-public class EhcacheFactory {
+public class EhcacheConfigureFactory {
 
     @Autowired
     MessageManager messageManager;

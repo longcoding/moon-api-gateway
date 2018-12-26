@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+# spring
+spring:
+
+  profiles:
+    active: local
+  profiles.include: 'url, db, sentry'
+
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+    log-request-details: true
+
