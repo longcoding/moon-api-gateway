@@ -54,6 +54,7 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         this.request = request;

@@ -40,6 +40,7 @@ public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInte
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean preHandler(HttpServletRequest request,
                                           HttpServletResponse response, Object handler) throws Exception {
 
