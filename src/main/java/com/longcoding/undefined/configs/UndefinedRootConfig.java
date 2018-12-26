@@ -8,7 +8,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  * Created by longcoding on 16. 4. 5..
  */
 
-@EnableWebMvc
 @Configuration
 @ComponentScan({ "com.longcoding.undefined" })
 public class UndefinedRootConfig { }

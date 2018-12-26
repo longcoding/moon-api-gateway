@@ -2,13 +2,7 @@ package com.longcoding.undefined.interceptors.impl;
 
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.interceptors.RedisBaseValidationInterceptor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.exceptions.JedisDataException;

@@ -1,19 +1,17 @@
 package com.longcoding.undefined.interceptors.impl;
 
-import com.longcoding.undefined.exceptions.RatelimitFailException;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.helpers.MessageManager;
+import com.longcoding.undefined.helpers.RedisValidator;
+import com.longcoding.undefined.helpers.jedis.JedisFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.interceptors.RedisBaseValidationInterceptor;
-import com.longcoding.undefined.helpers.RedisValidator;
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisDataException;
@@ -21,21 +19,20 @@ import redis.clients.jedis.exceptions.JedisDataException;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  * Created by longcoding on 16. 4. 7..
+ * Updated by longcoding on 18. 12. 26..
  */
+
 public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseInterceptor {
 
     private static final Logger logger = LogManager.getLogger(ExecuteRedisValidationInterceptor.class);
 
     @Autowired
-    private ApplicationContext context;
+    ApplicationContext context;
 
     @Autowired
     MessageManager messageManager;

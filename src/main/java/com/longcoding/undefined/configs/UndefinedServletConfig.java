@@ -4,23 +4,23 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.longcoding.undefined.helpers.EhcacheFactory;
 import com.longcoding.undefined.interceptors.impl.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
  * Created by longcoding on 16. 4. 5..
+ * Updated by longcoding on 18. 12. 26..
  */
 @Configuration
-public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
+public class UndefinedServletConfig implements WebMvcConfigurer {
 
     @Bean
     public InitializeInterceptor initializeInterceptor() {
@@ -48,10 +48,9 @@ public class UndefinedServletConfig extends WebMvcConfigurerAdapter {
     public PrepareProxyInterceptor prepareProxyInterceptor() { return new PrepareProxyInterceptor(); }
     @Bean
     public ApplicationRatelimitInterceptor applicationRatelimitInterceptor() { return new ApplicationRatelimitInterceptor(); }
-    @Bean
-    public EhcacheFactory ehcacheFactory() {
-        return new EhcacheFactory();
-    }
+
+//    @Bean
+//    public EhcacheConfigureFactory ehcacheConfigureFactory() { return new EhcacheConfigureFactory(); }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

@@ -1,4 +1,4 @@
-package com.longcoding.undefined.helpers.netty;
+package com.longcoding.undefined.helpers.jetty;
 
 import com.longcoding.undefined.helpers.MessageManager;
 import org.eclipse.jetty.client.HttpClient;
@@ -11,16 +11,18 @@ import java.util.concurrent.Executors;
 
 /**
  * Created by longcoding on 16. 4. 6..
+ * Updated by longcoding on 18. 12. 26..
  */
 @Component
-public class NettyClientFactory {
+public class JettyClientFactory {
+
+    private final MessageManager messageManager;
+    private static HttpClient httpClient;
 
     @Autowired
-    MessageManager messageManager;
-
-
-    private static ExecutorService executor;
-    private static HttpClient httpClient;
+    public JettyClientFactory(MessageManager messageManager) {
+        this.messageManager = messageManager;
+    }
 
     @PostConstruct
     private void initializeNettyClient() {
@@ -29,7 +31,7 @@ public class NettyClientFactory {
         int NETTY_MAX_CONNECTION = messageManager.getIntProperty("undefined.netty.max.connection");
         long NETTY_HTTP_TIMEOUT = messageManager.getLongProperty("undefined.netty.http.timeout");
 
-        executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
+        ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
         httpClient = new HttpClient();
         try {
             httpClient.setMaxConnectionsPerDestination(NETTY_MAX_CONNECTION);

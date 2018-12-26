@@ -1,6 +1,7 @@
 package com.longcoding.undefined.interceptors.impl;
 
 import com.longcoding.undefined.helpers.*;
+import com.longcoding.undefined.helpers.jedis.JedisFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
@@ -25,7 +26,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
     JedisFactory jedisFactory;
 
     @Autowired
-    EhcacheFactory ehcacheFactory;
+    APISpecification ehcacheFactory;
 
     private static final String HEADER_APP_KEY = "appKey";
     private static final String ERROR_MEESAGE_PATH_VALID= "subdomin or service path is unclear";

@@ -1,19 +1,19 @@
 package com.longcoding.undefined.helpers;
 
-import com.longcoding.undefined.helpers.JedisFactory;
+import com.longcoding.undefined.helpers.jedis.JedisFactory;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 /**
  * Created by longcoding on 16. 4. 7..
+ * Updated by longcoding on 18. 12. 26..
  */
+@Getter
 @EqualsAndHashCode
 public class RedisValidator<T> {
 
@@ -32,17 +32,5 @@ public class RedisValidator<T> {
     }
 
     public void offerFutureMethodQueue(String className, T responseValue) { futureMethodQueue.put(className, responseValue); }
-
-    public LinkedHashMap<String, T> getFutureMethodQueue() {
-        return futureMethodQueue;
-    }
-
-    public Jedis getJedis() {
-        return jedis;
-    }
-
-    public Transaction getJedisMulti() {
-        return jedisMulti;
-    }
 
 }

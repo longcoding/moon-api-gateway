@@ -1,10 +1,8 @@
 package com.longcoding.undefined.interceptors.impl;
 
 import com.google.common.collect.Maps;
-import com.longcoding.undefined.exceptions.ExceptionMessage;
-import com.longcoding.undefined.exceptions.GeneralException;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.EhcacheFactory;
+import com.longcoding.undefined.helpers.APISpecification;
 import com.longcoding.undefined.helpers.HttpHelper;
 import com.longcoding.undefined.helpers.MessageManager;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
@@ -23,7 +21,7 @@ import java.util.regex.Pattern;
 public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
 
     @Autowired
-    EhcacheFactory ehcacheFactory;
+    APISpecification ehcacheFactory;
 
     @Autowired
     MessageManager messageManager;

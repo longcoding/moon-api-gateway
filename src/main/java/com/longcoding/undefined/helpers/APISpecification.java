@@ -1,8 +1,10 @@
 package com.longcoding.undefined.helpers;
 
+import com.longcoding.undefined.helpers.jedis.JedisConfig;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
 import com.longcoding.undefined.models.ehcache.AppInfoCache;
 import com.longcoding.undefined.models.ehcache.ServiceInfoCache;
+import lombok.Getter;
 import org.ehcache.Cache;
 import org.ehcache.PersistentCacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
@@ -12,6 +14,7 @@ import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -19,12 +22,12 @@ import javax.annotation.PreDestroy;
 
 /**
  * Created by longcoding on 16. 4. 8..
+ * Updated by longcoding on 18. 12. 26..
  */
 @Component
-public class EhcacheFactory {
+public class APISpecification {
 
-    @Autowired
-    MessageManager messageManager;
+    private final MessageManager messageManager;
 
     private static String CACHE_APP_DISTINCTION =  "appDistinctionCache";
 
@@ -76,6 +79,11 @@ public class EhcacheFactory {
         apiMatchHttpsDelete = cacheManager.createCache(Const.API_MATCH_HTTPS_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
     }
 
+    @Autowired
+    public APISpecification(MessageManager messageManager) {
+        this.messageManager = messageManager;
+    }
+
     public Cache<String, String> getAppDistinctionCache() {
         return appDistinctionCache;
     }
@@ -91,21 +99,21 @@ public class EhcacheFactory {
     }
 
     public Cache<String, String> getApiIdCache(String protocolAndMethod) {
-        if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+        if (Const.API_MATCH_HTTP_GET_MAP.equals(protocolAndMethod)) {
             return apiMatchHttpGet;
-        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+        } else if (Const.API_MATCH_HTTP_POST_MAP.equals(protocolAndMethod)) {
             return apiMatchHttpPost;
-        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+        } else if (Const.API_MATCH_HTTP_PUT_MAP.equals(protocolAndMethod)) {
             return apiMatchHttpPut;
-        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+        } else if (Const.API_MATCH_HTTP_DELETE_MAP.equals(protocolAndMethod)) {
             return apiMatchHttpDelete;
-        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+        } else if (Const.API_MATCH_HTTPS_GET_MAP.equals(protocolAndMethod)) {
             return apiMatchHttpsGet;
-        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+        } else if (Const.API_MATCH_HTTPS_POST_MAP.equals(protocolAndMethod)) {
             return apiMatchHttpsPost;
-        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+        } else if (Const.API_MATCH_HTTPS_PUT_MAP.equals(protocolAndMethod)) {
             return apiMatchHttpsPut;
-        } else if (protocolAndMethod.equals(Const.API_MATCH_HTTP_GET_MAP)) {
+        } else if (Const.API_MATCH_HTTPS_DELETE_MAP.equals(protocolAndMethod)) {
             return apiMatchHttpsDelete;
         }
         return null;

@@ -2,21 +2,16 @@ package com.longcoding.undefined.interceptors;
 
 import com.google.common.base.CaseFormat;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.EhcacheFactory;
+import com.longcoding.undefined.helpers.APISpecification;
 import com.longcoding.undefined.helpers.RedisValidator;
 import com.longcoding.undefined.models.RequestInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
-import redis.clients.jedis.exceptions.JedisDataException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.Serializable;
 
 /**
  * Created by longcoding on 16. 4. 7..
@@ -26,7 +21,7 @@ public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInte
     protected final Logger logger = LogManager.getLogger(getClass());
 
     @Autowired
-    protected EhcacheFactory ehcacheFactory;
+    protected APISpecification ehcacheFactory;
 
     private volatile T futureValue;
     private RedisValidator redisValidator;

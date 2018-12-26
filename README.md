@@ -18,7 +18,7 @@ The Gateway is a network gateway created to provide a single access point for re
 * Use Asynchronous Processing in Servlet 3
 
 ## Dependency
-* Spring Framework 5.1.3
+* Spring Boot 2.1
 * Servlet 4
 * Ehcache 3
 * Jedis 3.0

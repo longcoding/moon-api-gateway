@@ -3,11 +3,10 @@ package com.longcoding.undefined.interceptors.impl;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.EhcacheFactory;
+import com.longcoding.undefined.helpers.APISpecification;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.util.MimeTypeUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +26,7 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
     private static final String PROTOCOL_DELIMITER = "://";
 
     @Autowired
-    EhcacheFactory ehcacheFactory;
+    APISpecification ehcacheFactory;
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
