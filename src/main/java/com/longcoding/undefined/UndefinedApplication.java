@@ -2,6 +2,7 @@ package com.longcoding.undefined;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.TimeZone;
@@ -11,7 +12,6 @@ import java.util.TimeZone;
  */
 
 @SpringBootApplication
-@SpringBootConfiguration
 public class UndefinedApplication {
 
     public static void main(String[] args) {
