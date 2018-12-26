@@ -1,6 +1,5 @@
 # undefined-gateway
 
-<<<<<<< HEAD
 ![feature](https://user-images.githubusercontent.com/38850896/50330803-f13e9600-053f-11e9-9b2b-cd2f1d5de76d.png)
 
 

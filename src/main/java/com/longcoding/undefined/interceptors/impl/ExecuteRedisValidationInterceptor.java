@@ -7,6 +7,7 @@ import com.longcoding.undefined.helpers.RedisValidator;
 import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.interceptors.RedisBaseValidationInterceptor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +30,9 @@ import java.util.concurrent.Executors;
  * Updated by longcoding on 18. 12. 26..
  */
 
+@Slf4j
 @EnableConfigurationProperties(ServiceConfig.class)
 public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseInterceptor {
-
-    private static final Logger logger = LogManager.getLogger(ExecuteRedisValidationInterceptor.class);
 
     @Autowired
     ApplicationContext context;

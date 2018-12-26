@@ -2,6 +2,7 @@ package com.longcoding.undefined.helpers;
 
 import com.longcoding.undefined.configs.JedisConfig;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,12 +18,12 @@ import javax.annotation.PreDestroy;
  * Created by longcoding on 16. 4. 7..
  * Updated by longcoding on 18. 12. 26..
  */
+
+@Slf4j
 @Component
 @AllArgsConstructor
 @EnableConfigurationProperties(JedisConfig.class)
 public class JedisFactory {
-
-    private static final Logger logger = LogManager.getLogger(JedisFactory.class);
 
     private JedisConfig jedisConfig;
 

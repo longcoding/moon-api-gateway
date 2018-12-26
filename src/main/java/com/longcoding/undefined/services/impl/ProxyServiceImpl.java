@@ -5,6 +5,7 @@ import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.JettyClientFactory;
 import com.longcoding.undefined.models.ResponseInfo;
 import com.longcoding.undefined.services.ProxyService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.client.api.Request;
@@ -27,11 +28,11 @@ import java.util.Map;
 
 /**
  * Created by longcoding on 16. 4. 6..
+ * Updated by longcoding on 18. 12. 26..
  */
+@Slf4j
 @Service
 public class ProxyServiceImpl implements ProxyService {
-
-    protected static final Logger logger = LogManager.getLogger(ProxyServiceImpl.class);
 
     private static final String CONST_CONTENT_TYPE_EXTRACT_DELIMITER = ";";
 
@@ -58,8 +59,8 @@ public class ProxyServiceImpl implements ProxyService {
                 if (!result.isFailed()) {
                     ResponseEntity<JsValue> responseEntity;
 
-                    if (logger.isDebugEnabled()){
-                        logger.debug("Http Time " + (System.currentTimeMillis() - start));
+                    if (log.isDebugEnabled()){
+                        log.debug("Http Time " + (System.currentTimeMillis() - start));
                     }
 
                     HttpFields responseHeaders = result.getResponse().getHeaders();

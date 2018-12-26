@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.MessageManager;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.io.StringWriter;
 
 /**
  * Created by longcoding on 16. 4. 9..
+ * Updated by longcoding 0n 18. 12. 26..
  */
 @ControllerAdvice
 public class ExceptionAdviser {
