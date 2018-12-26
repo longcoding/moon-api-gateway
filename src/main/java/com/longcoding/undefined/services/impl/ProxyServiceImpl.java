@@ -2,7 +2,7 @@ package com.longcoding.undefined.services.impl;
 
 import com.longcoding.undefined.exceptions.ProxyServiceFailException;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.netty.NettyClientFactory;
+import com.longcoding.undefined.helpers.jetty.JettyClientFactory;
 import com.longcoding.undefined.models.ResponseInfo;
 import com.longcoding.undefined.services.ProxyService;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +35,7 @@ public class ProxyServiceImpl implements ProxyService {
     private static final String CONST_CONTENT_TYPE_EXTRACT_DELIMITER = ";";
 
     @Autowired
-    NettyClientFactory nettyClientFactory;
+    JettyClientFactory nettyClientFactory;
 
     private DeferredResult<ResponseEntity> deferredResult;
     private ResponseInfo responseInfo;
