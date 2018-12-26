@@ -2,7 +2,8 @@ package com.longcoding.undefined.interceptors;
 
 import com.longcoding.undefined.exceptions.ExceptionMessage;
 import com.longcoding.undefined.exceptions.GeneralException;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.DispatcherType;
@@ -12,8 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by longcoding on 16. 4. 7..
  */
-@Slf4j
 public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapter {
+
+    protected final Logger logger = LogManager.getLogger(getClass());
 
     private int errorCode;
     private String errorMessage;
@@ -29,9 +31,11 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
 
         boolean result = preHandler(request, response, handler);
 
-        log.debug("Time : {}", (System.currentTimeMillis() - startTime));
+        if ( logger.isDebugEnabled() ) {
+            logger.debug("Time : " + (System.currentTimeMillis() - startTime));
+        }
 
-        if (!result) {
+        if(!result){
             throw new GeneralException(new ExceptionMessage(errorCode, errorMessage));
         }
 
