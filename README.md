@@ -4,7 +4,7 @@
 
 
 ## Introduction
-Asynchronous API Gateway with spring framework 4, servlet 3.1, jetty 9 servlet <br />
+Asynchronous API Gateway with spring framework 5, servlet 4, jetty 9 client <br />
 The Gateway is a network gateway created to provide a single access point for real-time web based protocol elevation that supports load balancing, clustering, and lots of validations. It is designed to make the best performance to deliver open API.
 
 ## Features
@@ -15,7 +15,7 @@ The Gateway is a network gateway created to provide a single access point for re
     - Appkey
     - Service Daily, Minutely Capacity.
     - App Daily, Minutely Ratelimit.
-* Use Asynchronous Processing in Servlet 3
+* Use Asynchronous Processing in Servlet 4
 
 ## Dependency
 * Spring Boot 2.1
