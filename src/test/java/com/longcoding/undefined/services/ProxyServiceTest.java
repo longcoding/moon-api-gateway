@@ -7,7 +7,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,7 +72,7 @@ public class ProxyServiceTest {
     @Test
     public void testCallHttpGet() throws Exception {
 
-        HttpClient httpClient = new DefaultHttpClient();
+        HttpClient httpClient = HttpClientBuilder.create().build();
 
         //inbound path : /stackoverflow/2.2/question/:path
         //outbound path : http://api.stackexchange.com/2.2/questions
@@ -97,7 +97,7 @@ public class ProxyServiceTest {
         HttpResponse response = httpClient.execute(httpGet);
         HttpEntity httpEntity = response.getEntity();
 
-        Assert.assertEquals(true, response.containsHeader(HttpHeaders.CONTENT_TYPE));
+        Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
         Assert.assertEquals(200, response.getStatusLine().getStatusCode());
 
     }
