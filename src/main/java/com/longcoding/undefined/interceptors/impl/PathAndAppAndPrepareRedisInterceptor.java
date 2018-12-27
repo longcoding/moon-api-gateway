@@ -46,7 +46,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         }
 
         if ( appKey == null || appId == null ) {
-            generateException(403, "");
+            generateException("403", "");
             return false;
         }
 
@@ -57,7 +57,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 
         Cache<String, String> apiList = ehcacheFactory.getApiIdCache(requestProtocolAndMethod);
         if ( apiList == null) {
-            generateException(405, "");
+            generateException("405", "");
             return false;
         }
 
@@ -77,7 +77,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         }
 
         if (!isMatched) {
-            generateException(404, ERROR_MEESAGE_PATH_VALID);
+            generateException("404", ERROR_MEESAGE_PATH_VALID);
             return false;
         }
 
@@ -104,7 +104,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 
         String[] category = requestURL.split(delimiter);
         if ( category.length < 1 ) {
-            generateException(404, ERROR_MEESAGE_PATH_VALID);
+            generateException("404", ERROR_MEESAGE_PATH_VALID);
         }
         return category[index];
     }

@@ -105,9 +105,6 @@ public class ProxyServiceTest {
         HttpResponse response = httpClient.execute(httpGet);
         HttpEntity httpEntity = response.getEntity();
 
-        System.out.println(response.getEntity().getContent());
-        System.out.println(response.getStatusLine());
-
         Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
         Assert.assertEquals(200, response.getStatusLine().getStatusCode());
 

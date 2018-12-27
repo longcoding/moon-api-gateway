@@ -46,7 +46,7 @@ public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
         String[] storedUrlTokens = HttpHelper.extractURL(storedURL);
 
         if (requestUrlTokens.length != storedUrlTokens.length ) {
-            generateException(404, ERROR_MESSAGE_PATH_LENGTH);
+            generateException("404", ERROR_MESSAGE_PATH_LENGTH);
         }
 
         Map<String, String> pathParams = Maps.newHashMap();

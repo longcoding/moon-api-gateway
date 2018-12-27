@@ -62,7 +62,7 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
             redisValidator.getJedisMulti().close();
         } catch (JedisConnectionException e) {
             log.error("{}", e);
-            generateException(503, "Validation Service is exhausted");
+            generateException("503", "Validation Service is exhausted");
         } finally {
             redisValidator.getJedis().close();
         }
@@ -81,12 +81,12 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
                 interceptorResult = objectBean.executeJudge(futureValue, jedisMulti);
             } catch (JedisDataException e) {
                 //This is Jedis Bug. I wish it will be fixed.
-                generateException(503, "Validation Service is exhausted");
+                generateException("503", "Validation Service is exhausted");
             } catch (NullPointerException e) {
-                generateException(400, "appKey is not exist or service is exhausted.");
+                generateException("400", "appKey is not exist or service is exhausted.");
             }
             if (!interceptorResult){
-                generateException(502, "Service ratelimit or capacity is over.");
+                generateException("502", "Service ratelimit or capacity is over.");
                 jedisMulti.exec();
                 jedis.close();
                 return false;

@@ -1,7 +1,7 @@
 package com.longcoding.undefined.interceptors;
 
-import com.longcoding.undefined.exceptions.ExceptionMessage;
 import com.longcoding.undefined.exceptions.GeneralException;
+import com.longcoding.undefined.models.CommonResponseEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -17,7 +17,7 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
 
     protected final Logger logger = LogManager.getLogger(getClass());
 
-    private int errorCode;
+    private CommonResponseEntity exceptionResponse;
     private String errorMessage;
 
     @Override
@@ -35,18 +35,13 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
             logger.debug("Time : " + (System.currentTimeMillis() - startTime));
         }
 
-        if(!result){
-            throw new GeneralException(new ExceptionMessage(errorCode, errorMessage));
-        }
-
+        if(!result) throw new GeneralException(this.exceptionResponse);
         return result;
     }
 
-    public void generateException(int errorCode, String errorMessage) {
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
+    protected void generateException(String errorCode, String errorMessage) {
+        this.exceptionResponse = CommonResponseEntity.generateException(errorCode, errorMessage);
     }
-
 
     public abstract boolean preHandler(HttpServletRequest request,
                                                   HttpServletResponse response, Object handler) throws Exception;
