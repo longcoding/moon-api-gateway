@@ -12,9 +12,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -25,7 +25,8 @@ import redis.clients.jedis.Pipeline;
  * Updated by longcoding on 18. 12. 27..
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = UndefinedInitializer.class, inheritInitializers = true)
+//@ContextConfiguration(classes = UndefinedInitializer.class, inheritInitializers = true)
+@SpringBootTest(classes = UndefinedInitializer.class)
 public class ProxyServiceTest {
 
     //Default Test Setting
