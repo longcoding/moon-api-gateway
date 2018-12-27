@@ -1,6 +1,7 @@
 package com.longcoding.undefined.models;
 
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.http.HttpEntity;
 
 import java.util.Map;

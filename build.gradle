@@ -28,9 +28,8 @@ dependencies {
 		//exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
 	}
 	//compile('org.springframework.boot:spring-boot-starter-jetty')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
 
-	compileOnly('org.projectlombok:lombok')
+	compile('org.projectlombok:lombok')
 	annotationProcessor ('org.projectlombok:lombok')
 
 
@@ -63,5 +62,10 @@ dependencies {
 	compile('org.apache.httpcomponents:httpclient:4.5.6')
 
 	compile ('org.eclipse.jetty:jetty-client:9.4.14.v20181114')
+
+	// test
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile ('junit:junit:4.13-beta-1')
+
 
 }

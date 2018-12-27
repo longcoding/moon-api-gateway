@@ -2,7 +2,6 @@ package com.longcoding.undefined.services;
 
 import com.longcoding.undefined.configs.UndefinedInitializer;
 import com.longcoding.undefined.helpers.Const;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -23,6 +22,7 @@ import redis.clients.jedis.Pipeline;
 
 /**
  * Created by longcoding on 16. 4. 14..
+ * Updated by longcoding on 18. 12. 27..
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = UndefinedInitializer.class, inheritInitializers = true)
