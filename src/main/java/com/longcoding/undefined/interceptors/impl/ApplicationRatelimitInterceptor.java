@@ -11,15 +11,13 @@ import java.util.Map;
 
 /**
  * Created by longcoding on 16. 4. 11..
+ * Updated by longcoding on 18. 12. 27..
  */
 public class ApplicationRatelimitInterceptor extends RedisBaseValidationInterceptor<Map<String, Response<Long>>> {
 
     @Override
     public boolean setCondition(Map<String, Response<Long>> storedValue) {
-        if ( storedValue.get(Const.REDIS_APP_RATELIMIT_MINUTELY).get() < 0 ) return false;
-        if ( storedValue.get(Const.REDIS_APP_RATELIMIT_DAILY).get() < 0 ) return false;
-
-        return true;
+        return storedValue.get(Const.REDIS_APP_RATELIMIT_MINUTELY).get() >= 0 && storedValue.get(Const.REDIS_APP_RATELIMIT_DAILY).get() >= 0;
     }
 
     @Override

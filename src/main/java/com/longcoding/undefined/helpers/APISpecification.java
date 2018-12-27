@@ -125,7 +125,7 @@ public class APISpecification {
         if (serviceConfig.isTestActive()) insertEhcacheTestCase();
     }
 
-    private void insertEhcacheTestCase() {
+    public void insertEhcacheTestCase() {
 
         //Default Test Setting
         //

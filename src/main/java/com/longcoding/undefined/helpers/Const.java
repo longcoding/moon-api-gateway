@@ -34,15 +34,15 @@ public class Const {
     public static final String HEADER_CUSTOMIZE_REMOTE_IP = "x-remote-ip";
     public static final String HEADER_CUSTOMIZE_REMOTE_AGENT = "x-user-agent";
 
-    public static final String REDIS_SERVICE_CAPACITY_MINUTELY = "service_capacity_minutely";
-    public static final String REDIS_SERVICE_CAPACITY_MINUTELY_TTL = "service_capacity_minutely_ttl";
-    public static final String REDIS_SERVICE_CAPACITY_DAILY = "service_capacity_daily";
-    public static final String REDIS_SERVICE_CAPACITY_DAILY_TTL = "service_capacity_daily_ttl";
+    public static final String REDIS_SERVICE_CAPACITY_MINUTELY = "service_capacity:minutely";
+    public static final String REDIS_SERVICE_CAPACITY_MINUTELY_TTL = "service_capacity:minutely-ttl";
+    public static final String REDIS_SERVICE_CAPACITY_DAILY = "service_capacity:daily";
+    public static final String REDIS_SERVICE_CAPACITY_DAILY_TTL = "service_capacity:daily-ttl";
 
-    public static final String REDIS_APP_RATELIMIT_MINUTELY = "app_ratelimit_minutely";
-    public static final String REDIS_APP_RATELIMIT_MINUTELY_TTL = "app_ratelimit_minutely_ttl";
-    public static final String REDIS_APP_RATELIMIT_DAILY = "app_ratelimit_daily";
-    public static final String REDIS_APP_RATELIMIT_DAILY_TTL = "app_ratelimit_daily_ttl";
+    public static final String REDIS_APP_RATELIMIT_MINUTELY = "app_ratelimit:minutely";
+    public static final String REDIS_APP_RATELIMIT_MINUTELY_TTL = "app_ratelimit:minutely-ttl";
+    public static final String REDIS_APP_RATELIMIT_DAILY = "app_ratelimit:daily";
+    public static final String REDIS_APP_RATELIMIT_DAILY_TTL = "app_ratelimit:daily-ttl";
 
     public static final int SECOND_OF_DAY = 60*60*24;
     public static final int SECOND_OF_MINUTE = 60;

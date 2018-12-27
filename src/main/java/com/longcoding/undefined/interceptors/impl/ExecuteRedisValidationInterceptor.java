@@ -86,7 +86,7 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
                 generateException(400, "appKey is not exist or service is exhausted.");
             }
             if (!interceptorResult){
-                generateException(502, "");
+                generateException(502, "Service ratelimit or capacity is over.");
                 jedisMulti.exec();
                 jedis.close();
                 return false;

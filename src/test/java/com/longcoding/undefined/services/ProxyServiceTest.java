@@ -1,7 +1,9 @@
 package com.longcoding.undefined.services;
 
-import com.longcoding.undefined.configs.UndefinedInitializer;
+import com.longcoding.undefined.UndefinedApplication;
+import com.longcoding.undefined.helpers.APISpecification;
 import com.longcoding.undefined.helpers.Const;
+import org.apache.catalina.startup.Tomcat;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -12,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,7 +29,7 @@ import redis.clients.jedis.Pipeline;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = UndefinedInitializer.class, inheritInitializers = true)
-@SpringBootTest(classes = UndefinedInitializer.class)
+@SpringBootTest(classes = UndefinedApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ProxyServiceTest {
 
     //Default Test Setting
@@ -54,6 +57,9 @@ public class ProxyServiceTest {
     //            option header : page, votes
     //
 
+    @Autowired
+    APISpecification apiSpecification;
+
     @Before
     public void setUp() throws Exception {
         //input redis data
@@ -67,6 +73,8 @@ public class ProxyServiceTest {
         pipeline.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, "100", "1500");
         pipeline.sync();
         jedis.close();
+
+        apiSpecification.insertEhcacheTestCase();
     }
 
     @Test
@@ -96,6 +104,9 @@ public class ProxyServiceTest {
 
         HttpResponse response = httpClient.execute(httpGet);
         HttpEntity httpEntity = response.getEntity();
+
+        System.out.println(response.getEntity().getContent());
+        System.out.println(response.getStatusLine());
 
         Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
         Assert.assertEquals(200, response.getStatusLine().getStatusCode());

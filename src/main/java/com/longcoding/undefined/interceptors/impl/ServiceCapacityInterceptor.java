@@ -11,13 +11,13 @@ import java.util.Map;
 
 /**
  * Created by longcoding on 16. 4. 7..
+ * Updated by longcoding on 18. 12. 27..
  */
 public class ServiceCapacityInterceptor extends RedisBaseValidationInterceptor<Map<String, Response<Long>>> {
 
     @Override
     public boolean setCondition(Map<String, Response<Long>> storedValue) throws JedisDataException, NullPointerException {
-        if (storedValue.get(Const.REDIS_SERVICE_CAPACITY_DAILY).get() < 0) return false;
-        return true;
+        return storedValue.get(Const.REDIS_SERVICE_CAPACITY_DAILY).get() >= 0;
     }
 
     @Override
