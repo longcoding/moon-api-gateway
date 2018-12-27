@@ -3,8 +3,6 @@ package com.longcoding.undefined.controllers;
 import com.longcoding.undefined.helpers.MessageManager;
 import com.longcoding.undefined.services.ProxyService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;

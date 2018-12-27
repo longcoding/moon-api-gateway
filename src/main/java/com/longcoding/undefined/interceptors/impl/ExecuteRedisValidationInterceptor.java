@@ -2,14 +2,11 @@ package com.longcoding.undefined.interceptors.impl;
 
 import com.longcoding.undefined.configs.ServiceConfig;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.MessageManager;
 import com.longcoding.undefined.helpers.RedisValidator;
 import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.interceptors.RedisBaseValidationInterceptor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by longcoding on 16. 4. 7..
@@ -65,7 +61,7 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
             redisValidator.getJedisMulti().exec();
             redisValidator.getJedisMulti().close();
         } catch (JedisConnectionException e) {
-            logger.error(e);
+            log.error("{}", e);
             generateException(503, "Validation Service is exhausted");
         } finally {
             redisValidator.getJedis().close();
