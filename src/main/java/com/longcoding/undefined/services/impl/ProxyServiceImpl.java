@@ -1,5 +1,7 @@
 package com.longcoding.undefined.services.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.longcoding.undefined.exceptions.ProxyServiceFailException;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.JettyClientFactory;
@@ -17,8 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
-import play.api.libs.json.JsValue;
-import play.api.libs.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
@@ -37,14 +37,10 @@ public class ProxyServiceImpl implements ProxyService {
     @Autowired
     JettyClientFactory jettyClientFactory;
 
-    private DeferredResult<ResponseEntity> deferredResult;
     private ResponseInfo responseInfo;
-
     private static final String ERROR_MESSAGE_WRONG_CONTENT_TYPE = "Content-Type is not matched";
 
     public void requestProxyService(HttpServletRequest request, DeferredResult<ResponseEntity> deferredResult) {
-
-        this.deferredResult = deferredResult;
 
         long start = System.currentTimeMillis();
 
@@ -54,8 +50,8 @@ public class ProxyServiceImpl implements ProxyService {
         setHeaderAndQueryInfo(proxyRequest, responseInfo).send(new BufferingResponseListener() {
             @Override
             public void onComplete(Result result) {
-                if (!result.isFailed()) {
-                    ResponseEntity<JsValue> responseEntity;
+                if (result.isSucceeded()) {
+                    ResponseEntity<JsonNode> responseEntity;
 
                     if (log.isDebugEnabled()){
                         log.debug("Http Time " + (System.currentTimeMillis() - start));
@@ -67,7 +63,7 @@ public class ProxyServiceImpl implements ProxyService {
                         if ( contentTypeValue.split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0]
                                 .equals(responseInfo.getRequestAccept().split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0])){
                             responseEntity =
-                                    new ResponseEntity<>(Json.parse(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
+                                    new ResponseEntity<>(toJson(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
                             deferredResult.setResult(responseEntity);
                         }
                     }
@@ -99,6 +95,18 @@ public class ProxyServiceImpl implements ProxyService {
         }
 
         return request;
+    }
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private JsonNode toJson(String message) {
+        JsonNode result;
+        try {
+            result = objectMapper.readTree(message);
+        } catch (Exception ex) {
+            throw new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE, ex);
+        }
+        return result;
     }
 
 }

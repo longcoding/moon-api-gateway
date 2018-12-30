@@ -3,7 +3,6 @@ package com.longcoding.undefined.services;
 import com.longcoding.undefined.UndefinedApplication;
 import com.longcoding.undefined.helpers.APISpecification;
 import com.longcoding.undefined.helpers.Const;
-import org.apache.catalina.startup.Tomcat;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -22,6 +21,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Pipeline;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Created by longcoding on 16. 4. 14..
@@ -104,6 +105,9 @@ public class ProxyServiceTest {
 
         HttpResponse response = httpClient.execute(httpGet);
         HttpEntity httpEntity = response.getEntity();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        response.getEntity().writeTo(outputStream);
 
         Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
         Assert.assertEquals(200, response.getStatusLine().getStatusCode());
