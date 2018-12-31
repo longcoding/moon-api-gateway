@@ -1,0 +1,17 @@
+api-spec:
+  services:
+    -
+      service-id: 10001
+      service-name: stackoverflow
+      apis:
+        -
+          api-id: 20001
+          api-name: getInfo
+          protocol: http
+          method: get
+          inbound-url: stackoverflow/2.2/question/:first
+          outbound-url: api.stackexchange.com/2.2/questions
+          header: page, votes
+          header-required: ""
+          url-param: version, site
+          url-param-required: site
