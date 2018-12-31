@@ -59,6 +59,7 @@ undefined:
     interceptor:
       isasync: true
       async.thread.count: 100
+    proxy-timeout: 20000
 
 ---
 spring:

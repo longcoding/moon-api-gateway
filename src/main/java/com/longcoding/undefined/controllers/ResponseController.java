@@ -4,6 +4,7 @@ import com.longcoding.undefined.helpers.MessageManager;
 import com.longcoding.undefined.services.ProxyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,15 +23,18 @@ import javax.servlet.http.HttpServletRequest;
 public class ResponseController {
 
     @Autowired
-    ProxyService proxyService;
+    MessageManager messageManager;
 
     @Autowired
-    MessageManager messageManager;
+    ProxyService proxyService;
+
+    @Value("${undefined.service.proxy-timeout}")
+    private long proxyServiceTimeout;
 
     @RequestMapping(value = "/**")
     public DeferredResult<ResponseEntity> responseHttpResult(HttpServletRequest request) {
-
-        DeferredResult<ResponseEntity> deferredResult = new DeferredResult<>();
+        
+        DeferredResult<ResponseEntity> deferredResult = new DeferredResult<>(proxyServiceTimeout);
         proxyService.requestProxyService(request, deferredResult);
 
         return deferredResult;

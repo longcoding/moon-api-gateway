@@ -97,9 +97,9 @@ public class ProxyServiceImpl implements ProxyService {
         return request;
     }
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private JsonNode toJson(String message) {
+    private static JsonNode toJson(String message) {
         JsonNode result;
         try {
             result = objectMapper.readTree(message);
