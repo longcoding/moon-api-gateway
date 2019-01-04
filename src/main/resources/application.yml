@@ -55,7 +55,6 @@ jetty-client:
 undefined:
   service:
     recognize-subdomain: false
-    test-active: true
     interceptor:
       isasync: true
       async.thread.count: 100

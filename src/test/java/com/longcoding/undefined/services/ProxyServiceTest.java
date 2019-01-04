@@ -31,30 +31,32 @@ import java.io.ByteArrayOutputStream;
 @SpringBootTest(classes = UndefinedApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ProxyServiceTest {
 
-    //Default Test Setting
-    //
-    //App name : TestApp
-    //App key : 1000-1000-1000-1000
-    //App Id : 100
-    //App daily ratelimit quota : 10000
-    //App minutely ratelimit quota : 1500
-    //
-    //
-    //Service Id : 300
-    //Service name : stackoverflow
-    //Service daily capacity quota : 10000
-    //Service minutely capacity quota : 2000
-    //
-    //
-    //Test #1 API api Id : 200
-    //            api name : TestAPI
-    //            inbound path : /stackoverflow/2.2/question/:path
-    //            outbound path : http://api.stackexchange.com/2.2/questions
-    //            mandatory queryparam : site
-    //            option queryparam : version
-    //            mandatory header : none
-    //            option header : page, votes
-    //
+/*
+    Default Test Setting
+
+    App name : TestApp
+    App key : 1000-1000-1000-1000
+    App Id : 100
+    App daily ratelimit quota : 10000
+    App minutely ratelimit quota : 1500
+
+
+    Service Id : 300
+    Service name : stackoverflow
+    Service daily capacity quota : 10000
+    Service minutely capacity quota : 2000
+
+
+    Test #1 API api Id : 200
+                api name : TestAPI
+                inbound path : /stackoverflow/2.2/question/:path
+                outbound path : http://api.stackexchange.com/2.2/questions
+                mandatory queryparam : site
+                option queryparam : version
+                mandatory header : none
+                option header : page, votes
+*/
+
 
     @Autowired
     APIExposeSpecification apiExposeSpecification;
@@ -63,17 +65,18 @@ public class ProxyServiceTest {
     public void setUp() throws Exception {
         //input redis data
         //this action is not needed. just for understanding.
-//        JedisPool jedisPool = new JedisPool("127.0.0.1", 6379);
-//        Jedis jedis = jedisPool.getResource();
-//        Pipeline pipeline = jedis.pipelined();
-//        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_DAILY, "300", "10000");
-//        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_MINUTELY, "300", "2000");
-//        pipeline.hset(Const.REDIS_APP_RATELIMIT_DAILY, "100", "10000");
-//        pipeline.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, "100", "1500");
-//        pipeline.sync();
-//        jedis.close();
+        /*
+        JedisPool jedisPool = new JedisPool("127.0.0.1", 6379);
+        Jedis jedis = jedisPool.getResource();
+        Pipeline pipeline = jedis.pipelined();
+        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_DAILY, "300", "10000");
+        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_MINUTELY, "300", "2000");
+        pipeline.hset(Const.REDIS_APP_RATELIMIT_DAILY, "100", "10000");
+        pipeline.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, "100", "1500");
+        pipeline.sync();
+        jedis.close();
+        */
 
-        apiExposeSpecification.insertEhcacheTestCase();
     }
 
     @Test
@@ -102,7 +105,6 @@ public class ProxyServiceTest {
         httpGet.setHeader("appKey", "1000-1000-1000-1000");
 
         HttpResponse response = httpClient.execute(httpGet);
-        HttpEntity httpEntity = response.getEntity();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         response.getEntity().writeTo(outputStream);

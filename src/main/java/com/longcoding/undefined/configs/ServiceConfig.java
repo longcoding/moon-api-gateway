@@ -13,5 +13,4 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "undefined.service")
 public class ServiceConfig {
     boolean recognizeSubdomain;
-    boolean testActive;
 }
