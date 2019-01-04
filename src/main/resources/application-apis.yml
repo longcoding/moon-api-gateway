@@ -5,7 +5,7 @@ api-spec:
       service-name: stackoverflow
       service-minutely-capacity: 10000
       service-daily-capacity: 240000
-      service-path: stackoverflow
+      service-path: /stackoverflow
       apis:
         -
           api-id: '0101'
@@ -34,7 +34,7 @@ api-spec:
       service-name: stackoverflow2
       service-minutely-capacity: 5000
       service-daily-capacity: 100000
-      service-path: another
+      service-path: /another
       apis:
         -
           api-id: '0201'

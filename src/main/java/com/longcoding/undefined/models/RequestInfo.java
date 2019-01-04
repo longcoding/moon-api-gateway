@@ -16,7 +16,7 @@ public class RequestInfo {
     private String requestId, appId, appKey;
     private String serviceId, apiId, apiVersion;
     private String clientIp, userAgent;
-    private String requestURI, requestURL, requestMethod, requestProtocol;
+    private String requestURI, requestURL, requestPath, requestMethod, requestProtocol;
 
     private String accept;
 

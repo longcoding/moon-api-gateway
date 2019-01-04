@@ -2,7 +2,6 @@ package com.longcoding.undefined.services;
 
 import com.longcoding.undefined.UndefinedApplication;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
-import com.longcoding.undefined.helpers.Const;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -18,9 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Pipeline;
 
 import java.io.ByteArrayOutputStream;
 

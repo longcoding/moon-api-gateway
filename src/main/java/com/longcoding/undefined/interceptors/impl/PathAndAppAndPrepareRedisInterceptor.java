@@ -68,7 +68,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         while (apiListIterator.hasNext()) {
             Cache.Entry<String, String> apiInfo = apiListIterator.next();
             apiPattern = Pattern.compile(apiInfo.getKey());
-            if ( apiPattern.matcher(requestInfo.getRequestURL()).matches() ){
+            if ( apiPattern.matcher(requestInfo.getRequestPath()).matches() ){
                 apiId = apiInfo.getValue();
                 requestInfo.setApiId(apiId);
                 isMatched = true;
