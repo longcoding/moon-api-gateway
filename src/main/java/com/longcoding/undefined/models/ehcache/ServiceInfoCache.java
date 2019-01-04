@@ -1,5 +1,6 @@
 package com.longcoding.undefined.models.ehcache;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.io.Serializable;
  * Updated by longcoding on 18. 12. 26..
  */
 @Data
+@Builder
 public class ServiceInfoCache implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -6812605258146764111L;

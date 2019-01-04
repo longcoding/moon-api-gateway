@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 public class EnrollApp implements Serializable, Cloneable {
 
-    int appId;
+    String appId;
     String appKey;
     int appMinutelyRatelimit;
     int appDailyRatelimit;

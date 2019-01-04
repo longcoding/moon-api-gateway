@@ -1,5 +1,6 @@
 package com.longcoding.undefined.models.ehcache;
 
+import lombok.Builder;
 import lombok.Data;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * Updated by longcoding on 18. 12. 26..
  */
 @Data
+@Builder
 public class ApiInfoCache implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -5075020879095721346L;

@@ -14,7 +14,7 @@ public class JsonUtil {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static JsonNode toJson(final Object object) {
+    public static JsonNode toJsonNode(final Object object) {
         return objectMapper.valueToTree(object);
     }
 

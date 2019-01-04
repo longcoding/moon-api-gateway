@@ -1,14 +1,14 @@
 api-spec:
   services:
     -
-      service-id: 01
+      service-id: '01'
       service-name: stackoverflow
       service-minutely-capacity: 10000
       service-daily-capacity: 240000
       service-path: stackoverflow
       apis:
         -
-          api-id: 0101
+          api-id: '0101'
           api-name: getInfo
           protocol: http, https
           method: get
@@ -19,7 +19,7 @@ api-spec:
           url-param: version, site
           url-param-required: site
         -
-          api-id: 0102
+          api-id: '0102'
           api-name: getQuestions
           protocol: https
           method: put
@@ -30,14 +30,14 @@ api-spec:
           url-param: version, site
           url-param-required: site
     -
-      service-id: 02
+      service-id: '02'
       service-name: stackoverflow2
       service-minutely-capacity: 5000
       service-daily-capacity: 100000
       service-path: another
       apis:
         -
-          api-id: 0201
+          api-id: '0201'
           api-name: getList
           protocol: http, https
           method: get

@@ -63,7 +63,7 @@ public class ProxyServiceImpl implements ProxyService {
                         if ( contentTypeValue.split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0]
                                 .equals(responseInfo.getRequestAccept().split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0])){
                             responseEntity =
-                                    new ResponseEntity<>(JsonUtil.toJson(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
+                                    new ResponseEntity<>(JsonUtil.toJsonNode(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
                             deferredResult.setResult(responseEntity);
                         }
                     }

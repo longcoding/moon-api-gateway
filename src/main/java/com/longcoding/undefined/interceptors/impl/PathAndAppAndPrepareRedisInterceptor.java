@@ -26,7 +26,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
     JedisFactory jedisFactory;
 
     @Autowired
-    APIExposeSpecification ehcacheFactory;
+    APIExposeSpecification apiExposeSpec;
 
     private static final String HEADER_APP_KEY = "appKey";
     private static final String ERROR_MEESAGE_PATH_VALID= "subdomin or service path is unclear";
@@ -39,7 +39,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         String appId = null;
         String appKey = appKeyValidation(requestInfo.getQueryStringMap(), requestInfo.getHeaders());
         if (appKey != null) {
-            appId = ehcacheFactory.getAppDistinctionCache().get(appKey);
+            appId = apiExposeSpec.getAppDistinctionCache().get(appKey);
             if (appId != null) {
                 requestInfo.setAppId(appId);
             }
@@ -55,7 +55,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 //                messageManager.getBooleanProperty("undefined.service.recognize.subdomain"));
         String requestProtocolAndMethod = requestInfo.getRequestProtocol() + requestInfo.getRequestMethod();
 
-        Cache<String, String> apiList = ehcacheFactory.getApiIdCache(requestProtocolAndMethod);
+        Cache<String, String> apiList = apiExposeSpec.getApiIdCache(requestProtocolAndMethod);
         if ( apiList == null) {
             generateException("405", "");
             return false;
@@ -81,7 +81,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
             return false;
         }
 
-        ApiInfoCache apiInfoCache = ehcacheFactory.getApiInfoCache().get(apiId);
+        ApiInfoCache apiInfoCache = apiExposeSpec.getApiInfoCache().get(apiId);
         requestInfo.setServiceId(apiInfoCache.getServiceId());
 
         prepareRedisInterceptor(request);

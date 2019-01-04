@@ -14,7 +14,7 @@ public class ServiceExpose implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 3156858586955443057L;
 
-    int serviceId;
+    String serviceId;
     String serviceName;
     String servicePath;
     int serviceMinutelyCapacity;

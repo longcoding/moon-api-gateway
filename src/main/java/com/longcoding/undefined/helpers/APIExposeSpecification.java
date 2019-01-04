@@ -80,9 +80,7 @@ public class APIExposeSpecification {
         apiMatchHttpsDelete = cacheManager.createCache(Const.API_MATCH_HTTPS_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
     }
 
-    public Cache<String, String> getAppDistinctionCache() {
-        return appDistinctionCache;
-    }
+    public Cache<String, String> getAppDistinctionCache() { return appDistinctionCache; }
 
     public Cache<String, AppInfoCache> getAppInfoCache() {
         return appInfoCache;
@@ -156,24 +154,25 @@ public class APIExposeSpecification {
         //from appKey to appId
         appDistinction.put("1000-1000-1000-1000", "100");
         //from inbound url(request url) to apiId
-        apiMatchHttpGet.put("localhost:8080/stackoverflow/2.2/question/[a-zA-Z0-9]+", "200");
+        apiMatchHttpGet.put("localhost:8080/stackoverflow/2.2/question/[a-zA-Z0-9]+", "0101");
+
 
         //Insert AppInfo
         //App Id : 100
-        AppInfoCache appInfoCache = new AppInfoCache("100", "1000-1000-1000-1000", "TestApp", "10000", "1500");
-        getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache);
+//        AppInfoCache appInfoCache = new AppInfoCache("100", "1000-1000-1000-1000", "TestApp", "10000", "1500");
+//        getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache);
 
         //Insert ApiInfo
-        ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
-        queryParams.put("version", false);
-        queryParams.put("site", true);
-        ConcurrentHashMap<String, Boolean> headers = new ConcurrentHashMap<>();
-        headers.put("page", false);
-        headers.put("votes", false);
-        String inboundURL = "localhost:8080/stackoverflow/2.2/question/:first";
-        String outboundURL = "api.stackexchange.com/2.2/questions";
-        ApiInfoCache apiInfoCache = new ApiInfoCache("200", "TestAPI", "300", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
-        getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
+//        ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
+//        queryParams.put("version", false);
+//        queryParams.put("site", true);
+//        ConcurrentHashMap<String, Boolean> headers = new ConcurrentHashMap<>();
+//        headers.put("page", false);
+//        headers.put("votes", false);
+//        String inboundURL = "localhost:8080/stackoverflow/2.2/question/:first";
+//        String outboundURL = "api.stackexchange.com/2.2/questions";
+//        ApiInfoCache apiInfoCache = new ApiInfoCache("200", "TestAPI", "300", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
+//        getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
 
         ServiceInfoCache serviceInfoCache = new ServiceInfoCache("300", "stackoverflow", "10000", "2000");
         getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
