@@ -1,0 +1,15 @@
+init-apps:
+  init-enable: true
+  apps:
+    -
+      app-id: 1
+      app-name: TestApp
+      app-key: 1000-1000-1000-1000
+      app-minutely-ratelimit: 2000
+      app-daily-ratelimit: 10000
+    -
+      app-id: 2
+      app-name: BestApp
+      app-key: ad38-b271-d30a-b2c7
+      app-minutely-ratelimit: 1000
+      app-daily-ratelimit: 50000

@@ -27,30 +27,29 @@ The Gateway is a network gateway created to provide a single access point for re
 ## Configuration
 There are 5 required settings to run undefined-gateway in ehcache. `when cluster function is developed by future update. It will be easy to insert and sync the below data.`
 
-A. first
+A. First
  <br />
-    - Set appDistinction Cache Object in EhcacheFactory Class.  <br />
-    - This Cache convert 'appKey' to 'appId'.
+    - Enroll init APP configuration in application-apps.yaml <br />
+    - (enroll init APP process is optional)
 
-    Cache<String, String> appDistinction = getAppDistinctionCache();
-    //(appKey, appId)
-    //from appKey to appId
-    appDistinction.put("1000-1000-1000-1000", "100");
+    init-apps:
+      init-enable: true
+      apps:
+        -
+          app-id: 1
+          app-name: TestApp
+          app-key: 1000-1000-1000-1000
+          app-minutely-ratelimit: 2000
+          app-daily-ratelimit: 10000
+        -
+          app-id: 2
+          app-name: BestApp
+          app-key: ad38-b271-d30a-b2c7
+          app-minutely-ratelimit: 1000
+          app-daily-ratelimit: 50000
 
-B. second
- <br />
-    - Set AppInfoCache Cache Object in EhcacheFactory Class. <br />
-    - The Gateway brings App information from AppInfoCache.
 
-    //appId : 100
-    //appKey : 1000-1000-1000-1000
-    //appName : TestApp
-    //appDailyRatelimit : 10000
-    //appMinutelyRatelimit : 1500
-    AppInfoCache appInfoCache = new AppInfoCache("100", "1000-1000-1000-1000", "TestApp", "10000", "1500");
-    getAppInfoCache().put(appInfoCache.getAppId(), appInfoCache); 
-
-C. third
+B. Second
  <br />
     - Set up Service and API expose configuration in application-apis.yml <br />
     - The Gateway brings Service and API information to APIExposeSpecification By APIExposeSpecLoader.
