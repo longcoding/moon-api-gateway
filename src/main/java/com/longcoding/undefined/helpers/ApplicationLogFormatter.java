@@ -8,7 +8,7 @@ import java.io.IOException;
  * Created by longcoding on 19. 1. 4..
  */
 
-public final class ApplicationLogger {
+public final class ApplicationLogFormatter {
 
     public static String generateGeneralLog(RequestInfo requestInfo) throws IOException {
         return "";
