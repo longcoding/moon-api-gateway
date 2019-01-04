@@ -96,9 +96,7 @@ Undefined-gateway supports the following protocol and method.
 
 Run undefined-gateway
 
-    maven clean -DskipTests jetty:run
-
-* you can also deploy on tomcat.
+    ./gradlew test
 
 Use rest-client like Postman. To set method and scheme.
 
@@ -116,7 +114,7 @@ OR you can input URL like below.
 
     http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
-and then input header fields. ( appkey is mandatory header.(or queryparam) )
+and then input header fields. ( appkey is mandatory header.(or Query Parameter) )
 
     appkey, 1000-1000-1000-1000
     page, 5
