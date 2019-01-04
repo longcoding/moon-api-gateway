@@ -92,7 +92,9 @@ public class APIExposeSpecification {
         return serviceInfoCache;
     }
 
+
     public Cache<String, String> getApiIdCache(String protocolAndMethod) {
+        protocolAndMethod = protocolAndMethod.toUpperCase();
         if (Const.API_MATCH_HTTP_GET_MAP.equals(protocolAndMethod)) {
             return apiMatchHttpGet;
         } else if (Const.API_MATCH_HTTP_POST_MAP.equals(protocolAndMethod)) {
@@ -150,11 +152,11 @@ public class APIExposeSpecification {
         //            option header : page, votes
         //
 
-        Cache<String, String> appDistinction = getAppDistinctionCache();
+        //Cache<String, String> appDistinction = getAppDistinctionCache();
         //from appKey to appId
-        appDistinction.put("1000-1000-1000-1000", "100");
+        //appDistinction.put("1000-1000-1000-1000", "100");
         //from inbound url(request url) to apiId
-        apiMatchHttpGet.put("localhost:8080/stackoverflow/2.2/question/[a-zA-Z0-9]+", "0101");
+        //apiMatchHttpGet.put("localhost:8080/stackoverflow/2.2/question/[a-zA-Z0-9]+", "0101");
 
 
         //Insert AppInfo
@@ -174,7 +176,7 @@ public class APIExposeSpecification {
 //        ApiInfoCache apiInfoCache = new ApiInfoCache("200", "TestAPI", "300", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
 //        getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
 
-        ServiceInfoCache serviceInfoCache = new ServiceInfoCache("300", "stackoverflow", "10000", "2000");
-        getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
+        //ServiceInfoCache serviceInfoCache = new ServiceInfoCache("300", "stackoverflow", "10000", "2000");
+        //getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by longcoding on 19. 1. 1..
@@ -69,6 +71,29 @@ public class APIExposeSpecLoader {
 
                     apiExposeSpecification.getApiInfoCache().put(apiSpec.getApiId(), apiInfoCache);
         }));
+
+        //Enroll API Routing URL
+        apiExposeSpecConfig.getServices().forEach(service -> {
+            service.getApis().forEach(apiSpec -> {
+
+                StringBuilder routingPathInRegex = new StringBuilder();
+                String routingUrl = apiSpec.getInboundUrl();
+                StringTokenizer st = new StringTokenizer(routingUrl, "/");
+                while (st.hasMoreTokens()) {
+                    String element = st.nextToken();
+                    if (element.startsWith(":")) element = "[a-zA-Z0-9]+";
+
+                    routingPathInRegex.append("/").append(element);
+                }
+
+                //TODO: Apply to Server Domain
+                String routingUrlInRegex = "localhost:8080/" + service.getServicePath() + routingPathInRegex.toString();
+                apiSpec.getProtocol().forEach(protocol ->
+                        apiExposeSpecification.getApiIdCache(protocol + apiSpec.getMethod()).put(routingUrlInRegex.toString(), apiSpec.getApiId()));
+
+            });
+        });
+
     }
 
 }

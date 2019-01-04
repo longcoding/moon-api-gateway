@@ -18,15 +18,15 @@ public class Const {
 
     public static final String SERVER_DEFAULT_ENCODING_TYPE = StandardCharsets.UTF_8.name();
 
-    public static final String API_MATCH_HTTP_GET_MAP = "httpGET";
-    public static final String API_MATCH_HTTP_POST_MAP = "httpPOST";
-    public static final String API_MATCH_HTTP_PUT_MAP = "httpPUT";
-    public static final String API_MATCH_HTTP_DELETE_MAP = "httpDELETE";
+    public static final String API_MATCH_HTTP_GET_MAP = "HTTPGET";
+    public static final String API_MATCH_HTTP_POST_MAP = "HTTPPOST";
+    public static final String API_MATCH_HTTP_PUT_MAP = "HTTPPUT";
+    public static final String API_MATCH_HTTP_DELETE_MAP = "HTTPDELETE";
 
-    public static final String API_MATCH_HTTPS_GET_MAP = "httpsGET";
-    public static final String API_MATCH_HTTPS_POST_MAP = "httpsPOST";
-    public static final String API_MATCH_HTTPS_PUT_MAP = "httpsPUT";
-    public static final String API_MATCH_HTTPS_DELETE_MAP = "httpsDELETE";
+    public static final String API_MATCH_HTTPS_GET_MAP = "HTTPSGET";
+    public static final String API_MATCH_HTTPS_POST_MAP = "HTTPSPOST";
+    public static final String API_MATCH_HTTPS_PUT_MAP = "HTTPSPUT";
+    public static final String API_MATCH_HTTPS_DELETE_MAP = "HTTPSDELETE";
 
     public static final String REQUEST_ACCEPT = "accept";
     public static final String REQUEST_USER_AGENT = "user-agent";
