@@ -3,13 +3,16 @@ api-spec:
     -
       service-id: 01
       service-name: stackoverflow
+      service-minutely-capacity: 10000
+      service-daily-capacity: 240000
+      service-path: stackoverflow
       apis:
         -
           api-id: 0101
           api-name: getInfo
           protocol: http, https
           method: get
-          inbound-url: stackoverflow/2.2/question/:first
+          inbound-url: /2.2/question/:first
           outbound-url: api.stackexchange.com/2.2/questions
           header: page, votes
           header-required: ""
@@ -18,9 +21,9 @@ api-spec:
         -
           api-id: 0102
           api-name: getQuestions
-          protocol: http
-          method: get
-          inbound-url: stackoverflow/2.2/question/:first
+          protocol: https
+          method: put
+          inbound-url: /2.2/question/:first
           outbound-url: api.stackexchange.com/2.2/questions
           header: page, votes
           header-required: ""
@@ -29,13 +32,16 @@ api-spec:
     -
       service-id: 02
       service-name: stackoverflow2
+      service-minutely-capacity: 5000
+      service-daily-capacity: 100000
+      service-path: another
       apis:
         -
           api-id: 0201
           api-name: getList
           protocol: http, https
           method: get
-          inbound-url: stackoverflow/2.2/question/:first
+          inbound-url: /2.2/question/:first
           outbound-url: api.stackexchange.com/2.2/questions
           header: page, votes
           header-required: ""

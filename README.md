@@ -52,47 +52,33 @@ B. second
 
 C. third
  <br />
-    - Set ApiInfoCache Cache Object in EhcacheFactory Class. <br />
-    - The Gateway brings Api information from ApiInfoCache. boolean variable means mandatory or not.
+    - Set up Service and API expose configuration in application-apis.yml <br />
+    - The Gateway brings Service and API information to APIExposeSpecification By APIExposeSpecLoader.
 
-    //Query Parameter Setting.
-    ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
-    queryParams.put("version", false);
-    queryParams.put("site", true);
-    //Header Setting.
-    ConcurrentHashMap<String, Boolean> headers = new ConcurrentHashMap<>();
-    headers.put("page", false);
-    headers.put("votes", false);
-    String inboundURL = "localhost:8080/stackoverflow/2.2/question/:first";
-    String outboundURL = "api.stackexchange.com/2.2/questions";
-    ApiInfoCache apiInfoCache = new ApiInfoCache("200", "TestAPI", "300", headers, queryParams, inboundURL, outboundURL, "GET", "GET", "http", true);
-    getApiInfoCache().put(apiInfoCache.getApiId(), apiInfoCache);
+    api-spec:
+      services:
+        -
+          service-id: 01
+          service-name: stackoverflow
+          service-minutely-capacity: 10000
+          service-daily-capacity: 240000
+          service-path: stackoverflow
+          apis:
+            -
+              api-id: 0101
+              api-name: getInfo
+              protocol: http, https
+              method: get
+              inbound-url: /2.2/question/:first
+              outbound-url: api.stackexchange.com/2.2/questions
+              header: page, votes
+              header-required: ""
+              url-param: version, site
+              url-param-required: sitegetServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
+            -
+              api-id: 0102
+              ...
 
-D. fourth
- <br />
-    - Set ServiceInfoCache Cache Object in EhcacheFactory Class. <br />
-    - The Gateway brings Service information from ServiceInfoCache.
-
-    //serviceId : 300
-    //serviceName : stackoverflow
-    //serviceDailyCapacity : 10000
-    //serviceMinutelyCapacity : 2000
-    ServiceInfoCache serviceInfoCache = new ServiceInfoCache("300", "stackoverflow", "10000", "2000");
-    getServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
-
-E. fifth
- <br />
-    - Set appDistinction Cache Object in EhcacheFactory Class. <br />
-    - The Gateway recognizes request api by appDistinction.
-    
-    //in case of httpGet
-    apiMatchHttpGet.put("localhost:8080/stackoverflow/2.2/question/[a-zA-Z0-9]+", "200");
-
-    //in case of httpPost
-    apiMatchHttpPost.put(key, value);
-
-    //in case of httpsGet
-    apiMatchHttpsGet.put(key, value);
 
 Undefined-gateway supports the following protocol and method.
 

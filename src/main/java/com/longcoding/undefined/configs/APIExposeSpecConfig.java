@@ -1,6 +1,6 @@
 package com.longcoding.undefined.configs;
 
-import com.longcoding.undefined.models.apis.APIService;
+import com.longcoding.undefined.models.apis.ServiceExpose;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,6 +18,6 @@ import java.util.List;
 public class APIExposeSpecConfig {
 
     @NestedConfigurationProperty
-    List<APIService> services;
+    List<ServiceExpose> services;
 
 }

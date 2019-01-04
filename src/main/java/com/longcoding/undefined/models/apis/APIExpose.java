@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 @Data
-public class APISpec implements Serializable, Cloneable {
+public class APIExpose implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -3037135041336335171L;
 
