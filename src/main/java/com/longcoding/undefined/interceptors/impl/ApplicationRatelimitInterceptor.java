@@ -5,7 +5,6 @@ import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.interceptors.RedisBaseValidationInterceptor;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
-import redis.clients.jedis.exceptions.JedisDataException;
 
 import java.util.Map;
 
@@ -44,8 +43,7 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
     protected boolean onFailure(Map<String, Response<Long>> storedValue, Transaction jedisMulti) {
         if (storedValue.get(Const.REDIS_APP_RATELIMIT_MINUTELY_TTL).get() < 0){
             String appId = requestInfo.getAppId();
-            String appQuota = ehcacheFactory.getAppInfoCache()
-                    .get(appId).getMinutelyRateLimit();
+            String appQuota = apiExposeSpec.getAppInfoCache().get(appId).getMinutelyRateLimit();
             jedisMulti.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, appId, appQuota);
             jedisMulti.expire(Const.REDIS_APP_RATELIMIT_MINUTELY, Const.SECOND_OF_MINUTE);
             return true;
@@ -53,7 +51,7 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
 
         if (storedValue.get(Const.REDIS_APP_RATELIMIT_DAILY_TTL).get() < 0){
             String appId = requestInfo.getAppId();
-            String appQuota = ehcacheFactory.getAppInfoCache()
+            String appQuota = apiExposeSpec.getAppInfoCache()
                     .get(appId).getDailyRateLimit();
             jedisMulti.hset(Const.REDIS_APP_RATELIMIT_DAILY, appId, appQuota);
             jedisMulti.expire(Const.REDIS_APP_RATELIMIT_DAILY, Const.SECOND_OF_DAY);

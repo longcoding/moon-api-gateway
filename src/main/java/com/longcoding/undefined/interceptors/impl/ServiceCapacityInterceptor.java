@@ -36,7 +36,7 @@ public class ServiceCapacityInterceptor extends RedisBaseValidationInterceptor<M
     protected boolean onFailure(Map<String, Response<Long>> storedValue, Transaction jedisMulti) {
         if (storedValue.get(Const.REDIS_SERVICE_CAPACITY_DAILY_TTL).get() < 0) {
             String serviceId = requestInfo.getServiceId();
-            String serviceQuota = ehcacheFactory.getServiceInfoCache()
+            String serviceQuota = apiExposeSpec.getServiceInfoCache()
                     .get(serviceId).getDailyCapacity();
             jedisMulti.hset(Const.REDIS_SERVICE_CAPACITY_DAILY, serviceId, serviceQuota);
             jedisMulti.expire(Const.REDIS_SERVICE_CAPACITY_DAILY, Const.SECOND_OF_DAY);

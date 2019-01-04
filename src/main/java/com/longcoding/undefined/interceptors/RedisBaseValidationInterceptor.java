@@ -18,7 +18,7 @@ public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInte
 
 
     @Autowired
-    protected APIExposeSpecification ehcacheFactory;
+    protected APIExposeSpecification apiExposeSpec;
 
     private volatile T futureValue;
     private RedisValidator redisValidator;

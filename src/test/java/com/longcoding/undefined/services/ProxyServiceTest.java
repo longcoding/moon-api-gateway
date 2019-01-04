@@ -2,6 +2,7 @@ package com.longcoding.undefined.services;
 
 import com.longcoding.undefined.UndefinedApplication;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -24,6 +25,7 @@ import java.io.ByteArrayOutputStream;
  * Created by longcoding on 16. 4. 14..
  * Updated by longcoding on 18. 12. 27..
  */
+@Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = UndefinedInitializer.class, inheritInitializers = true)
 @SpringBootTest(classes = UndefinedApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -104,6 +106,7 @@ public class ProxyServiceTest {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         response.getEntity().writeTo(outputStream);
+        log.info("Response: {}", outputStream);
 
         Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
         Assert.assertEquals(200, response.getStatusLine().getStatusCode());
