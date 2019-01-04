@@ -5,9 +5,35 @@ api-spec:
       service-name: stackoverflow
       apis:
         -
-          api-id: 20001
+          api-id: 0101
           api-name: getInfo
+          protocol: http, https
+          method: get
+          inbound-url: stackoverflow/2.2/question/:first
+          outbound-url: api.stackexchange.com/2.2/questions
+          header: page, votes
+          header-required: ""
+          url-param: version, site
+          url-param-required: site
+        -
+          api-id: 0102
+          api-name: getQuestions
           protocol: http
+          method: get
+          inbound-url: stackoverflow/2.2/question/:first
+          outbound-url: api.stackexchange.com/2.2/questions
+          header: page, votes
+          header-required: ""
+          url-param: version, site
+          url-param-required: site
+    -
+      service-id: 10002
+      service-name: stackoverflow2
+      apis:
+        -
+          api-id: 0201
+          api-name: getList
+          protocol: http, https
           method: get
           inbound-url: stackoverflow/2.2/question/:first
           outbound-url: api.stackexchange.com/2.2/questions
