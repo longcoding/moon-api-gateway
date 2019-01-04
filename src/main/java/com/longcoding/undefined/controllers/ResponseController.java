@@ -1,6 +1,5 @@
 package com.longcoding.undefined.controllers;
 
-import com.longcoding.undefined.configs.APISpecConfig;
 import com.longcoding.undefined.helpers.MessageManager;
 import com.longcoding.undefined.services.ProxyService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,7 @@ public class ResponseController {
 
     @RequestMapping(value = "/**")
     public DeferredResult<ResponseEntity> responseHttpResult(HttpServletRequest request) {
-        
+
         DeferredResult<ResponseEntity> deferredResult = new DeferredResult<>(proxyServiceTimeout);
         proxyService.requestProxyService(request, deferredResult);
 

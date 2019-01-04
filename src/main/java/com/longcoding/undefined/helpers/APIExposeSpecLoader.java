@@ -1,6 +1,6 @@
 package com.longcoding.undefined.helpers;
 
-import com.longcoding.undefined.configs.APISpecConfig;
+import com.longcoding.undefined.configs.APIExposeSpecConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -14,14 +14,14 @@ import javax.annotation.PostConstruct;
 
 @Slf4j
 @Component
-@EnableConfigurationProperties(APISpecConfig.class)
-public class APISpecLoader {
+@EnableConfigurationProperties(APIExposeSpecConfig.class)
+public class APIExposeSpecLoader {
 
     @Autowired
-    APISpecConfig apiSpecConfig;
+    APIExposeSpecConfig apiExposeSpecConfig;
 
     @PostConstruct
-    void loadAPISpecifications() {
+    void loadAPIExposeSpecifications() {
 
     }
 

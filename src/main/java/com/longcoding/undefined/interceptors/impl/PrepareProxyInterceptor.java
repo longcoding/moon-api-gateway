@@ -2,7 +2,7 @@ package com.longcoding.undefined.interceptors.impl;
 
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.APISpecification;
+import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.HttpHelper;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
 
     @Autowired
-    APISpecification ehcacheFactory;
+    APIExposeSpecification ehcacheFactory;
 
     private static Pattern pathMandatoryDelimiter = Pattern.compile("^:[a-zA-Z0-9]+");
 

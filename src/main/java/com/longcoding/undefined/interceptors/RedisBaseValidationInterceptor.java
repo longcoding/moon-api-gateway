@@ -2,7 +2,7 @@ package com.longcoding.undefined.interceptors;
 
 import com.google.common.base.CaseFormat;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.APISpecification;
+import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.RedisValidator;
 import com.longcoding.undefined.models.RequestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInte
 
 
     @Autowired
-    protected APISpecification ehcacheFactory;
+    protected APIExposeSpecification ehcacheFactory;
 
     private volatile T futureValue;
     private RedisValidator redisValidator;

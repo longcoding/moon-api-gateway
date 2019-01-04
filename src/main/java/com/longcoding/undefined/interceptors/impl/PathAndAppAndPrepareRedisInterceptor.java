@@ -26,7 +26,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
     JedisFactory jedisFactory;
 
     @Autowired
-    APISpecification ehcacheFactory;
+    APIExposeSpecification ehcacheFactory;
 
     private static final String HEADER_APP_KEY = "appKey";
     private static final String ERROR_MEESAGE_PATH_VALID= "subdomin or service path is unclear";

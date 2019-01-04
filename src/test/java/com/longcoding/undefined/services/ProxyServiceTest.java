@@ -1,7 +1,7 @@
 package com.longcoding.undefined.services;
 
 import com.longcoding.undefined.UndefinedApplication;
-import com.longcoding.undefined.helpers.APISpecification;
+import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.Const;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -59,7 +59,7 @@ public class ProxyServiceTest {
     //
 
     @Autowired
-    APISpecification apiSpecification;
+    APIExposeSpecification apiExposeSpecification;
 
     @Before
     public void setUp() throws Exception {
@@ -75,7 +75,7 @@ public class ProxyServiceTest {
         pipeline.sync();
         jedis.close();
 
-        apiSpecification.insertEhcacheTestCase();
+        apiExposeSpecification.insertEhcacheTestCase();
     }
 
     @Test

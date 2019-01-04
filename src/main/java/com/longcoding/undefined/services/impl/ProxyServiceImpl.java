@@ -1,10 +1,10 @@
 package com.longcoding.undefined.services.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.longcoding.undefined.exceptions.ProxyServiceFailException;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.JettyClientFactory;
+import com.longcoding.undefined.helpers.JsonUtil;
 import com.longcoding.undefined.models.ResponseInfo;
 import com.longcoding.undefined.services.ProxyService;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +63,7 @@ public class ProxyServiceImpl implements ProxyService {
                         if ( contentTypeValue.split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0]
                                 .equals(responseInfo.getRequestAccept().split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0])){
                             responseEntity =
-                                    new ResponseEntity<>(toJson(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
+                                    new ResponseEntity<>(JsonUtil.toJson(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
                             deferredResult.setResult(responseEntity);
                         }
                     }
@@ -95,18 +95,6 @@ public class ProxyServiceImpl implements ProxyService {
         }
 
         return request;
-    }
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    private static JsonNode toJson(String message) {
-        JsonNode result;
-        try {
-            result = objectMapper.readTree(message);
-        } catch (Exception ex) {
-            throw new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE, ex);
-        }
-        return result;
     }
 
 }

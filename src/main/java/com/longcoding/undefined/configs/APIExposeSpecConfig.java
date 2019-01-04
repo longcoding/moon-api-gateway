@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "api-spec")
-public class APISpecConfig {
+public class APIExposeSpecConfig {
 
     @NestedConfigurationProperty
     List<APIService> services;

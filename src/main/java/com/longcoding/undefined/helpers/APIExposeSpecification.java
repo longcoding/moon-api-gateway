@@ -25,7 +25,7 @@ import javax.annotation.PreDestroy;
  */
 @Component
 @EnableConfigurationProperties(ServiceConfig.class)
-public class APISpecification {
+public class APIExposeSpecification {
 
     @Autowired
     ServiceConfig serviceConfig;
