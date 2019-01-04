@@ -9,6 +9,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 /**
  * Created by longcoding on 16. 4. 7..
@@ -18,7 +19,6 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
     protected final Logger logger = LogManager.getLogger(getClass());
 
     private CommonResponseEntity exceptionResponse;
-    private String errorMessage;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -35,7 +35,7 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
             logger.debug("Time : " + (System.currentTimeMillis() - startTime));
         }
 
-        if(!result) throw new GeneralException(this.exceptionResponse);
+        if(!result || Objects.nonNull(this.exceptionResponse)) throw new GeneralException(this.exceptionResponse);
         return result;
     }
 

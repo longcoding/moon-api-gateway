@@ -31,6 +31,8 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
 
             apiInfo.getTransformData().forEach(element -> {
                 String data = getDataByCurrentTransformType(element.getCurrentPoint(), element.getTargetValue(), requestInfo, apiInfo);
+                //TODO:
+                if (Strings.isEmpty(data)) generateException("405", "no data");
                 putDataByTargetTransformType(element.getTargetPoint(), element.getTargetValue(), data, requestInfo);
             });
         }
@@ -54,7 +56,10 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
                 if (inboundUrlsByApiSpec.length + 1 == inboundUrlsByRequest.length) {
                     targetValue = ":" + targetValue;
                     for (int index=0; index <= inboundUrlsByApiSpec.length; index++) {
-                        if (targetValue.equals(inboundUrlsByApiSpec[index])) return inboundUrlsByRequest[index];
+                        if (targetValue.equals(inboundUrlsByApiSpec[index])) {
+                            result = inboundUrlsByRequest[index];
+                            break;
+                        }
                     }
                 }
                 break;
@@ -74,7 +79,10 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
                 requestInfo.getHeaders().put(targetValue, data);
                 break;
             case PARAM_PATH:
-                requestInfo.setOutboundURL(requestInfo.getOutboundURL().replace(":"+targetValue, data));
+                targetValue = ":" + targetValue;
+                String outboundURL = requestInfo.getOutboundURL();
+                if (outboundURL.contains(targetValue)) requestInfo.setOutboundURL(outboundURL.replace(targetValue, data));
+                else generateException("405", "no data");
                 break;
             case PARAM_QUERY:
                 requestInfo.getQueryStringMap().put(targetValue, data);

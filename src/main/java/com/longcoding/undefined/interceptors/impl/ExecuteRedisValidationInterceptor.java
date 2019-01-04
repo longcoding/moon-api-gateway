@@ -39,7 +39,6 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
     @Autowired
     JedisFactory jedisFactory;
 
-    private HttpServletRequest request;
     private static ExecutorService executor;
 
 
@@ -52,8 +51,6 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
     @Override
     @SuppressWarnings("unchecked")
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
-        this.request = request;
 
         RedisValidator redisValidator = (RedisValidator) request.getAttribute(Const.OBJECT_GET_REDIS_VALIDATION);
 

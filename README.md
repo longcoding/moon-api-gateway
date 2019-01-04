@@ -15,6 +15,8 @@ The Gateway is a network gateway created to provide a single access point for re
     - Appkey
     - Service Daily, Minutely Capacity.
     - App Daily, Minutely Ratelimit.
+    - Service Contract(agreement)
+    - Request Transform
 * Use Asynchronous Processing in Servlet 4
 
 ## Dependency
