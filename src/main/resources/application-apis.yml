@@ -1,7 +1,7 @@
 api-spec:
   services:
     -
-      service-id: 10001
+      service-id: 01
       service-name: stackoverflow
       apis:
         -
@@ -27,7 +27,7 @@ api-spec:
           url-param: version, site
           url-param-required: site
     -
-      service-id: 10002
+      service-id: 02
       service-name: stackoverflow2
       apis:
         -
