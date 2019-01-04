@@ -57,7 +57,7 @@ public class ExceptionAdvice {
     public ResponseEntity generalException(GeneralException e) {
         log.error("{}", getStackTrace(e));
         CommonResponseEntity response = CommonResponseEntity.generateException(e.getCode(), e.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getCode()));
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     private static StringWriter getStackTrace(Exception e) {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 /**
  * Created by longcoding on 19. 1. 1..
@@ -85,9 +86,9 @@ public class APIExposeSpecLoader {
             }
 
             String servicePath = (service.getServicePath().startsWith("/"))? service.getServicePath() : "/" + service.getServicePath();
-            String routingUrlInRegex = servicePath + routingPathInRegex.toString();
+            Pattern routingUrlInRegex = Pattern.compile(servicePath + routingPathInRegex.toString());
             apiSpec.getProtocol().forEach(protocol ->
-                    apiExposeSpecification.getApiIdCache(protocol + apiSpec.getMethod()).put(routingUrlInRegex, apiSpec.getApiId()));
+                    apiExposeSpecification.getApiIdCache(protocol + apiSpec.getMethod()).put(apiSpec.getApiId(), routingUrlInRegex));
 
         }));
 

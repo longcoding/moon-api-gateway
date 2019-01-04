@@ -5,6 +5,7 @@ import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
+import org.apache.logging.log4j.util.Strings;
 import org.ehcache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 /**
@@ -55,28 +57,22 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 //                messageManager.getBooleanProperty("undefined.service.recognize.subdomain"));
         String requestProtocolAndMethod = requestInfo.getRequestProtocol() + requestInfo.getRequestMethod();
 
-        Cache<String, String> apiList = apiExposeSpec.getApiIdCache(requestProtocolAndMethod);
-        if ( apiList == null) {
+        Cache<String, Pattern> apiRoutingPaths = apiExposeSpec.getApiIdCache(requestProtocolAndMethod);
+        if ( apiRoutingPaths == null ) {
             generateException("405", "");
             return false;
         }
 
         String apiId = null;
-        Pattern apiPattern;
-        boolean isMatched = false;
-        Iterator<Cache.Entry<String, String>> apiListIterator = apiList.iterator();
-        while (apiListIterator.hasNext()) {
-            Cache.Entry<String, String> apiInfo = apiListIterator.next();
-            apiPattern = Pattern.compile(apiInfo.getKey());
-            if ( apiPattern.matcher(requestInfo.getRequestPath()).matches() ){
-                apiId = apiInfo.getValue();
+        for (Cache.Entry<String, Pattern> pathObj : apiRoutingPaths) {
+            if (pathObj.getValue().matcher(requestInfo.getRequestPath()).matches()) {
+                apiId = pathObj.getKey();
                 requestInfo.setApiId(apiId);
-                isMatched = true;
                 break;
             }
         }
 
-        if (!isMatched) {
+        if (Strings.isEmpty(apiId)) {
             generateException("404", ERROR_MEESAGE_PATH_VALID);
             return false;
         }

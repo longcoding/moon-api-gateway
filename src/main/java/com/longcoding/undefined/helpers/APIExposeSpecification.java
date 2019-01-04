@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.regex.Pattern;
 
 /**
  * Created by longcoding on 16. 4. 8..
@@ -43,15 +44,15 @@ public class APIExposeSpecification {
     private static Cache<String, ApiInfoCache> apiInfoCache;
     private static Cache<String, ServiceInfoCache> serviceInfoCache;
 
-    private static Cache<String, String> apiMatchHttpGet;
-    private static Cache<String, String> apiMatchHttpPost;
-    private static Cache<String, String> apiMatchHttpPut;
-    private static Cache<String, String> apiMatchHttpDelete;
+    private static Cache<String, Pattern> apiMatchHttpGet;
+    private static Cache<String, Pattern> apiMatchHttpPost;
+    private static Cache<String, Pattern> apiMatchHttpPut;
+    private static Cache<String, Pattern> apiMatchHttpDelete;
 
-    private static Cache<String, String> apiMatchHttpsGet;
-    private static Cache<String, String> apiMatchHttpsPost;
-    private static Cache<String, String> apiMatchHttpsPut;
-    private static Cache<String, String> apiMatchHttpsDelete;
+    private static Cache<String, Pattern> apiMatchHttpsGet;
+    private static Cache<String, Pattern> apiMatchHttpsPost;
+    private static Cache<String, Pattern> apiMatchHttpsPut;
+    private static Cache<String, Pattern> apiMatchHttpsDelete;
 
     private static String EHCACHE_PERSISTENCE_SPACE = System.getProperty("java.io.tmpdir");
 
@@ -69,15 +70,15 @@ public class APIExposeSpecification {
         apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiInfoCache.class, resourcePoolsBuilder).build());
         serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceInfoCache.class, resourcePoolsBuilder).build());
 
-        apiMatchHttpGet = cacheManager.createCache(Const.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
-        apiMatchHttpPost = cacheManager.createCache(Const.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
-        apiMatchHttpPut = cacheManager.createCache(Const.API_MATCH_HTTP_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
-        apiMatchHttpDelete = cacheManager.createCache(Const.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        apiMatchHttpGet = cacheManager.createCache(Const.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchHttpPost = cacheManager.createCache(Const.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchHttpPut = cacheManager.createCache(Const.API_MATCH_HTTP_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchHttpDelete = cacheManager.createCache(Const.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
 
-        apiMatchHttpsGet = cacheManager.createCache(Const.API_MATCH_HTTPS_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
-        apiMatchHttpsPost = cacheManager.createCache(Const.API_MATCH_HTTPS_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
-        apiMatchHttpsPut = cacheManager.createCache(Const.API_MATCH_HTTPS_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
-        apiMatchHttpsDelete = cacheManager.createCache(Const.API_MATCH_HTTPS_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        apiMatchHttpsGet = cacheManager.createCache(Const.API_MATCH_HTTPS_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchHttpsPost = cacheManager.createCache(Const.API_MATCH_HTTPS_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchHttpsPut = cacheManager.createCache(Const.API_MATCH_HTTPS_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchHttpsDelete = cacheManager.createCache(Const.API_MATCH_HTTPS_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
     }
 
     public Cache<String, String> getAppDistinctionCache() { return appDistinctionCache; }
@@ -93,7 +94,7 @@ public class APIExposeSpecification {
     }
 
 
-    public Cache<String, String> getApiIdCache(String protocolAndMethod) {
+    public Cache<String, Pattern> getApiIdCache(String protocolAndMethod) {
         protocolAndMethod = protocolAndMethod.toUpperCase();
         if (Const.API_MATCH_HTTP_GET_MAP.equals(protocolAndMethod)) {
             return apiMatchHttpGet;
