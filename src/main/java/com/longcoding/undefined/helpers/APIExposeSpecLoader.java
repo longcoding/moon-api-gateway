@@ -1,8 +1,11 @@
 package com.longcoding.undefined.helpers;
 
+import com.google.common.collect.Lists;
 import com.longcoding.undefined.configs.APIExposeSpecConfig;
+import com.longcoding.undefined.models.apis.TransformData;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
 import com.longcoding.undefined.models.ehcache.ServiceInfoCache;
+import com.longcoding.undefined.models.enumeration.TransformType;
 import lombok.extern.slf4j.Slf4j;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
@@ -54,6 +60,19 @@ public class APIExposeSpecLoader {
                     apiSpec.getUrlParam().forEach(param -> queryParams.put(param, false));
                     apiSpec.getUrlParamRequired().forEach(requiredParam -> queryParams.replace(requiredParam, true));
 
+                    List<TransformData> transformRequests = Lists.newArrayList();
+                    Map<String, String[]> transformRequest = apiSpec.getTransform();
+                    if (Objects.nonNull(transformRequest)) {
+                        transformRequest.forEach((targetValue, transformPoint) -> {
+                            TransformData transformData = TransformData.builder()
+                                    .targetValue(targetValue)
+                                    .currentPoint(TransformType.of(transformPoint[0]))
+                                    .targetPoint(TransformType.of(transformPoint[1]))
+                                    .build();
+                            transformRequests.add(transformData);
+                        });
+                    }
+
                     ApiInfoCache apiInfoCache = ApiInfoCache.builder()
                             .apiId(apiSpec.getApiId())
                             .apiName(apiSpec.getApiName())
@@ -67,6 +86,7 @@ public class APIExposeSpecLoader {
                             //currently spec
                             .protocol(apiSpec.getProtocol().get(0))
                             .isOpenApi(true)
+                            .transformData(transformRequests)
                             .build();
 
                     apiExposeSpecification.getApiInfoCache().put(apiSpec.getApiId(), apiInfoCache);

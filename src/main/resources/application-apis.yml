@@ -47,3 +47,20 @@ api-spec:
           header-required: ""
           url-param: version, site
           url-param-required: site
+          transform:
+            page: [header, param_query]
+            site: [param_path, header]
+        -
+          api-id: '0202'
+          api-name: transformTest
+          protocol: http, https
+          method: get
+          inbound-url: /2.2/haha/question/:site
+          outbound-url: api.stackexchange.com/:page/:site
+          header: page, votes
+          header-required: ""
+          url-param: version, site
+          url-param-required: site
+          transform:
+            page: [header, param_path]
+            site: [param_path, param_path]

@@ -1,10 +1,12 @@
 package com.longcoding.undefined.models.ehcache;
 
+import com.longcoding.undefined.models.apis.TransformData;
 import lombok.Builder;
 import lombok.Data;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by longcoding on 16. 4. 8..
@@ -32,31 +34,8 @@ public class ApiInfoCache implements Serializable, Cloneable {
     private String outboundMethod;
 
     private String protocol;
-
+    private List<TransformData> transformData;
 
     private boolean isOpenApi;
-
-    public ApiInfoCache(String apiId,
-                        String apiName,
-                        String serviceId,
-                        ConcurrentHashMap<String, Boolean> headers,
-                        ConcurrentHashMap<String, Boolean> queryParams,
-                        String inboundURL, String outboundURL,
-                        String inboundMethod,
-                        String outboundMethod,
-                        String protocol,
-                        boolean isOpenApi) {
-        this.apiId = apiId;
-        this.apiName = apiName;
-        this.serviceId = serviceId;
-        this.headers = headers;
-        this.queryParams = queryParams;
-        this.inboundURL = inboundURL;
-        this.outboundURL = outboundURL;
-        this.inboundMethod = inboundMethod;
-        this.outboundMethod = outboundMethod;
-        this.protocol = protocol;
-        this.isOpenApi = isOpenApi;
-    }
 
 }

@@ -41,15 +41,17 @@ public class UndefinedServletConfig implements WebMvcConfigurer {
     @Bean
     public ExecuteRedisValidationInterceptor executeRedisValidationInterceptor() { return new ExecuteRedisValidationInterceptor(); }
     @Bean
-    public ExtractRequestInterceptor extractRequestInterceptor() {
-        return new ExtractRequestInterceptor();
-    }
+    public ExtractRequestInterceptor extractRequestInterceptor() { return new ExtractRequestInterceptor(); }
     @Bean
     public HeaderAndQueryValidationInterceptor headerAndQueryValidationInterceptor() { return new HeaderAndQueryValidationInterceptor(); }
     @Bean
     public PrepareProxyInterceptor prepareProxyInterceptor() { return new PrepareProxyInterceptor(); }
     @Bean
     public ApplicationRatelimitInterceptor applicationRatelimitInterceptor() { return new ApplicationRatelimitInterceptor(); }
+    @Bean
+    public ServiceContractValidationInterceptor serviceContractValidationInterceptor() { return new ServiceContractValidationInterceptor(); }
+    @Bean
+    public TransformRequestInterceptor transformRequestInterceptor() { return new TransformRequestInterceptor(); }
 
 //    @Bean
 //    public EhcacheConfigureFactory ehcacheConfigureFactory() { return new EhcacheConfigureFactory(); }
@@ -58,11 +60,13 @@ public class UndefinedServletConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(initializeInterceptor());
         registry.addInterceptor(pathAndPrepareRedisInterceptor());
+        registry.addInterceptor(serviceContractValidationInterceptor());
         registry.addInterceptor(serviceCapacityInterceptor());
         registry.addInterceptor(applicationRatelimitInterceptor());
         registry.addInterceptor(executeRedisValidationInterceptor());
         registry.addInterceptor(extractRequestInterceptor());
         registry.addInterceptor(headerAndQueryValidationInterceptor());
+        registry.addInterceptor(transformRequestInterceptor());
         registry.addInterceptor(prepareProxyInterceptor());
     }
 

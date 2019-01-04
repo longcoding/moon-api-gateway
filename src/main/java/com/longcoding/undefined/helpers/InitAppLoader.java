@@ -42,6 +42,7 @@ public class InitAppLoader {
                         .appName(app.getAppName())
                         .dailyRateLimit(String.valueOf(app.getAppDailyRatelimit()))
                         .minutelyRateLimit(String.valueOf(app.getAppMinutelyRatelimit()))
+                        .serviceContract(app.getAppServiceContract())
                         .build();
 
                 appInfoCaches.put(app.getAppId(), appInfo);

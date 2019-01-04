@@ -22,12 +22,13 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
     @Override
     public Map<String, Response<Long>> setJedisMultiCommand(Transaction jedisMulti) {
 
-        Response<Long> applicationDailyRateLimit =
-                jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_DAILY, this.requestInfo.getAppId(), -1);
-        Response<Long> applicationMinutelyRateLimit =
-                jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_MINUTELY, this.requestInfo.getAppId(), -1);
-        Response<Long> applicationDailyRateLimitTTL = jedisMulti.ttl(Const.REDIS_APP_RATELIMIT_DAILY);
-        Response<Long> applicationMinutelyRateLimitTTL = jedisMulti.ttl(Const.REDIS_APP_RATELIMIT_MINUTELY);
+        String dailyRedisKey = String.join(":", Const.REDIS_APP_RATELIMIT_DAILY, requestInfo.getServiceId(), requestInfo.getAppId());
+        String minutelyRedisKey = String.join(":", Const.REDIS_APP_RATELIMIT_MINUTELY, requestInfo.getServiceId(), requestInfo.getAppId());
+
+        Response<Long> applicationDailyRateLimit = jedisMulti.decr(dailyRedisKey);
+        Response<Long> applicationMinutelyRateLimit = jedisMulti.decr(minutelyRedisKey);
+        Response<Long> applicationDailyRateLimitTTL = jedisMulti.ttl(dailyRedisKey);
+        Response<Long> applicationMinutelyRateLimitTTL = jedisMulti.ttl(minutelyRedisKey);
 
         Map<String, Response<Long>> appRatelimit = Maps.newHashMap();
         appRatelimit.put(Const.REDIS_APP_RATELIMIT_DAILY, applicationDailyRateLimit);
@@ -41,27 +42,24 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
 
     @Override
     protected boolean onFailure(Map<String, Response<Long>> storedValue, Transaction jedisMulti) {
-        if (storedValue.get(Const.REDIS_APP_RATELIMIT_MINUTELY_TTL).get() < 0){
-            String appId = requestInfo.getAppId();
-            String appQuota = apiExposeSpec.getAppInfoCache().get(appId).getMinutelyRateLimit();
-            jedisMulti.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, appId, appQuota);
-            jedisMulti.expire(Const.REDIS_APP_RATELIMIT_MINUTELY, Const.SECOND_OF_MINUTE);
+        String dailyRedisKey = String.join(":", Const.REDIS_APP_RATELIMIT_DAILY, requestInfo.getServiceId(), requestInfo.getAppId());
+        String minutelyRedisKey = String.join(":", Const.REDIS_APP_RATELIMIT_MINUTELY, requestInfo.getServiceId(), requestInfo.getAppId());
+
+        if (storedValue.get(Const.REDIS_APP_RATELIMIT_MINUTELY_TTL).get() < 0 && storedValue.get(Const.REDIS_APP_RATELIMIT_DAILY).get() >= 0){
+            String appQuota = apiExposeSpec.getAppInfoCache().get(requestInfo.getAppId()).getMinutelyRateLimit();
+            jedisMulti.setex(minutelyRedisKey, Const.SECOND_OF_MINUTE, appQuota);
             return true;
         }
 
         if (storedValue.get(Const.REDIS_APP_RATELIMIT_DAILY_TTL).get() < 0){
-            String appId = requestInfo.getAppId();
-            String appQuota = apiExposeSpec.getAppInfoCache()
-                    .get(appId).getDailyRateLimit();
-            jedisMulti.hset(Const.REDIS_APP_RATELIMIT_DAILY, appId, appQuota);
-            jedisMulti.expire(Const.REDIS_APP_RATELIMIT_DAILY, Const.SECOND_OF_DAY);
+            String appQuota = apiExposeSpec.getAppInfoCache().get(requestInfo.getAppId()).getDailyRateLimit();
+            jedisMulti.setex(dailyRedisKey, Const.SECOND_OF_DAY, appQuota);
             return true;
         }
 
-        jedisMulti.hincrBy(Const.REDIS_SERVICE_CAPACITY_DAILY, requestInfo.getServiceId(), 1);
-        jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_DAILY, requestInfo.getAppId(), 1);
-        jedisMulti.hincrBy(Const.REDIS_APP_RATELIMIT_MINUTELY, requestInfo.getAppId(), 1);
-
+        jedisMulti.incr(String.join(":", Const.REDIS_SERVICE_CAPACITY_DAILY, requestInfo.getServiceId()));
+        jedisMulti.incr(dailyRedisKey);
+        jedisMulti.incr(minutelyRedisKey);
         return false;
     }
 }

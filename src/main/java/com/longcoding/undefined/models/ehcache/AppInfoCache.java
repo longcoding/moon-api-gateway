@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by longcoding on 16. 4. 8..
@@ -22,12 +23,15 @@ public class AppInfoCache implements Serializable, Cloneable {
     private String dailyRateLimit;
     private String minutelyRateLimit;
 
-    public AppInfoCache(String appId, String appKey, String appName, String dailyRateLimit, String minutelyRateLimit) {
+    private List<String> serviceContract;
+
+    public AppInfoCache(String appId, String appKey, String appName, String dailyRateLimit, String minutelyRateLimit, List<String> serviceContract) {
         this.appId = appId;
         this.appKey = appKey;
         this.appName = appName;
         this.dailyRateLimit = dailyRateLimit;
         this.minutelyRateLimit = minutelyRateLimit;
+        this.serviceContract = serviceContract;
     }
 
 }

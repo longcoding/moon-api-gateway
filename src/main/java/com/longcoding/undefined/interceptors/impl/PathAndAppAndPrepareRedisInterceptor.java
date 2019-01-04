@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 /**
@@ -79,6 +77,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 
         ApiInfoCache apiInfoCache = apiExposeSpec.getApiInfoCache().get(apiId);
         requestInfo.setServiceId(apiInfoCache.getServiceId());
+        requestInfo.setOutboundURL(apiInfoCache.getOutboundURL());
 
         prepareRedisInterceptor(request);
         return true;

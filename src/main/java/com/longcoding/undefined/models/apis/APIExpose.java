@@ -3,6 +3,7 @@ package com.longcoding.undefined.models.apis;
 import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by longcoding on 19. 1. 1..
@@ -23,5 +24,6 @@ public class APIExpose implements Serializable, Cloneable {
     List<String> headerRequired;
     List<String> urlParam;
     List<String> urlParamRequired;
+    Map<String, String[]> transform;
 
 }

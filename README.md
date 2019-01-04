@@ -41,12 +41,14 @@ A. First
           app-key: 1000-1000-1000-1000
           app-minutely-ratelimit: 2000
           app-daily-ratelimit: 10000
+          app-service-contract: ['01', '02']
         -
           app-id: 2
           app-name: BestApp
           app-key: ad38-b271-d30a-b2c7
           app-minutely-ratelimit: 1000
           app-daily-ratelimit: 50000
+          app-service-contract: ['02']
 
 
 B. Second
@@ -75,8 +77,22 @@ B. Second
               url-param: version, site
               url-param-required: sitegetServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
             -
-              api-id: 0102
+              api-id: '0201'
+              api-name: getList
+              protocol: http, https
+              method: get
+              inbound-url: /2.2/question/:first
+              outbound-url: api.stackexchange.com/2.2/:page
+              header: page, votes
+              header-required: ""
+              url-param: version, site
+              url-param-required: site
+              transform:
+                page: [header, param_query]
+                site: [param_path, header]
+            -
               ...
+                          
 
 
 Undefined-gateway supports the following protocol and method.

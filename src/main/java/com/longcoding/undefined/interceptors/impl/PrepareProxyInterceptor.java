@@ -1,8 +1,8 @@
 package com.longcoding.undefined.interceptors.impl;
 
 import com.google.common.collect.Maps;
-import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
+import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.HttpHelper;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Created by longcoding on 16. 4. 9..
@@ -22,16 +21,14 @@ import java.util.regex.Pattern;
 public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
 
     @Autowired
-    APIExposeSpecification ehcacheFactory;
-
-    private static Pattern pathMandatoryDelimiter = Pattern.compile("^:[a-zA-Z0-9]+");
+    APIExposeSpecification apiExposeSpec;
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
 
-        ApiInfoCache apiInfoCache = ehcacheFactory.getApiInfoCache().get(requestInfo.getApiId());
+        ApiInfoCache apiInfoCache = apiExposeSpec.getApiInfoCache().get(requestInfo.getApiId());
 
         ResponseInfo responseInfo = new ResponseInfo();
         responseInfo.setRequestId(requestInfo.getRequestId());
@@ -40,9 +37,10 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
         responseInfo.setQueryStringMap(requestInfo.getQueryStringMap());
         responseInfo.setRequestAccept(requestInfo.getAccept());
         responseInfo.setRequestProtocol(apiInfoCache.getProtocol());
-        String outboudURL = createOutBoundURI(requestInfo.getPathParams(), apiInfoCache.getOutboundURL());
+        responseInfo.setRequestURL(apiInfoCache.getOutboundURL());
+        String outboundURL = createOutBoundURI(requestInfo.getPathParams(), requestInfo.getOutboundURL());
 
-        URI uri = new URI(HttpHelper.createURI(responseInfo.getRequestProtocol(), outboudURL));
+        URI uri = new URI(HttpHelper.createURI(responseInfo.getRequestProtocol(), outboundURL));
         responseInfo.setRequestURI(uri);
 
         request.setAttribute(Const.RESPONSE_INFO_DATA, responseInfo);

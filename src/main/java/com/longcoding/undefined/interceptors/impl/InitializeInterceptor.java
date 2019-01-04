@@ -26,7 +26,7 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
     private static final String PROTOCOL_DELIMITER = "://";
 
     @Autowired
-    APIExposeSpecification ehcacheFactory;
+    APIExposeSpecification apiExposeSpec;
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
