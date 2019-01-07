@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.common.collect.Lists;
 import com.longcoding.undefined.interceptors.impl.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.servlet.config.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,8 +26,14 @@ import java.util.List;
 @Configuration
 public class UndefinedServletConfig implements WebMvcConfigurer {
 
-    private static final String PATH_INTERNAL_API = "/internal/**";
-    private static final String[] EXCLUDE_INTERCEPTOR_PATH = { PATH_INTERNAL_API };
+    private static final List<String> EXCLUDE_PATH_INTERNAL_API = Arrays.asList("/internal/**", "/");
+    private static final List<String> EXCLUDE_PATH_SWAGGER_UI = Arrays.asList("/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs", "/webjars/**", "/error", "/csrf", "/");
+    private static List<String> EXCLUDE_TOTAL_PATH = Lists.newArrayList();
+
+    static {
+        EXCLUDE_TOTAL_PATH.addAll(EXCLUDE_PATH_INTERNAL_API);
+        EXCLUDE_TOTAL_PATH.addAll(EXCLUDE_PATH_SWAGGER_UI);
+    }
 
     @Bean
     public InitializeInterceptor initializeInterceptor() { return new InitializeInterceptor(); }
@@ -55,17 +63,17 @@ public class UndefinedServletConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(initializeInterceptor());
-        registry.addInterceptor(authenticationInterceptor());
-        registry.addInterceptor(pathAndPrepareRedisInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
-        registry.addInterceptor(serviceContractValidationInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
-        registry.addInterceptor(serviceCapacityInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
-        registry.addInterceptor(applicationRatelimitInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
-        registry.addInterceptor(executeRedisValidationInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
-        registry.addInterceptor(extractRequestInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
-        registry.addInterceptor(headerAndQueryValidationInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
-        registry.addInterceptor(transformRequestInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
-        registry.addInterceptor(prepareProxyInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
+        registry.addInterceptor(initializeInterceptor()).excludePathPatterns(EXCLUDE_PATH_SWAGGER_UI);
+        registry.addInterceptor(authenticationInterceptor()).excludePathPatterns(EXCLUDE_PATH_SWAGGER_UI);
+        registry.addInterceptor(pathAndPrepareRedisInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
+        registry.addInterceptor(serviceContractValidationInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
+        registry.addInterceptor(serviceCapacityInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
+        registry.addInterceptor(applicationRatelimitInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
+        registry.addInterceptor(executeRedisValidationInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
+        registry.addInterceptor(extractRequestInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
+        registry.addInterceptor(headerAndQueryValidationInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
+        registry.addInterceptor(transformRequestInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
+        registry.addInterceptor(prepareProxyInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
     }
 
     @Bean

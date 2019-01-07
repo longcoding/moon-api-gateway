@@ -30,7 +30,7 @@ public class ResponseController {
     @Value("${undefined.service.proxy-timeout}")
     private long proxyServiceTimeout;
 
-    @RequestMapping(value = "/**")
+    @RequestMapping(value = "/{serviceName:^(?!swagger-ui.html|webjars).*}/**")
     public DeferredResult<ResponseEntity> responseHttpResult(HttpServletRequest request) {
 
         DeferredResult<ResponseEntity> deferredResult = new DeferredResult<>(proxyServiceTimeout);
