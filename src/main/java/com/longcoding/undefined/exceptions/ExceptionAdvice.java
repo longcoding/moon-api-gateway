@@ -54,7 +54,8 @@ public class ExceptionAdvice {
     public ResponseEntity proxyServiceFailException(ProxyServiceFailException e) {
         log.error("{}", getStackTrace(e));
         ExceptionType exceptionType = ExceptionType.E_1102_OUTBOUND_SERVICE_IS_NOT_UNSTABLE;
-        CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), messageManager.getProperty(exceptionType.getCode()));
+        String message = messageManager.getProperty(exceptionType.getCode()) + e.getMessage();
+        CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), message);
         return new ResponseEntity<>(response, exceptionType.getHttpStatus());
     }
 

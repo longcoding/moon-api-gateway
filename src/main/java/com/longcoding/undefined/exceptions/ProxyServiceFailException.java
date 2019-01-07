@@ -15,4 +15,8 @@ public class ProxyServiceFailException extends RuntimeException {
         super(message, cause);
     }
 
+    public ProxyServiceFailException(Throwable cause) {
+        super(cause);
+    }
+
 }

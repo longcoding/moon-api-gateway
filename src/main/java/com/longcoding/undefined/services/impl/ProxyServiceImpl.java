@@ -3,7 +3,6 @@ package com.longcoding.undefined.services.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.longcoding.undefined.exceptions.ProxyServiceFailException;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.HttpHelper;
 import com.longcoding.undefined.helpers.JettyClientFactory;
 import com.longcoding.undefined.helpers.JsonUtil;
 import com.longcoding.undefined.models.ResponseInfo;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -75,7 +73,7 @@ public class ProxyServiceImpl implements ProxyService {
 
             @Override
             public void onFailure(Response response, Throwable failure) {
-                deferredResult.setErrorResult(new ProxyServiceFailException("", failure));
+                deferredResult.setErrorResult(new ProxyServiceFailException(failure));
             }
         });
 
