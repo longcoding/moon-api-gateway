@@ -1,4 +1,4 @@
-package com.longcoding.undefined.services.impl;
+package com.longcoding.undefined.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.longcoding.undefined.exceptions.ProxyServiceFailException;
