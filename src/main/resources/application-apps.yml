@@ -11,7 +11,7 @@ init-apps:
     -
       app-id: 2
       app-name: BestApp
-      app-key: ad38-b271-d30a-b2c7
+      app-key: e3938427-1e27-3a37-a854-0ac5a40d84a8
       app-minutely-ratelimit: 1000
       app-daily-ratelimit: 50000
       app-service-contract: ['01', '02']

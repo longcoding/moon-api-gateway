@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Slf4j
 @RestController
-@RequestMapping(value = "/*")
+@RequestMapping(value = "/")
 public class ResponseController {
 
     @Autowired

@@ -1,5 +1,6 @@
 package com.longcoding.undefined.interceptors.impl;
 
+import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
@@ -32,7 +33,7 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
             apiInfo.getTransformData().forEach(element -> {
                 String data = getDataByCurrentTransformType(element.getCurrentPoint(), element.getTargetValue(), requestInfo, apiInfo);
                 //TODO:
-                if (Strings.isEmpty(data)) generateException("405", "no data");
+                if (Strings.isEmpty(data)) generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT);
                 putDataByTargetTransformType(element.getTargetPoint(), element.getTargetValue(), data, requestInfo);
             });
         }
@@ -82,7 +83,7 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
                 targetValue = ":" + targetValue;
                 String outboundURL = requestInfo.getOutboundURL();
                 if (outboundURL.contains(targetValue)) requestInfo.setOutboundURL(outboundURL.replace(targetValue, data));
-                else generateException("405", "no data");
+                else generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT);
                 break;
             case PARAM_QUERY:
                 requestInfo.getQueryStringMap().put(targetValue, data);

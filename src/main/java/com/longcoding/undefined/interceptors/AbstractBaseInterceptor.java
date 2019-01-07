@@ -1,5 +1,6 @@
 package com.longcoding.undefined.interceptors;
 
+import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.exceptions.GeneralException;
 import com.longcoding.undefined.models.CommonResponseEntity;
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +19,7 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
 
     protected final Logger logger = LogManager.getLogger(getClass());
 
-    private CommonResponseEntity exceptionResponse;
+    private GeneralException generalException;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -35,12 +36,18 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
             logger.debug("Time : " + (System.currentTimeMillis() - startTime));
         }
 
-        if(!result || Objects.nonNull(this.exceptionResponse)) throw new GeneralException(this.exceptionResponse);
+        if(!result || Objects.nonNull(this.generalException)) throw generalException;
         return result;
     }
 
-    protected void generateException(String errorCode, String errorMessage) {
-        this.exceptionResponse = CommonResponseEntity.generateException(errorCode, errorMessage);
+    protected void generateException(ExceptionType exceptionType) {
+        logger.error("error occur in [{}]", getClass().getName());
+        this.generalException = new GeneralException(exceptionType);
+    }
+
+    protected void generateException(ExceptionType exceptionType, String message) {
+        logger.error("error occur in [{}]", getClass().getName());
+        this.generalException = new GeneralException(exceptionType, message);
     }
 
     public abstract boolean preHandler(HttpServletRequest request,

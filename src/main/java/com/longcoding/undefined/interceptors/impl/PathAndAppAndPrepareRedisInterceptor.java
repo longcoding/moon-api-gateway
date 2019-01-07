@@ -1,7 +1,7 @@
 package com.longcoding.undefined.interceptors.impl;
 
+import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.helpers.*;
-import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfoCache;
@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
  * Created by longcoding on 16. 4. 7..
+ * Updated by longcoding on 19. 1. 7..
  */
 public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
 
@@ -28,27 +28,10 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
     @Autowired
     APIExposeSpecification apiExposeSpec;
 
-    private static final String HEADER_APP_KEY = "appKey";
-    private static final String ERROR_MEESAGE_PATH_VALID= "subdomin or service path is unclear";
-
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
-
-        String appId = null;
-        String appKey = appKeyValidation(requestInfo.getQueryStringMap(), requestInfo.getHeaders());
-        if (appKey != null) {
-            appId = apiExposeSpec.getAppDistinctionCache().get(appKey);
-            if (appId != null) {
-                requestInfo.setAppId(appId);
-            }
-        }
-
-        if ( appKey == null || appId == null ) {
-            generateException("403", "");
-            return false;
-        }
 
         // for future update.
 //        String categoryValue = classifyCategory(requestInfo.getRequestURL(),
@@ -57,7 +40,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 
         Cache<String, Pattern> apiRoutingPaths = apiExposeSpec.getApiIdCache(requestProtocolAndMethod);
         if ( apiRoutingPaths == null ) {
-            generateException("405", "");
+            generateException(ExceptionType.E_1003_METHOD_OR_PROTOCOL_IS_NOT_NOT_ALLOWED);
             return false;
         }
 
@@ -71,7 +54,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         }
 
         if (Strings.isEmpty(apiId)) {
-            generateException("404", ERROR_MEESAGE_PATH_VALID);
+            generateException(ExceptionType.E_1006_INVALID_API_PATH);
             return false;
         }
 
@@ -79,7 +62,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         requestInfo.setServiceId(apiInfoCache.getServiceId());
         requestInfo.setOutboundURL(apiInfoCache.getOutboundURL());
 
-        prepareRedisInterceptor(request);
+        prepareRedisInterceptors(request);
         return true;
     }
 
@@ -99,31 +82,14 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 
         String[] category = requestURL.split(delimiter);
         if ( category.length < 1 ) {
-            generateException("404", ERROR_MEESAGE_PATH_VALID);
+            generateException(ExceptionType.E_1006_INVALID_API_PATH);
         }
         return category[index];
     }
 
-    private void prepareRedisInterceptor(HttpServletRequest request) {
+    private void prepareRedisInterceptors(HttpServletRequest request) {
         RedisValidator redisValidator = new RedisValidator(jedisFactory);
         request.setAttribute(Const.OBJECT_GET_REDIS_VALIDATION, redisValidator);
     }
 
-    private String appKeyValidation(Map<String, String> queryStringMap, Map<String, String> headerMap) {
-
-        String appKey = null;
-        for ( String header : headerMap.keySet() ) {
-            if ( header.equalsIgnoreCase(HEADER_APP_KEY) ) {
-                return headerMap.get(header);
-            }
-        }
-
-        for ( String queryString : queryStringMap.keySet() ){
-            if ( queryString.equalsIgnoreCase(HEADER_APP_KEY) ) {
-                return queryStringMap.get(queryString);
-            }
-        }
-
-        return null;
-    }
 }

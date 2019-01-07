@@ -1,6 +1,7 @@
 package com.longcoding.undefined.interceptors.impl;
 
 import com.google.common.collect.Maps;
+import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.HttpHelper;
@@ -27,7 +28,6 @@ public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
     MessageManager messageManager;
 
     private static Pattern pathMandatoryDelimiter = Pattern.compile("^:[a-zA-Z0-9]+");
-    private static String ERROR_MESSAGE_PATH_LENGTH = "api path is unclear.";
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -46,7 +46,7 @@ public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
         String[] storedUrlTokens = HttpHelper.extractURL(storedURL);
 
         if (requestUrlTokens.length != storedUrlTokens.length + 1 ) {
-            generateException("404", ERROR_MESSAGE_PATH_LENGTH);
+            generateException(ExceptionType.E_1006_INVALID_API_PATH);
         }
 
         Map<String, String> pathParams = Maps.newHashMap();

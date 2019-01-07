@@ -2,6 +2,7 @@ package com.longcoding.undefined.interceptors.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
@@ -52,7 +53,7 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
             if (requestHeaders.containsKey(header) || optionHeaders.contains(header)) {
                 proxyRequestHeaders.put(header, requestHeaders.get(header));
             } else if (headers.get(header).equals(true)) {
-                generateException("400", header + " - required header is missing.");
+                generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, "required header is missing.");
                 return false;
             }
         }
@@ -61,7 +62,7 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
             if (requestQueryParams.containsKey(queryParam)) {
                 proxyRequestQueryParams.put(queryParam, requestQueryParams.get(queryParam));
             } else if (queryParams.get(queryParam).equals(true)) {
-                generateException("400", queryParam + " - required queryParam is missing.");
+                generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, "required query parameter is missing.");
                 return false;
             }
         }

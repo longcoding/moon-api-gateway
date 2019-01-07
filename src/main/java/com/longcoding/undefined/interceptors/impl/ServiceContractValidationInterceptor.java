@@ -1,5 +1,6 @@
 package com.longcoding.undefined.interceptors.impl;
 
+import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
@@ -30,7 +31,7 @@ public class ServiceContractValidationInterceptor extends AbstractBaseIntercepto
         AppInfoCache appInfos = apiExposeSpec.getAppInfoCache().get(appId);
 
         if (!appInfos.getServiceContract().contains(requestServceId)) {
-            generateException("400", "Service Contract doesn't exist");
+            generateException(ExceptionType.E_1008_INVALID_SERVICE_CONTRACT);
             return false;
         }
 

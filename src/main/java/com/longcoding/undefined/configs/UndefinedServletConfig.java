@@ -7,13 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.longcoding.undefined.interceptors.impl.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
-import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -28,10 +22,13 @@ import java.util.List;
 @Configuration
 public class UndefinedServletConfig implements WebMvcConfigurer {
 
+    private static final String PATH_INTERNAL_API = "/internal/**";
+    private static final String[] EXCLUDE_INTERCEPTOR_PATH = { PATH_INTERNAL_API };
+
     @Bean
-    public InitializeInterceptor initializeInterceptor() {
-        return new InitializeInterceptor();
-    }
+    public InitializeInterceptor initializeInterceptor() { return new InitializeInterceptor(); }
+    @Bean
+    public AuthenticationInterceptor authenticationInterceptor() { return new AuthenticationInterceptor(); }
     @Bean
     public PathAndAppAndPrepareRedisInterceptor pathAndPrepareRedisInterceptor() { return new PathAndAppAndPrepareRedisInterceptor(); }
     @Bean
@@ -59,15 +56,16 @@ public class UndefinedServletConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(initializeInterceptor());
-        registry.addInterceptor(pathAndPrepareRedisInterceptor());
-        registry.addInterceptor(serviceContractValidationInterceptor());
-        registry.addInterceptor(serviceCapacityInterceptor());
-        registry.addInterceptor(applicationRatelimitInterceptor());
-        registry.addInterceptor(executeRedisValidationInterceptor());
-        registry.addInterceptor(extractRequestInterceptor());
-        registry.addInterceptor(headerAndQueryValidationInterceptor());
-        registry.addInterceptor(transformRequestInterceptor());
-        registry.addInterceptor(prepareProxyInterceptor());
+        registry.addInterceptor(authenticationInterceptor());
+        registry.addInterceptor(pathAndPrepareRedisInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
+        registry.addInterceptor(serviceContractValidationInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
+        registry.addInterceptor(serviceCapacityInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
+        registry.addInterceptor(applicationRatelimitInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
+        registry.addInterceptor(executeRedisValidationInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
+        registry.addInterceptor(extractRequestInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
+        registry.addInterceptor(headerAndQueryValidationInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
+        registry.addInterceptor(transformRequestInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
+        registry.addInterceptor(prepareProxyInterceptor()).excludePathPatterns(EXCLUDE_INTERCEPTOR_PATH);
     }
 
     @Bean

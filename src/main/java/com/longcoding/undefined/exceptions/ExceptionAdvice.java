@@ -7,6 +7,7 @@ import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.MessageManager;
 import com.longcoding.undefined.models.CommonResponseEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ import java.io.StringWriter;
 
 /**
  * Created by longcoding on 16. 4. 9..
- * Updated by longcoding 0n 18. 12. 26..
+ * Updated by longcoding 0n 19. 1. 7..
  */
 @Slf4j
 @ControllerAdvice
@@ -29,35 +30,42 @@ public class ExceptionAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity exception(Exception e) {
         log.error("{}", getStackTrace(e));
-        CommonResponseEntity response = CommonResponseEntity.generateException("500", messageManager.getProperty("500"));
+        ExceptionType exceptionType = ExceptionType.E_9999_INTERNAL_SERVER_ERROR;
+        CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), messageManager.getProperty(exceptionType.getCode()));
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(RatelimitFailException.class)
     public ResponseEntity ratelimtFailException(RatelimitFailException e) {
-        CommonResponseEntity response = CommonResponseEntity.generateException("502", messageManager.getProperty("502"));
-        return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
+        ExceptionType exceptionType = ExceptionType.E_1009_SERVICE_RATELIMIT_OVER;
+        CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), messageManager.getProperty(exceptionType.getCode()));
+        return new ResponseEntity<>(response, exceptionType.getHttpStatus());
     }
 
     @ExceptionHandler(ValidationFailException.class)
     public ResponseEntity validationFailException(ValidationFailException e) {
         log.error("{}", getStackTrace(e));
-        CommonResponseEntity response = CommonResponseEntity.generateException("500", e.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        ExceptionType exceptionType = ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT;
+        CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), messageManager.getProperty(exceptionType.getCode()));
+        return new ResponseEntity<>(response, exceptionType.getHttpStatus());
     }
 
     @ExceptionHandler(ProxyServiceFailException.class)
     public ResponseEntity proxyServiceFailException(ProxyServiceFailException e) {
         log.error("{}", getStackTrace(e));
-        CommonResponseEntity response = CommonResponseEntity.generateException("504", messageManager.getProperty("504"));
-        return new ResponseEntity<>(response, HttpStatus.GATEWAY_TIMEOUT);
+        ExceptionType exceptionType = ExceptionType.E_1102_OUTBOUND_SERVICE_IS_NOT_UNSTABLE;
+        CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), messageManager.getProperty(exceptionType.getCode()));
+        return new ResponseEntity<>(response, exceptionType.getHttpStatus());
     }
 
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity generalException(GeneralException e) {
         log.error("{}", getStackTrace(e));
-        CommonResponseEntity response = CommonResponseEntity.generateException(e.getCode(), e.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        ExceptionType exceptionType = e.getExceptionType();
+        String message = messageManager.getProperty(exceptionType.getCode());
+        if (Strings.isNotEmpty(e.getMessage())) message += e.getMessage();
+        CommonResponseEntity response = CommonResponseEntity.generateException(e.getExceptionType().getCode(), message);
+        return new ResponseEntity<>(response, e.getExceptionType().getHttpStatus());
     }
 
     private static StringWriter getStackTrace(Exception e) {
