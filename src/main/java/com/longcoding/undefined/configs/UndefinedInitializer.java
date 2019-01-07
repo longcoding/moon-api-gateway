@@ -16,9 +16,7 @@ import javax.servlet.Filter;
 public class UndefinedInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
-    protected Class<?>[] getRootConfigClasses() {
-        return new Class[] { UndefinedRootConfig.class };
-    }
+    protected Class<?>[] getRootConfigClasses() { return new Class[] { UndefinedRootConfig.class }; }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {

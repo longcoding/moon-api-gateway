@@ -62,6 +62,10 @@ dependencies {
 	compile('org.apache.httpcomponents:httpclient:4.5.6')
 	compile('org.eclipse.jetty:jetty-client:9.4.14.v20181114')
 
+	// swagger
+	compile ('io.springfox:springfox-swagger2:2.9.2')
+	compile ('io.springfox:springfox-swagger-ui:2.9.2')
+
 	// test
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile ('junit:junit:4.13-beta-1')

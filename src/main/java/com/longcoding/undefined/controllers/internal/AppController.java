@@ -12,33 +12,31 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/internal/apps")
+@RequestMapping(value = "/internal")
 public class AppController {
 
     @Autowired
     AppService appService;
 
-    @RequestMapping(method = RequestMethod.POST)
-    ThirdParty createApp(@RequestBody ThirdParty thridParty) {
-        return appService.createApp(thridParty);
-    }
+    @RequestMapping(value = "apps", method = RequestMethod.POST)
+    ThirdParty createApp(@RequestBody ThirdParty thridParty) { return appService.createApp(thridParty); }
 
-    @RequestMapping(value = "/{appId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "apps/{appId}", method = RequestMethod.DELETE)
     boolean deleteApp(@PathVariable String appId) {
         return appService.deleteApp(appId);
     }
 
-    @RequestMapping(value = "/{appId}", method = RequestMethod.GET)
+    @RequestMapping(value = "apps/{appId}", method = RequestMethod.GET)
     ThirdParty getAppInfo(@PathVariable String appId) {
         return appService.getAppInfo(appId);
     }
 
-    @RequestMapping(value = "/{appId}/appKey", method = RequestMethod.DELETE)
+    @RequestMapping(value = "apps/{appId}/appKey", method = RequestMethod.DELETE)
     boolean expireAppKey(@PathVariable String appId) {
         return appService.expireAppKey(appId);
     }
 
-    @RequestMapping(value = "/{appId}/appKey", method = RequestMethod.PUT)
+    @RequestMapping(value = "apps/{appId}/appKey", method = RequestMethod.PUT)
     ThirdParty refreshAppKey(@PathVariable String appId) {
         return appService.refreshAppKey(appId);
     }

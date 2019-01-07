@@ -1,5 +1,7 @@
 package com.longcoding.undefined.helpers;
 
+import org.springframework.http.MediaType;
+
 import java.nio.charset.StandardCharsets;
 
 /**

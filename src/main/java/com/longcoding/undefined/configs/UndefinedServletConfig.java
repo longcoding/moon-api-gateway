@@ -7,10 +7,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.longcoding.undefined.interceptors.impl.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -32,9 +34,7 @@ public class UndefinedServletConfig implements WebMvcConfigurer {
     @Bean
     public PathAndAppAndPrepareRedisInterceptor pathAndPrepareRedisInterceptor() { return new PathAndAppAndPrepareRedisInterceptor(); }
     @Bean
-    public ServiceCapacityInterceptor serviceCapacityInterceptor() {
-        return new ServiceCapacityInterceptor();
-    }
+    public ServiceCapacityInterceptor serviceCapacityInterceptor() { return new ServiceCapacityInterceptor(); }
     @Bean
     public ExecuteRedisValidationInterceptor executeRedisValidationInterceptor() { return new ExecuteRedisValidationInterceptor(); }
     @Bean
@@ -80,6 +80,19 @@ public class UndefinedServletConfig implements WebMvcConfigurer {
 
         converter.setObjectMapper( mapper );
         return converter;
+    }
+
+    @Override
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        //for swagger
+        registry.addResourceHandler("/swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addStatusController("/status", HttpStatus.OK);
     }
 
     @Override

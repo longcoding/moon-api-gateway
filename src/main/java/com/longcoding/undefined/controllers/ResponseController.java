@@ -16,9 +16,9 @@ import javax.servlet.http.HttpServletRequest;
  * Created by longcoding on 16. 4. 5..
  * Updated by longcoding on 18. 12. 26..
  */
+
 @Slf4j
 @RestController
-@RequestMapping(value = "/")
 public class ResponseController {
 
     @Autowired
