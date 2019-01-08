@@ -2,6 +2,7 @@ package com.longcoding.undefined.services.internal;
 
 import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.exceptions.GeneralException;
+import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.helpers.JsonUtil;
 import com.longcoding.undefined.models.internal.ThirdParty;
@@ -26,7 +27,7 @@ public class AppService {
 
     public ThirdParty createApp(ThirdParty thirdParty) {
         try (Jedis jedis = jedisFactory.getInstance()) {
-            Long totalApps = jedis.hlen(REDIS_KEY_INTERNAL_APP_INFO);
+            Long totalApps = jedis.hlen(Const.REDIS_KEY_INTERNAL_APP_INFO);
 
             thirdParty.setAppId(totalApps);
             thirdParty.setValid(true);

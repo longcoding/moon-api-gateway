@@ -6,7 +6,6 @@ import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.JettyClientFactory;
 import com.longcoding.undefined.helpers.JsonUtil;
 import com.longcoding.undefined.models.ResponseInfo;
-import com.longcoding.undefined.services.ProxyService;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;

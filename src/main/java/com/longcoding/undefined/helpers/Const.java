@@ -45,4 +45,6 @@ public class Const {
     public static final int SECOND_OF_DAY = 60*60*24;
     public static final int SECOND_OF_MINUTE = 60;
 
+    public static final String REDIS_KEY_INTERNAL_APP_INFO = "internal:apps";
+
 }
