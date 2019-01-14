@@ -65,7 +65,15 @@ undefined:
 spring:
   profiles: local
 
+undefined:
+  service:
+    ip-acl-enable: false
+
 
 ---
 spring:
   profiles: dev
+
+undefined:
+  service:
+    ip-acl-enable: true

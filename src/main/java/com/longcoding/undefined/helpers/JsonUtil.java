@@ -15,8 +15,12 @@ public class JsonUtil {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static JsonNode toJsonNode(final Object object) {
-        return objectMapper.valueToTree(object);
+    public static JsonNode toJsonNode(final String object) {
+        try {
+            return objectMapper.readTree(object);
+        } catch (IOException ex) {
+            throw new JsonIOException(ex);
+        }
     }
 
     public static String fromJson(final Object object) {
