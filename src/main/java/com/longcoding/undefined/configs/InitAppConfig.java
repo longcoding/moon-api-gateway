@@ -14,6 +14,7 @@ import java.util.List;
 public class InitAppConfig {
 
     boolean initEnable;
+
     @NestedConfigurationProperty
     List<EnrollApp> apps;
 

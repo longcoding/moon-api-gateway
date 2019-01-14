@@ -24,14 +24,16 @@ public class AppInfoCache implements Serializable, Cloneable {
     private String minutelyRateLimit;
 
     private List<String> serviceContract;
+    private List<String> appIpAcl;
 
-    public AppInfoCache(String appId, String appKey, String appName, String dailyRateLimit, String minutelyRateLimit, List<String> serviceContract) {
+    public AppInfoCache(String appId, String appKey, String appName, String dailyRateLimit, String minutelyRateLimit, List<String> serviceContract, List<String> appIpAcl) {
         this.appId = appId;
         this.appKey = appKey;
         this.appName = appName;
         this.dailyRateLimit = dailyRateLimit;
         this.minutelyRateLimit = minutelyRateLimit;
         this.serviceContract = serviceContract;
+        this.appIpAcl = appIpAcl;
     }
 
 }

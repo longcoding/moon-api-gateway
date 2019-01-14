@@ -2,9 +2,11 @@ package com.longcoding.undefined.interceptors.impl;
 
 import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
+import com.longcoding.undefined.helpers.AclIpChecker;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
+import com.longcoding.undefined.models.apis.APIExpose;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,6 +25,9 @@ public class AuthenticationInterceptor extends AbstractBaseInterceptor {
     @Autowired
     APIExposeSpecification apiExposeSpec;
 
+    @Autowired
+    AclIpChecker aclIpChecker;
+
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -38,6 +43,13 @@ public class AuthenticationInterceptor extends AbstractBaseInterceptor {
         if ( Strings.isEmpty(appKey)  || Strings.isEmpty(appId) ) {
             generateException(ExceptionType.E_1005_APPKEY_IS_INVALID);
             return false;
+        }
+
+        if (APIExposeSpecification.isEnabledIpAcl()) {
+            if (!aclIpChecker.isAllowedPartnerAndIp(appId, requestInfo.getClientIp())) {
+                generateException(ExceptionType.E_1010_IP_ADDRESS_IS_NOT_PERMITTED);
+                return false;
+            }
         }
 
         return true;
