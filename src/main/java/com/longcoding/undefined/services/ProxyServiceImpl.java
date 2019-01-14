@@ -75,7 +75,6 @@ public class ProxyServiceImpl implements ProxyService {
                 deferredResult.setErrorResult(new ProxyServiceFailException(failure));
             }
         });
-
     }
 
     private static Request setHeaderAndQueryInfo(Request request, ResponseInfo responseInfo) {
