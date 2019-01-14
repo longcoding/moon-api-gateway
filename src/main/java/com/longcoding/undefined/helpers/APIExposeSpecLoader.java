@@ -9,6 +9,7 @@ import com.longcoding.undefined.models.enumeration.TransformType;
 import lombok.extern.slf4j.Slf4j;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -34,8 +35,13 @@ public class APIExposeSpecLoader {
     @Autowired
     APIExposeSpecification apiExposeSpecification;
 
+    @Value("${undefined.service.ip-acl-enable}")
+    Boolean enableIpAcl;
+
     @PostConstruct
     void loadAPIExposeSpecifications() {
+
+        APIExposeSpecification.setIsEnabledIpAcl(enableIpAcl);
 
         //Enroll Service expose
         apiExposeSpecConfig.getServices().forEach(service -> {

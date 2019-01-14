@@ -28,6 +28,9 @@ public class InitAppLoader {
     @Autowired
     APIExposeSpecification apiExposeSpecification;
 
+    @Autowired
+    AclIpChecker aclIpChecker;
+
     @PostConstruct
     void loadInitApps() {
         if (initAppConfig.isInitEnable()) {
@@ -43,9 +46,11 @@ public class InitAppLoader {
                         .dailyRateLimit(String.valueOf(app.getAppDailyRatelimit()))
                         .minutelyRateLimit(String.valueOf(app.getAppMinutelyRatelimit()))
                         .serviceContract(app.getAppServiceContract())
+                        .appIpAcl(app.getAppIpAcl())
                         .build();
 
                 appInfoCaches.put(app.getAppId(), appInfo);
+                aclIpChecker.enrolledInitAclIp(app.getAppId(), app.getAppIpAcl());
             });
         }
     }

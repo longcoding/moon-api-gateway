@@ -16,6 +16,8 @@ public class Const {
 
     public static final String SERVER_DEFAULT_ENCODING_TYPE = StandardCharsets.UTF_8.name();
 
+    public static final String ACL_IP_CHECKER = "ACL_IP_CHECKER";
+
     public static final String API_MATCH_HTTP_GET_MAP = "HTTPGET";
     public static final String API_MATCH_HTTP_POST_MAP = "HTTPPOST";
     public static final String API_MATCH_HTTP_PUT_MAP = "HTTPPUT";

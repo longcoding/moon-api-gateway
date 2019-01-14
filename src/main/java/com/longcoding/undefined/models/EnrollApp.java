@@ -18,5 +18,6 @@ public class EnrollApp implements Serializable, Cloneable {
     int appMinutelyRatelimit;
     int appDailyRatelimit;
     List<String> appServiceContract;
+    List<String> appIpAcl;
 
 }

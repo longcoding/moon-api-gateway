@@ -37,6 +37,8 @@ public class APIExposeSpecification {
     private static String CACHE_API_INFO = "apiInfoCache";
     private static String CACHE_SERVICE_INFO = "serviceInfoCache";
 
+    private static boolean IS_ENABLED_IP_ACL = false;
+
     private static PersistentCacheManager cacheManager;
     private static Cache<String, String> appDistinctionCache;
 
@@ -81,6 +83,12 @@ public class APIExposeSpecification {
         apiMatchHttpsDelete = cacheManager.createCache(Const.API_MATCH_HTTPS_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
     }
 
+    public static boolean isEnabledIpAcl() { return IS_ENABLED_IP_ACL; }
+
+    public static void setIsEnabledIpAcl(boolean isEnabledIpAcl) { IS_ENABLED_IP_ACL = isEnabledIpAcl; }
+
+    protected PersistentCacheManager getCacheManager() { return cacheManager; }
+
     public Cache<String, String> getAppDistinctionCache() { return appDistinctionCache; }
 
     public Cache<String, AppInfoCache> getAppInfoCache() {
@@ -92,7 +100,6 @@ public class APIExposeSpecification {
     public Cache<String, ServiceInfoCache> getServiceInfoCache() {
         return serviceInfoCache;
     }
-
 
     public Cache<String, Pattern> getApiIdCache(String protocolAndMethod) {
         protocolAndMethod = protocolAndMethod.toUpperCase();
