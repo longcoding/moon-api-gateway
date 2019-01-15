@@ -40,24 +40,25 @@ A. First
     - Enroll init APP configuration in application-apps.yaml <br />
     - (enroll init APP process is optional)
 
-    init-apps:
-      init-enable: true
-      apps:
-        -
-          app-id: 1
-          app-name: TestApp
-          app-key: 1000-1000-1000-1000
-          app-minutely-ratelimit: 2000
-          app-daily-ratelimit: 10000
-          app-service-contract: ['01', '02']
-        -
-          app-id: 2
-          app-name: BestApp
-          app-key: ad38-b271-d30a-b2c7
-          app-minutely-ratelimit: 1000
-          app-daily-ratelimit: 50000
-          app-service-contract: ['02']
-
+        init-apps:
+        init-enable: true
+        apps:
+            -
+            app-id: 1
+            app-name: TestApp
+            app-key: 1000-1000-1000-1000
+            app-minutely-ratelimit: 2000
+            app-daily-ratelimit: 10000
+            app-service-contract: ['01', '02']
+            app-ip-acl: ['192.168.0.1', '127.0.0.1']
+            -
+            app-id: 2
+            app-name: BestApp
+            app-key: e3938427-1e27-3a37-a854-0ac5a40d84a8
+            app-minutely-ratelimit: 1000
+            app-daily-ratelimit: 50000
+            app-service-contract: ['01', '02']
+            app-ip-acl: ['127.0.0.1']
 
 B. Second
  <br />
