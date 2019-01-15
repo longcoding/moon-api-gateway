@@ -1,4 +1,4 @@
-# undefined-gateway
+# undefined-API-gateway
 
 ![feature](https://user-images.githubusercontent.com/38850896/50330803-f13e9600-053f-11e9-9b2b-cd2f1d5de76d.png)
 
@@ -6,6 +6,10 @@
 ## Introduction
 Asynchronous API Gateway with Spring boot 2.1, Servlet 4, jetty 9 client <br />
 The Gateway is a network gateway created to provide a single access point for real-time web based protocol elevation that supports load balancing, clustering, and lots of validations. It is designed to make the best performance to deliver open API.
+
+## New Feature(2019-1-15)
+* Management API
+* Supported Server Cluster
 
 ## Features
 * Lightweight API Gateway
@@ -18,6 +22,8 @@ The Gateway is a network gateway created to provide a single access point for re
     - Service Contract(agreement)
     - Request Transform
 * Use Asynchronous Processing in Servlet 4
+* Management API
+* Supported Server Cluster
 
 ## Dependency
 * Spring Boot 2.1
@@ -99,20 +105,17 @@ B. Second
 
 Undefined-gateway supports the following protocol and method.
 
-* apiMatchHttpGet (http - get)
-* apiMatchHttpPost (http - post)
-* apiMatchHttpPut (http - put)
-* apiMatchHttpDelete (http - delete)
-* apiMatchHttpsGet (https - get)
-* apiMatchHttpsPost (https - post)
-* apiMatchHttpsPut (https - put)
-* apiMatchHttpsDelete (https - delete)
+* Protocol
+    - http, https
+* Method
+    - Get, Post, Put, Delete
+
 
 ## Usage/Test
 
 ##### Test Case - stackoverflow API.
 
-Run undefined-gateway
+Run undefined-api-gateway
 
     ./gradlew test
 
@@ -141,11 +144,9 @@ and then input header fields. ( appkey is mandatory header.(or Query Parameter) 
 Execute request and check response code and content.
 
 ## Future update
-* log function
 * Authentication for private API
-* Cluster
-    - by Ehcache RMI replication
-    - by RabbitMq
+* Docker-compose
+    - Easy To Run
 
 ## Contact
 For any inquiries, you can reach me at longcoding@gmail.com 

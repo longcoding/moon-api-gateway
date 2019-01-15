@@ -48,12 +48,12 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
         return true;
     }
 
-    private String createOutBoundURI(Map<String,String> pathParams, String storedURL) {
+    private String createOutBoundURI(Map<String,String> pathParams, String outboundUrl) {
 
         for (String paramKey : pathParams.keySet() ){
-            storedURL = storedURL.replace(paramKey, pathParams.get(paramKey));
+            outboundUrl = outboundUrl.replace(paramKey, pathParams.get(paramKey));
         }
-        return storedURL;
+        return outboundUrl;
     }
 
     private Map<String, String> createRequestHeaderMap(RequestInfo requestInfo) {
