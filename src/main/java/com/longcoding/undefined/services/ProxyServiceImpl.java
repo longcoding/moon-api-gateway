@@ -80,17 +80,13 @@ public class ProxyServiceImpl implements ProxyService {
     private static Request setHeaderAndQueryInfo(Request request, ResponseInfo responseInfo) {
         Map<String, String> requestHeaders = responseInfo.getHeaders();
 
-        for ( String headerKey : requestHeaders.keySet() ) {
-            request.header(headerKey, requestHeaders.get(headerKey));
-        }
+        requestHeaders.forEach(request::header);
 
         request.method(request.getMethod());
         request.accept(responseInfo.getRequestAccept());
 
         Map<String, String> requestQueryParams = responseInfo.getQueryStringMap();
-        for ( String queryKey : requestQueryParams.keySet() ) {
-            request.param(queryKey, requestQueryParams.get(queryKey));
-        }
+        requestQueryParams.forEach(request::param);
 
         return request;
     }
