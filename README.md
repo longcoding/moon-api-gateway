@@ -84,7 +84,7 @@ B. Second
               header: page, votes
               header-required: ""
               url-param: version, site
-              url-param-required: sitegetServiceInfoCache().put(serviceInfoCache.getServiceId(), serviceInfoCache);
+              url-param-required: site
             -
               api-id: '0201'
               api-name: getList
