@@ -78,10 +78,10 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
                 RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
                 interceptorResult = objectBean.executeJudge(futureValue, jedisMulti);
             } catch (JedisDataException e) {
-                //This is Jedis Bug. I wish it will be fixed.
+                // This is Jedis Bug. I wish it will be fixed.
                 generateException(ExceptionType.E_1101_API_GATEWAY_IS_EXHAUSTED);
             } catch (NullPointerException e) {
-                //AppKey is not exist or service is exhausted.
+                // AppKey is not exist or service is exhausted.
                 generateException(ExceptionType.E_1101_API_GATEWAY_IS_EXHAUSTED);
             }
             if (!interceptorResult){

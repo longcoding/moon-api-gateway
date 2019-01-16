@@ -32,7 +32,6 @@ public class ServiceContractValidationInterceptor extends AbstractBaseIntercepto
 
         if (!appInfos.getServiceContract().contains(requestServceId)) {
             generateException(ExceptionType.E_1008_INVALID_SERVICE_CONTRACT);
-            return false;
         }
 
         return true;

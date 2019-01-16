@@ -19,8 +19,6 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
 
     protected final Logger logger = LogManager.getLogger(getClass());
 
-    private GeneralException generalException;
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -36,18 +34,17 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
             logger.debug("Time : " + (System.currentTimeMillis() - startTime));
         }
 
-        if(!result || Objects.nonNull(this.generalException)) throw generalException;
         return result;
     }
 
     protected void generateException(ExceptionType exceptionType) {
         logger.error("error occur in [{}]", getClass().getName());
-        this.generalException = new GeneralException(exceptionType);
+        throw new GeneralException(exceptionType);
     }
 
     protected void generateException(ExceptionType exceptionType, String message) {
         logger.error("error occur in [{}]", getClass().getName());
-        this.generalException = new GeneralException(exceptionType, message);
+        throw new GeneralException(exceptionType);
     }
 
     public abstract boolean preHandler(HttpServletRequest request,

@@ -25,9 +25,9 @@ public class ResponseInfo {
 
     private Integer responseCode;
     private String responseData, encodingType;
-    private long responseSize;
+    private int responseDataSize;
 
-    private long usageTime;
+    private long proxyElapsedTime;
 
     private Map<String, String> responseHeaderMap;
     private Map<String, String> customizeHeaderMap;

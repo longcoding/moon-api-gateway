@@ -30,7 +30,15 @@ public class RequestInfo {
 
     private long requestStartTime, requestProxyStartTime;
 
+    private String acceptHostIp;
+
     private int requestDataSize;
     private HttpEntity multipartTypeEntity;
+
+    //for access logging
+    private int responseDataSize;
+    private int responseStatusCode;
+    private String errorCode;
+    private long proxyElapsedTime;
 
 }

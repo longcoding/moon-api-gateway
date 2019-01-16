@@ -41,7 +41,6 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         Cache<String, Pattern> apiRoutingPaths = apiExposeSpec.getApiIdCache(requestProtocolAndMethod);
         if ( apiRoutingPaths == null ) {
             generateException(ExceptionType.E_1003_METHOD_OR_PROTOCOL_IS_NOT_NOT_ALLOWED);
-            return false;
         }
 
         String apiId = null;
@@ -55,7 +54,6 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 
         if (Strings.isEmpty(apiId)) {
             generateException(ExceptionType.E_1006_INVALID_API_PATH);
-            return false;
         }
 
         ApiInfoCache apiInfoCache = apiExposeSpec.getApiInfoCache().get(apiId);

@@ -7,7 +7,7 @@
 Asynchronous API Gateway with Spring boot 2.1, Servlet 4, jetty 9 client <br />
 The Gateway is a network gateway created to provide a single access point for real-time web based protocol elevation that supports load balancing, clustering, and lots of validations. It is designed to make the best performance to deliver open API.
 
-## New Feature(2019-1-15)
+## New Feature(1-15-2019)
 * Management API
 * Supported Server Cluster
 

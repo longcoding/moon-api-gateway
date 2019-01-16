@@ -54,7 +54,6 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
                 proxyRequestHeaders.put(header, requestHeaders.get(header));
             } else if (headers.get(header).equals(true)) {
                 generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, "required header is missing.");
-                return false;
             }
         }
 
@@ -63,7 +62,6 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
                 proxyRequestQueryParams.put(queryParam, requestQueryParams.get(queryParam));
             } else if (queryParams.get(queryParam).equals(true)) {
                 generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, "required query parameter is missing.");
-                return false;
             }
         }
 

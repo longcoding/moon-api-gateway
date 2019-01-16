@@ -2,25 +2,27 @@ package com.longcoding.undefined.interceptors.impl;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import com.longcoding.undefined.helpers.ApplicationLogFormatter;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
+import com.longcoding.undefined.models.ResponseInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.util.MimeTypeUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by longcoding on 16. 4. 8..
  */
+@Slf4j
 public class InitializeInterceptor extends AbstractBaseInterceptor {
 
     private static final String PROTOCOL_DELIMITER = "://";
@@ -34,12 +36,14 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         RequestInfo requestInfo = new RequestInfo();
 
         requestInfo.setRequestId(UUID.randomUUID().toString());
-        requestInfo.setClientIp(request.getRemoteHost());
+        requestInfo.setClientIp(request.getRemoteAddr());
+        requestInfo.setAcceptHostIp(request.getLocalAddr());
         requestInfo.setRequestMethod(request.getMethod());
         requestInfo.setRequestURI(request.getRequestURI().toLowerCase());
         requestInfo.setUserAgent(request.getHeader(Const.REQUEST_USER_AGENT));
         requestInfo.setHeaders(createHeaderMap(request));
         requestInfo.setRequestPath(request.getServletPath());
+        requestInfo.setRequestStartTime(System.currentTimeMillis());
 
         String[] requestURL = request.getRequestURL().toString().split(PROTOCOL_DELIMITER);
         requestInfo.setRequestProtocol(requestURL[0]);
@@ -85,6 +89,21 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         }
 
         return headers;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+                                @Nullable Exception ex) throws Exception {
+
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+        ResponseInfo responseInfo = Objects.nonNull(request.getAttribute(Const.RESPONSE_INFO_DATA))? (ResponseInfo) request.getAttribute(Const.RESPONSE_INFO_DATA) : null;
+
+        requestInfo.setResponseStatusCode(response.getStatus());
+        requestInfo.setProxyElapsedTime(Objects.nonNull(responseInfo)? responseInfo.getProxyElapsedTime(): 0L);
+        requestInfo.setResponseDataSize(Objects.nonNull(responseInfo)? responseInfo.getResponseDataSize(): 0);
+
+        log.info(ApplicationLogFormatter.generateGeneralLog(requestInfo));
+
     }
 
 
