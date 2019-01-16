@@ -2,13 +2,15 @@ package com.longcoding.undefined.interceptors.impl;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.ApplicationLogFormatter;
 import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ResponseInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.util.MimeTypeUtils;
@@ -22,7 +24,7 @@ import java.util.*;
 /**
  * Created by longcoding on 16. 4. 8..
  */
-@Slf4j
+@Slf4j(topic = "ACCESS_LOGGER")
 public class InitializeInterceptor extends AbstractBaseInterceptor {
 
     private static final String PROTOCOL_DELIMITER = "://";
@@ -103,7 +105,6 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         requestInfo.setResponseDataSize(Objects.nonNull(responseInfo)? responseInfo.getResponseDataSize(): 0);
 
         log.info(ApplicationLogFormatter.generateGeneralLog(requestInfo));
-
     }
 
 

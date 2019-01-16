@@ -16,6 +16,25 @@
         </encoder>
     </appender>
 
+    <appender name="FileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log/access.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%msg\n</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logFile.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <!-- keep 30 days' worth of history capped at 3GB total size -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="ACCESS_LOGGER"  level="INFO" additivity="false">
+        <appender-ref ref="FileAppender" />
+    </logger>
+
     <root level="DEBUG">
         <appender-ref ref="Console" />
     </root>
