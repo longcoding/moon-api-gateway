@@ -5,7 +5,7 @@ import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
-import com.longcoding.undefined.models.ehcache.ApiInfoCache;
+import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.enumeration.TransformType;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
-        ApiInfoCache apiInfo = apiExposeSpec.getApiInfoCache().get(requestInfo.getApiId());
+        ApiInfo apiInfo = apiExposeSpec.getApiInfoCache().get(requestInfo.getApiId());
         if (Objects.nonNull(apiInfo.getTransformData())) {
 
             apiInfo.getTransformData().forEach(element -> {
@@ -41,7 +41,7 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
         return true;
     }
 
-    private String getDataByCurrentTransformType(TransformType type, String targetValue, RequestInfo requestInfo, ApiInfoCache apiInfo) {
+    private String getDataByCurrentTransformType(TransformType type, String targetValue, RequestInfo requestInfo, ApiInfo apiInfo) {
         String result = Strings.EMPTY;
         switch(type) {
             case HEADER:

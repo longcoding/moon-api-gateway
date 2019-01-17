@@ -1,7 +1,9 @@
 package com.longcoding.undefined.models.ehcache;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -11,21 +13,17 @@ import java.io.Serializable;
  */
 @Data
 @Builder
-public class ServiceInfoCache implements Serializable, Cloneable {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ServiceInfo implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -6812605258146764111L;
 
     private String serviceId;
     private String serviceName;
+    private String servicePath;
 
     private String minutelyCapacity;
     private String dailyCapacity;
-
-    public ServiceInfoCache(String serviceId, String serviceName, String minutelyCapacity, String dailyCapacity) {
-        this.serviceId = serviceId;
-        this.serviceName = serviceName;
-        this.minutelyCapacity = minutelyCapacity;
-        this.dailyCapacity = dailyCapacity;
-    }
 
 }

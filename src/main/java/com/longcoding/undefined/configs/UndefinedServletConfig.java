@@ -63,8 +63,8 @@ public class UndefinedServletConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(initializeInterceptor()).excludePathPatterns(EXCLUDE_PATH_SWAGGER_UI);
-        registry.addInterceptor(authenticationInterceptor()).excludePathPatterns(EXCLUDE_PATH_SWAGGER_UI);
+        registry.addInterceptor(initializeInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
+        registry.addInterceptor(authenticationInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
         registry.addInterceptor(pathAndPrepareRedisInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
         registry.addInterceptor(serviceContractValidationInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
         registry.addInterceptor(serviceCapacityInterceptor()).excludePathPatterns(EXCLUDE_TOTAL_PATH);
@@ -100,7 +100,7 @@ public class UndefinedServletConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addStatusController("/status", HttpStatus.OK);
+        registry.addStatusController("/valid", HttpStatus.OK);
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.helpers.*;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
-import com.longcoding.undefined.models.ehcache.ApiInfoCache;
+import com.longcoding.undefined.models.ehcache.ApiInfo;
 import org.apache.logging.log4j.util.Strings;
 import org.ehcache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +56,9 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
             generateException(ExceptionType.E_1006_INVALID_API_PATH);
         }
 
-        ApiInfoCache apiInfoCache = apiExposeSpec.getApiInfoCache().get(apiId);
-        requestInfo.setServiceId(apiInfoCache.getServiceId());
-        requestInfo.setOutboundURL(apiInfoCache.getOutboundURL());
+        ApiInfo apiInfo = apiExposeSpec.getApiInfoCache().get(apiId);
+        requestInfo.setServiceId(apiInfo.getServiceId());
+        requestInfo.setOutboundURL(apiInfo.getOutboundURL());
 
         prepareRedisInterceptors(request);
         return true;

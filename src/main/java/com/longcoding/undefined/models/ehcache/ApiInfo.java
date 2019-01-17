@@ -1,8 +1,10 @@
 package com.longcoding.undefined.models.ehcache;
 
 import com.longcoding.undefined.models.apis.TransformData;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 
 import java.io.Serializable;
@@ -14,7 +16,9 @@ import java.util.List;
  */
 @Data
 @Builder
-public class ApiInfoCache implements Serializable, Cloneable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ApiInfo implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -5075020879095721346L;
 

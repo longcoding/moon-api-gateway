@@ -17,6 +17,8 @@ import java.util.List;
 @ConfigurationProperties(prefix = "api-spec")
 public class APIExposeSpecConfig {
 
+    boolean initEnable;
+
     @NestedConfigurationProperty
     List<ServiceExpose> services;
 

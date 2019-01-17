@@ -1,4 +1,4 @@
-package com.longcoding.undefined.models;
+package com.longcoding.undefined.models.internal;
 
 import lombok.Data;
 
@@ -15,8 +15,8 @@ public class EnrollApp implements Serializable, Cloneable {
     String appId;
     String appKey;
     String appName;
-    int appMinutelyRatelimit;
-    int appDailyRatelimit;
+    int appMinutelyRateLimit;
+    int appDailyRateLimit;
     List<String> appServiceContract;
     List<String> appIpAcl;
 

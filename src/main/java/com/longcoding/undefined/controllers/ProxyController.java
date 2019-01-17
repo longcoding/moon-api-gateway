@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestController
-public class ResponseController {
+public class ProxyController {
 
     @Autowired
     MessageManager messageManager;
@@ -30,7 +30,7 @@ public class ResponseController {
     @Value("${undefined.service.proxy-timeout}")
     private long proxyServiceTimeout;
 
-    @RequestMapping(value = "/{serviceName:^(?!swagger-ui.html|webjars).*}/**")
+    @RequestMapping(value = "/{serviceName:^(?!swagger-ui.html|webjars|internal).*}/**")
     public DeferredResult<ResponseEntity> responseHttpResult(HttpServletRequest request) {
 
         DeferredResult<ResponseEntity> deferredResult = new DeferredResult<>(proxyServiceTimeout);

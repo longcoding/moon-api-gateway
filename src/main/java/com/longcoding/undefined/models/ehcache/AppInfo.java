@@ -1,7 +1,9 @@
 package com.longcoding.undefined.models.ehcache;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,7 +14,9 @@ import java.util.List;
  */
 @Data
 @Builder
-public class AppInfoCache implements Serializable, Cloneable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class AppInfo implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1532927748257139491L;
 
@@ -26,14 +30,6 @@ public class AppInfoCache implements Serializable, Cloneable {
     private List<String> serviceContract;
     private List<String> appIpAcl;
 
-    public AppInfoCache(String appId, String appKey, String appName, String dailyRateLimit, String minutelyRateLimit, List<String> serviceContract, List<String> appIpAcl) {
-        this.appId = appId;
-        this.appKey = appKey;
-        this.appName = appName;
-        this.dailyRateLimit = dailyRateLimit;
-        this.minutelyRateLimit = minutelyRateLimit;
-        this.serviceContract = serviceContract;
-        this.appIpAcl = appIpAcl;
-    }
+    private boolean valid;
 
 }

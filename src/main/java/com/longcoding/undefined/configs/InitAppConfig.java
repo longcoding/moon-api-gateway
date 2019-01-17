@@ -1,6 +1,6 @@
 package com.longcoding.undefined.configs;
 
-import com.longcoding.undefined.models.EnrollApp;
+import com.longcoding.undefined.models.internal.EnrollApp;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,6 +1,11 @@
 package com.longcoding.undefined.helpers;
 
+import org.apache.logging.log4j.util.Strings;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Created by longcoding on 16. 4. 9..
@@ -42,4 +47,30 @@ public class HttpHelper {
         return queryStringBuffer.toString();
 
     }
+
+    public static String getHostName() {
+        String hostname = Strings.EMPTY;
+
+        try {
+            hostname = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            return "UnknownHost";
+        }
+
+        return hostname;
+    }
+
+    public static String getRoutingRegex(String routingUrl) {
+        StringBuilder routingPathInRegex = new StringBuilder();
+        StringTokenizer st = new StringTokenizer(routingUrl, "/");
+        while (st.hasMoreTokens()) {
+            String element = st.nextToken();
+            if (element.startsWith(":")) element = "[a-zA-Z0-9]+";
+
+            routingPathInRegex.append("/").append(element);
+        }
+
+        return routingPathInRegex.toString();
+    }
+
 }

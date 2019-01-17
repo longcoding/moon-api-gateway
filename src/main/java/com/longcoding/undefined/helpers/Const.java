@@ -1,7 +1,5 @@
 package com.longcoding.undefined.helpers;
 
-import org.springframework.http.MediaType;
-
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -46,7 +44,14 @@ public class Const {
 
     public static final int SECOND_OF_DAY = 60*60*24;
     public static final int SECOND_OF_MINUTE = 60;
+    public static final int SECOND_OF_HOUR = 60*60;
 
     public static final String REDIS_KEY_INTERNAL_APP_INFO = "internal:apps";
+    public static final String REDIS_KEY_INTERNAL_API_INFO = "internal:apis";
+    public static final String REDIS_KEY_INTERNAL_SERVICE_INFO = "internal:services";
+    public static final String REDIS_KEY_CLUSTER_SERVER_HEALTH = "internal:sync-server-health";
+
+    public static final String REDIS_KEY_APP_UPDATE = "internal:sync:update:apps";
+    public static final String REDIS_KEY_API_UPDATE = "internal:sync:update:apis";
 
 }
