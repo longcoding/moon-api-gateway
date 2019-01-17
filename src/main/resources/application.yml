@@ -3,9 +3,6 @@ server:
 
 # spring
 spring:
-
-  profiles:
-    active: local
   profiles.include: 'apis, apps'
 
   http:

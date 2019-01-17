@@ -20,26 +20,24 @@ public class AppController {
     AppService appService;
 
     @RequestMapping(method = RequestMethod.POST)
-    AppInfo createApp(@RequestBody EnrollApp enrollApp) { return appService.createApp(enrollApp); }
+    public AppInfo createApp(@RequestBody EnrollApp enrollApp) { return appService.createApp(enrollApp); }
 
     @RequestMapping(value = "{appId}", method = RequestMethod.DELETE)
-    boolean deleteApp(@PathVariable String appId) {
+    public boolean deleteApp(@PathVariable String appId) {
         return appService.deleteApp(appId);
     }
 
     @RequestMapping(value = "{appId}", method = RequestMethod.GET)
-    AppInfo getAppInfo(@PathVariable String appId) {
+    public AppInfo getAppInfo(@PathVariable String appId) {
         return appService.getAppInfo(appId);
     }
 
     @RequestMapping(value = "{appId}/appKey", method = RequestMethod.DELETE)
-    boolean expireAppKey(@PathVariable String appId) {
+    public boolean expireAppKey(@PathVariable String appId) {
         return appService.expireAppKey(appId);
     }
 
     @RequestMapping(value = "{appId}/appKey", method = RequestMethod.PUT)
-    AppInfo refreshAppKey(@PathVariable String appId) {
-        return appService.refreshAppKey(appId);
-    }
+    public AppInfo refreshAppKey(@PathVariable String appId) { return appService.refreshAppKey(appId); }
 
 }

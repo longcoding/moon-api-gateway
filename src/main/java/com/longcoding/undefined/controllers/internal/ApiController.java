@@ -23,12 +23,12 @@ public class ApiController {
     ApiService apiService;
 
     @RequestMapping(method = RequestMethod.POST)
-    List<ApiInfo> createApp(@RequestBody EnrollApi enrollApi) { return apiService.createOrModifyApi(SyncType.CREATE,  enrollApi); }
+    public List<ApiInfo> createApp(@RequestBody EnrollApi enrollApi) { return apiService.createOrModifyApi(SyncType.CREATE,  enrollApi); }
 
     @RequestMapping(value = "{apiId}", method = RequestMethod.DELETE)
-    boolean deleteApp(@PathVariable String apiId) { return apiService.deleteApi(apiId); }
+    public boolean deleteApp(@PathVariable String apiId) { return apiService.deleteApi(apiId); }
 
     @RequestMapping(value = "{apiId}", method = RequestMethod.GET)
-    List<ApiInfo> updateApi(@PathVariable String apiId, @RequestBody EnrollApi enrollApi) { return apiService.createOrModifyApi(SyncType.UPDATE, enrollApi); }
+    public List<ApiInfo> updateApi(@PathVariable String apiId, @RequestBody EnrollApi enrollApi) { return apiService.createOrModifyApi(SyncType.UPDATE, enrollApi); }
 
 }
