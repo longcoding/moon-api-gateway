@@ -34,11 +34,10 @@ public class ClusterSync {
     @Scheduled(fixedDelayString = "${undefined.service.cluster.sync-interval}")
     private void clusterSync() {
         //Application Information Sync
-        //appInfoSync();
+        appInfoSync();
 
         //API Information Sync
-        //apiInfoSync();
-        //clusterSyncUtil.haha();
+        apiInfoSync();
     }
 
     @Scheduled(fixedDelayString = "${undefined.service.cluster.sync-interval}")
