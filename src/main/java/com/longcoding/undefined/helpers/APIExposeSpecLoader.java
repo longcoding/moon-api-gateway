@@ -3,21 +3,24 @@ package com.longcoding.undefined.helpers;
 import com.google.common.collect.Lists;
 import com.longcoding.undefined.configs.APIExposeSpecConfig;
 import com.longcoding.undefined.models.apis.TransformData;
-import com.longcoding.undefined.models.ehcache.ApiInfoCache;
-import com.longcoding.undefined.models.ehcache.ServiceInfoCache;
+import com.longcoding.undefined.models.cluster.ApiSync;
+import com.longcoding.undefined.models.ehcache.ApiInfo;
+import com.longcoding.undefined.models.ehcache.ServiceInfo;
+import com.longcoding.undefined.models.enumeration.SyncType;
 import com.longcoding.undefined.models.enumeration.TransformType;
+import com.longcoding.undefined.services.sync.SyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 /**
@@ -35,23 +38,53 @@ public class APIExposeSpecLoader {
     @Autowired
     APIExposeSpecification apiExposeSpecification;
 
+    @Autowired
+    SyncService syncService;
+
     @Value("${undefined.service.ip-acl-enable}")
     Boolean enableIpAcl;
+
+    @Value("${undefined.service.cluster.enable}")
+    Boolean enableCluster;
+
+    @Autowired
+    JedisFactory jedisFactory;
 
     @PostConstruct
     void loadAPIExposeSpecifications() {
 
         APIExposeSpecification.setIsEnabledIpAcl(enableIpAcl);
 
+        if (enableCluster) {
+            try (Jedis jedisClient = jedisFactory.getInstance()) {
+                jedisClient.hgetAll(Const.REDIS_KEY_INTERNAL_SERVICE_INFO)
+                        .forEach((key, serviceInString) -> {
+                            ServiceInfo serviceInfo = JsonUtil.fromJson(serviceInString, ServiceInfo.class);
+                            apiExposeSpecification.getServiceInfoCache().put(String.valueOf(serviceInfo.getServiceId()), serviceInfo);
+                        });
+
+
+                jedisClient.hgetAll(Const.REDIS_KEY_INTERNAL_API_INFO)
+                        .forEach((key, apiInString) -> {
+                            ApiInfo apiInfo = JsonUtil.fromJson(apiInString, ApiInfo.class);
+                            syncService.syncApiInfoToCache(new ApiSync(SyncType.CREATE, apiInfo));
+                        });
+            }
+        }
+
+        if ( !apiExposeSpecConfig.isInitEnable() ) return ;
+
         //Enroll Service expose
         apiExposeSpecConfig.getServices().forEach(service -> {
-            ServiceInfoCache serviceInfo = ServiceInfoCache.builder()
+            ServiceInfo serviceInfo = ServiceInfo.builder()
                     .serviceId(service.getServiceId())
                     .serviceName(service.getServiceName())
                     .minutelyCapacity(String.valueOf(service.getServiceMinutelyCapacity()))
                     .dailyCapacity(String.valueOf(service.getServiceDailyCapacity()))
+                    .servicePath(service.getServicePath())
                     .build();
             apiExposeSpecification.getServiceInfoCache().put(String.valueOf(service.getServiceId()), serviceInfo);
+            jedisFactory.getInstance().hsetnx(Const.REDIS_KEY_INTERNAL_SERVICE_INFO, service.getServiceId(), JsonUtil.fromJson(serviceInfo));
         });
 
         //Enroll API expose
@@ -79,40 +112,35 @@ public class APIExposeSpecLoader {
                         });
                     }
 
-                    ApiInfoCache apiInfoCache = ApiInfoCache.builder()
-                            .apiId(apiSpec.getApiId())
-                            .apiName(apiSpec.getApiName())
-                            .serviceId(service.getServiceId())
-                            .headers(headers)
-                            .queryParams(queryParams)
-                            .inboundURL(apiSpec.getInboundUrl())
-                            .outboundURL(apiSpec.getOutboundUrl())
-                            .inboundMethod(apiSpec.getMethod())
-                            .outboundMethod(apiSpec.getMethod())
-                            //currently spec
-                            .protocol(apiSpec.getProtocol().get(0))
-                            .isOpenApi(true)
-                            .transformData(transformRequests)
-                            .build();
+                    apiSpec.getProtocol().forEach(protocol -> {
+                        ApiInfo apiInfo = ApiInfo.builder()
+                                .apiId(apiSpec.getApiId())
+                                .apiName(apiSpec.getApiName())
+                                .serviceId(service.getServiceId())
+                                .headers(headers)
+                                .queryParams(queryParams)
+                                .inboundURL(apiSpec.getInboundUrl())
+                                .outboundURL(apiSpec.getOutboundUrl())
+                                .inboundMethod(apiSpec.getMethod())
+                                .outboundMethod(apiSpec.getMethod())
+                                .protocol(protocol)
+                                .isOpenApi(true)
+                                .transformData(transformRequests)
+                                .build();
 
-                    apiExposeSpecification.getApiInfoCache().put(apiSpec.getApiId(), apiInfoCache);
+                        jedisFactory.getInstance().hsetnx(Const.REDIS_KEY_INTERNAL_API_INFO, String.join("-", String.valueOf(apiInfo.getApiId()), protocol), JsonUtil.fromJson(apiInfo));
+                        apiExposeSpecification.getApiInfoCache().put(apiSpec.getApiId(), apiInfo);
+                    });
         }));
 
         //Enroll API Routing URL
         apiExposeSpecConfig.getServices().forEach(service -> service.getApis().forEach(apiSpec -> {
 
-            StringBuilder routingPathInRegex = new StringBuilder();
             String routingUrl = apiSpec.getInboundUrl();
-            StringTokenizer st = new StringTokenizer(routingUrl, "/");
-            while (st.hasMoreTokens()) {
-                String element = st.nextToken();
-                if (element.startsWith(":")) element = "[a-zA-Z0-9]+";
-
-                routingPathInRegex.append("/").append(element);
-            }
+            String routingPathInRegex = HttpHelper.getRoutingRegex(routingUrl);
 
             String servicePath = (service.getServicePath().startsWith("/"))? service.getServicePath() : "/" + service.getServicePath();
-            Pattern routingUrlInRegex = Pattern.compile(servicePath + routingPathInRegex.toString());
+            Pattern routingUrlInRegex = Pattern.compile(servicePath + routingPathInRegex);
             apiSpec.getProtocol().forEach(protocol ->
                     apiExposeSpecification.getApiIdCache(protocol + apiSpec.getMethod()).put(apiSpec.getApiId(), routingUrlInRegex));
 

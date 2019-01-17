@@ -5,7 +5,7 @@ import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
-import com.longcoding.undefined.models.ehcache.AppInfoCache;
+import com.longcoding.undefined.models.ehcache.AppInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +28,7 @@ public class ServiceContractValidationInterceptor extends AbstractBaseIntercepto
         String appId = requestInfo.getAppId();
         String requestServceId = requestInfo.getServiceId();
 
-        AppInfoCache appInfos = apiExposeSpec.getAppInfoCache().get(appId);
+        AppInfo appInfos = apiExposeSpec.getAppInfoCache().get(appId);
 
         if (!appInfos.getServiceContract().contains(requestServceId)) {
             generateException(ExceptionType.E_1008_INVALID_SERVICE_CONTRACT);

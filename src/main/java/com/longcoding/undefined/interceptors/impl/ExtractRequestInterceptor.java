@@ -8,7 +8,7 @@ import com.longcoding.undefined.helpers.HttpHelper;
 import com.longcoding.undefined.helpers.MessageManager;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
-import com.longcoding.undefined.models.ehcache.ApiInfoCache;
+import com.longcoding.undefined.models.ehcache.ApiInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +34,8 @@ public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
 
-        ApiInfoCache apiInfoCache = ehcacheFactory.getApiInfoCache().get(requestInfo.getApiId());
-        requestInfo.setPathParams(extractPathParams(requestInfo.getRequestURL(), apiInfoCache.getInboundURL()));
+        ApiInfo apiInfo = ehcacheFactory.getApiInfoCache().get(requestInfo.getApiId());
+        requestInfo.setPathParams(extractPathParams(requestInfo.getRequestURL(), apiInfo.getInboundURL()));
 
         return true;
     }

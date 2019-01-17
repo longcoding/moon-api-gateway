@@ -1,4 +1,5 @@
 api-spec:
+  init-enable: true
   services:
     -
       service-id: '01'
@@ -8,7 +9,7 @@ api-spec:
       service-path: /stackoverflow
       apis:
         -
-          api-id: '0101'
+          api-id: '01'
           api-name: getInfo
           protocol: http, https
           method: get
@@ -19,7 +20,7 @@ api-spec:
           url-param: version, site
           url-param-required: site
         -
-          api-id: '0102'
+          api-id: '02'
           api-name: getQuestions
           protocol: https
           method: put
@@ -37,7 +38,7 @@ api-spec:
       service-path: /another
       apis:
         -
-          api-id: '0201'
+          api-id: '01'
           api-name: getList
           protocol: http, https
           method: get
@@ -51,7 +52,7 @@ api-spec:
             page: [header, param_query]
             site: [param_path, header]
         -
-          api-id: '0202'
+          api-id: '02'
           api-name: transformTest
           protocol: http, https
           method: get
@@ -63,4 +64,4 @@ api-spec:
           url-param-required: site
           transform:
             page: [header, param_path]
-            site: [param_path, param_path]
+            site: [param_path, header]

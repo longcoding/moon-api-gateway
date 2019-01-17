@@ -7,7 +7,7 @@ import com.longcoding.undefined.helpers.HttpHelper;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ResponseInfo;
-import com.longcoding.undefined.models.ehcache.ApiInfoCache;
+import com.longcoding.undefined.models.ehcache.ApiInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,16 +28,16 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
 
-        ApiInfoCache apiInfoCache = apiExposeSpec.getApiInfoCache().get(requestInfo.getApiId());
+        ApiInfo apiInfo = apiExposeSpec.getApiInfoCache().get(requestInfo.getApiId());
 
         ResponseInfo responseInfo = new ResponseInfo();
         responseInfo.setRequestId(requestInfo.getRequestId());
-        responseInfo.setRequestMethod(apiInfoCache.getOutboundMethod());
+        responseInfo.setRequestMethod(apiInfo.getOutboundMethod());
         responseInfo.setHeaders(createRequestHeaderMap(requestInfo));
         responseInfo.setQueryStringMap(requestInfo.getQueryStringMap());
         responseInfo.setRequestAccept(requestInfo.getAccept());
-        responseInfo.setRequestProtocol(apiInfoCache.getProtocol());
-        responseInfo.setRequestURL(apiInfoCache.getOutboundURL());
+        responseInfo.setRequestProtocol(apiInfo.getProtocol());
+        responseInfo.setRequestURL(apiInfo.getOutboundURL());
         String outboundURL = createOutBoundURI(requestInfo.getPathParams(), requestInfo.getOutboundURL());
 
         URI uri = new URI(HttpHelper.createURI(responseInfo.getRequestProtocol(), outboundURL));

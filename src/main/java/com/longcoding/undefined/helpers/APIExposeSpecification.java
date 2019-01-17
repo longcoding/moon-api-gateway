@@ -1,9 +1,9 @@
 package com.longcoding.undefined.helpers;
 
 import com.longcoding.undefined.configs.ServiceConfig;
-import com.longcoding.undefined.models.ehcache.ApiInfoCache;
-import com.longcoding.undefined.models.ehcache.AppInfoCache;
-import com.longcoding.undefined.models.ehcache.ServiceInfoCache;
+import com.longcoding.undefined.models.ehcache.ApiInfo;
+import com.longcoding.undefined.models.ehcache.AppInfo;
+import com.longcoding.undefined.models.ehcache.ServiceInfo;
 import org.ehcache.Cache;
 import org.ehcache.PersistentCacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
@@ -11,12 +11,10 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
-import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.regex.Pattern;
 
@@ -42,9 +40,9 @@ public class APIExposeSpecification {
     private static PersistentCacheManager cacheManager;
     private static Cache<String, String> appDistinctionCache;
 
-    private static Cache<String, AppInfoCache> appInfoCache;
-    private static Cache<String, ApiInfoCache> apiInfoCache;
-    private static Cache<String, ServiceInfoCache> serviceInfoCache;
+    private static Cache<String, AppInfo> appInfoCache;
+    private static Cache<String, ApiInfo> apiInfoCache;
+    private static Cache<String, ServiceInfo> serviceInfoCache;
 
     private static Cache<String, Pattern> apiMatchHttpGet;
     private static Cache<String, Pattern> apiMatchHttpPost;
@@ -68,9 +66,9 @@ public class APIExposeSpecification {
                 .disk(1000000, MemoryUnit.MB, false);
 
         appDistinctionCache = cacheManager.createCache(CACHE_APP_DISTINCTION, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
-        appInfoCache = cacheManager.createCache(CACHE_APP_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, AppInfoCache.class, resourcePoolsBuilder).build());
-        apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiInfoCache.class, resourcePoolsBuilder).build());
-        serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceInfoCache.class, resourcePoolsBuilder).build());
+        appInfoCache = cacheManager.createCache(CACHE_APP_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, AppInfo.class, resourcePoolsBuilder).build());
+        apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiInfo.class, resourcePoolsBuilder).build());
+        serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceInfo.class, resourcePoolsBuilder).build());
 
         apiMatchHttpGet = cacheManager.createCache(Const.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
         apiMatchHttpPost = cacheManager.createCache(Const.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
@@ -91,15 +89,13 @@ public class APIExposeSpecification {
 
     public Cache<String, String> getAppDistinctionCache() { return appDistinctionCache; }
 
-    public Cache<String, AppInfoCache> getAppInfoCache() {
+    public Cache<String, AppInfo> getAppInfoCache() {
         return appInfoCache;
     }
 
-    public Cache<String, ApiInfoCache> getApiInfoCache() { return apiInfoCache; }
+    public Cache<String, ApiInfo> getApiInfoCache() { return apiInfoCache; }
 
-    public Cache<String, ServiceInfoCache> getServiceInfoCache() {
-        return serviceInfoCache;
-    }
+    public Cache<String, ServiceInfo> getServiceInfoCache() { return serviceInfoCache; }
 
     public Cache<String, Pattern> getApiIdCache(String protocolAndMethod) {
         protocolAndMethod = protocolAndMethod.toUpperCase();

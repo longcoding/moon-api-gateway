@@ -7,7 +7,7 @@ import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
-import com.longcoding.undefined.models.ehcache.ApiInfoCache;
+import com.longcoding.undefined.models.ehcache.ApiInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
@@ -37,10 +37,10 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
 
-        ApiInfoCache apiInfoCache = ehcacheFactory.getApiInfoCache().get(requestInfo.getApiId());
+        ApiInfo apiInfo = ehcacheFactory.getApiInfoCache().get(requestInfo.getApiId());
 
-        Map<String, Boolean> headers = apiInfoCache.getHeaders();
-        Map<String, Boolean> queryParams = apiInfoCache.getQueryParams();
+        Map<String, Boolean> headers = apiInfo.getHeaders();
+        Map<String, Boolean> queryParams = apiInfo.getQueryParams();
 
         Map<String, String> requestHeaders = requestInfo.getHeaders();
         Map<String, String> requestQueryParams = requestInfo.getQueryStringMap();
