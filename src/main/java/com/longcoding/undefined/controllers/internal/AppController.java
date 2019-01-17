@@ -19,25 +19,25 @@ public class AppController {
     AppService appService;
 
     @RequestMapping(value = "apps", method = RequestMethod.POST)
-    ThirdParty createApp(@RequestBody ThirdParty thridParty) { return appService.createApp(thridParty); }
+    public ThirdParty createApp(@RequestBody ThirdParty thirdParty) { return appService.createApp(thirdParty); }
 
     @RequestMapping(value = "apps/{appId}", method = RequestMethod.DELETE)
-    boolean deleteApp(@PathVariable String appId) {
+    public boolean deleteApp(@PathVariable String appId) {
         return appService.deleteApp(appId);
     }
 
     @RequestMapping(value = "apps/{appId}", method = RequestMethod.GET)
-    ThirdParty getAppInfo(@PathVariable String appId) {
+    public ThirdParty getAppInfo(@PathVariable String appId) {
         return appService.getAppInfo(appId);
     }
 
     @RequestMapping(value = "apps/{appId}/appKey", method = RequestMethod.DELETE)
-    boolean expireAppKey(@PathVariable String appId) {
+    public boolean expireAppKey(@PathVariable String appId) {
         return appService.expireAppKey(appId);
     }
 
     @RequestMapping(value = "apps/{appId}/appKey", method = RequestMethod.PUT)
-    ThirdParty refreshAppKey(@PathVariable String appId) {
+    public ThirdParty refreshAppKey(@PathVariable String appId) {
         return appService.refreshAppKey(appId);
     }
 
