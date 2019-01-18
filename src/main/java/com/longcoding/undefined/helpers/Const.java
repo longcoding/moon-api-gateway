@@ -53,5 +53,6 @@ public class Const {
 
     public static final String REDIS_KEY_APP_UPDATE = "internal:sync:update:apps";
     public static final String REDIS_KEY_API_UPDATE = "internal:sync:update:apis";
+    public static final String REDIS_KEY_APP_WHITELIST_UPDATE = "internal:sync:update:whitelist";
 
 }

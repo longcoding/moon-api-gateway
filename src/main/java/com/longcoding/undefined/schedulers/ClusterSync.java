@@ -3,6 +3,7 @@ package com.longcoding.undefined.schedulers;
 import com.longcoding.undefined.helpers.*;
 import com.longcoding.undefined.models.cluster.ApiSync;
 import com.longcoding.undefined.models.cluster.AppSync;
+import com.longcoding.undefined.models.cluster.WhitelistIpSync;
 import com.longcoding.undefined.services.sync.SyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +39,28 @@ public class ClusterSync {
 
         //API Information Sync
         apiInfoSync();
+
+        //Application Whitelist Sync
+        appWhitelistSync();
     }
 
     @Scheduled(fixedDelayString = "${undefined.service.cluster.sync-interval}")
     private void healthCheck() {
         jedisFactory.getInstance()
                 .setex(String.join(":", Const.REDIS_KEY_CLUSTER_SERVER_HEALTH, HttpHelper.getHostName()), Const.SECOND_OF_MINUTE * 10, HttpHelper.getHostName());
+    }
+
+    private void appWhitelistSync() {
+        try (Jedis jedisClient = jedisFactory.getInstance()) {
+            Set<String> targetKeys = jedisClient.keys(String.join("-", Const.REDIS_KEY_APP_WHITELIST_UPDATE, HttpHelper.getHostName() + "*"));
+            targetKeys.forEach(redisKey -> {
+                String whitelistSyncInString = jedisClient.get(redisKey);
+                WhitelistIpSync whitelistIpSync = JsonUtil.fromJson(whitelistSyncInString, WhitelistIpSync.class);
+                log.info("Found New Update APP Whitelist Information - method: {}, appId: {}", whitelistIpSync.getType().getDescription(), whitelistIpSync.getAppId());
+                boolean result = syncService.syncAppWhitelistToCache(whitelistIpSync);
+                if (result) jedisClient.del(redisKey);
+            });
+        }
     }
 
     private void appInfoSync() {

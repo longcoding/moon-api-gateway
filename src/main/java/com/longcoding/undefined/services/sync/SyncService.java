@@ -4,6 +4,7 @@ import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.HttpHelper;
 import com.longcoding.undefined.models.cluster.ApiSync;
 import com.longcoding.undefined.models.cluster.AppSync;
+import com.longcoding.undefined.models.cluster.WhitelistIpSync;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.ehcache.AppInfo;
 import com.longcoding.undefined.models.ehcache.ServiceInfo;
@@ -13,6 +14,7 @@ import org.ehcache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -26,6 +28,19 @@ public class SyncService {
 
     @Autowired
     APIExposeSpecification apiExposeSpec;
+
+    public boolean syncAppWhitelistToCache(WhitelistIpSync whitelistIpSync) {
+
+        SyncType crudType = whitelistIpSync.getType();
+        if (SyncType.UPDATE == crudType) {
+            return updateWhitelistIp(whitelistIpSync.getAppId(), whitelistIpSync.getRequestIps());
+        } else if (SyncType.DELETE == crudType) {
+            return deleteWhitelistIp(whitelistIpSync.getAppId(), whitelistIpSync.getRequestIps());
+        }
+
+        return false;
+
+    }
 
     public boolean syncAppInfoToCache(AppSync appSyncInfo) {
 
@@ -58,12 +73,30 @@ public class SyncService {
         return true;
     }
 
+    private boolean updateWhitelistIp(String appId, List<String> requestIps) {
+        Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
+        AppInfo appInfo = appInfoCaches.get(appId);
+        appInfo.getAppIpAcl().addAll(requestIps);
+        appInfoCaches.replace(appInfo.getAppId(), appInfo);
+
+        return true;
+    }
+
     private boolean deleteApp(AppInfo appInfo) {
         Cache<String, String> appDistinction = apiExposeSpec.getAppDistinctionCache();
         appDistinction.remove(appInfo.getAppKey());
 
         Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
         appInfoCaches.remove(appInfo.getAppId());
+
+        return true;
+    }
+
+    private boolean deleteWhitelistIp(String appId, List<String> requestIps) {
+        Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
+        AppInfo appInfo = appInfoCaches.get(appId);
+        requestIps.forEach(ip -> appInfo.getAppIpAcl().remove(ip));
+        appInfoCaches.replace(appInfo.getAppId(), appInfo);
 
         return true;
     }

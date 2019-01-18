@@ -4,9 +4,11 @@ import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.exceptions.GeneralException;
 import com.longcoding.undefined.helpers.*;
 import com.longcoding.undefined.models.cluster.AppSync;
+import com.longcoding.undefined.models.cluster.WhitelistIpSync;
 import com.longcoding.undefined.models.ehcache.AppInfo;
 import com.longcoding.undefined.models.enumeration.SyncType;
 import com.longcoding.undefined.models.internal.EnrollApp;
+import com.longcoding.undefined.models.internal.EnrollWhitelistIp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import redis.clients.jedis.Jedis;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -94,6 +97,19 @@ public class AppService {
                 return appInfo;
             } throw new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND);
         }
+    }
+    //TODO
+    public boolean removeWhiteIps(EnrollWhitelistIp enrollWhitelistIp) {
+        WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.DELETE, enrollWhitelistIp.getAppId(), enrollWhitelistIp.getRequestIps());
+        clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_WHITELIST_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(ipSync));
+        return true;
+    }
+
+    //TODO
+    public boolean addWhiteIps(EnrollWhitelistIp enrollWhitelistIp) {
+        WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.UPDATE, enrollWhitelistIp.getAppId(), enrollWhitelistIp.getRequestIps());
+        clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_WHITELIST_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(ipSync));
+        return true;
     }
 
     private static UUID createUniqueAppKey() {
