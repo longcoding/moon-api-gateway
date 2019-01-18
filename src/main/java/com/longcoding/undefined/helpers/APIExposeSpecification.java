@@ -4,6 +4,8 @@ import com.longcoding.undefined.configs.ServiceConfig;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.ehcache.AppInfo;
 import com.longcoding.undefined.models.ehcache.ServiceInfo;
+import com.longcoding.undefined.models.ehcache.ServiceRoutingInfo;
+import com.longcoding.undefined.models.enumeration.RoutingType;
 import org.ehcache.Cache;
 import org.ehcache.PersistentCacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
@@ -30,6 +32,7 @@ public class APIExposeSpecification {
     ServiceConfig serviceConfig;
 
     private static String CACHE_APP_DISTINCTION =  "appDistinctionCache";
+    private static String CACHE_SERVICE_ROUTING_TYPE = "serviceRoutingTypeCache";
 
     private static String CACHE_APP_INFO = "appInfoCache";
     private static String CACHE_API_INFO = "apiInfoCache";
@@ -39,6 +42,7 @@ public class APIExposeSpecification {
 
     private static PersistentCacheManager cacheManager;
     private static Cache<String, String> appDistinctionCache;
+    private static Cache<String, ServiceRoutingInfo> serviceRoutngTypeCache;
 
     private static Cache<String, AppInfo> appInfoCache;
     private static Cache<String, ApiInfo> apiInfoCache;
@@ -66,6 +70,8 @@ public class APIExposeSpecification {
                 .disk(1000000, MemoryUnit.MB, false);
 
         appDistinctionCache = cacheManager.createCache(CACHE_APP_DISTINCTION, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        serviceRoutngTypeCache = cacheManager.createCache(CACHE_SERVICE_ROUTING_TYPE, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceRoutingInfo.class, resourcePoolsBuilder).build());
+
         appInfoCache = cacheManager.createCache(CACHE_APP_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, AppInfo.class, resourcePoolsBuilder).build());
         apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiInfo.class, resourcePoolsBuilder).build());
         serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceInfo.class, resourcePoolsBuilder).build());
@@ -97,6 +103,9 @@ public class APIExposeSpecification {
 
     public Cache<String, ServiceInfo> getServiceInfoCache() { return serviceInfoCache; }
 
+    public Cache<String, ServiceRoutingInfo> getServiceTypeCache() { return serviceRoutngTypeCache; }
+
+    //TODO: need to rename
     public Cache<String, Pattern> getApiIdCache(String protocolAndMethod) {
         protocolAndMethod = protocolAndMethod.toUpperCase();
         if (Const.API_MATCH_HTTP_GET_MAP.equals(protocolAndMethod)) {

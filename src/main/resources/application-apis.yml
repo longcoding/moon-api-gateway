@@ -7,25 +7,26 @@ api-spec:
       service-minutely-capacity: 10000
       service-daily-capacity: 240000
       service-path: /stackoverflow
+      outbound-service-host: api.stackexchange.com
       apis:
         -
-          api-id: '01'
+          api-id: '0101'
           api-name: getInfo
           protocol: http, https
           method: get
           inbound-url: /2.2/question/:first
-          outbound-url: api.stackexchange.com/2.2/questions
+          outbound-url: /2.2/questions
           header: page, votes
           header-required: ""
           url-param: version, site
           url-param-required: site
         -
-          api-id: '02'
+          api-id: '0202'
           api-name: getQuestions
           protocol: https
           method: put
           inbound-url: /2.2/question/:first
-          outbound-url: api.stackexchange.com/2.2/questions
+          outbound-url: /2.2/questions
           header: page, votes
           header-required: ""
           url-param: version, site
@@ -36,14 +37,15 @@ api-spec:
       service-minutely-capacity: 5000
       service-daily-capacity: 100000
       service-path: /another
+      outbound-service-host: api.stackexchange.com
       apis:
         -
-          api-id: '01'
+          api-id: '0201'
           api-name: getList
           protocol: http, https
           method: get
           inbound-url: /2.2/question/:first
-          outbound-url: api.stackexchange.com/2.2/questions
+          outbound-url: /2.2/questions
           header: page, votes
           header-required: ""
           url-param: version, site
@@ -52,12 +54,12 @@ api-spec:
             page: [header, param_query]
             site: [param_path, header]
         -
-          api-id: '02'
+          api-id: '0202'
           api-name: transformTest
           protocol: http, https
           method: get
           inbound-url: /2.2/haha/question/:site
-          outbound-url: api.stackexchange.com/:page/:site
+          outbound-url: /:page/:site
           header: page, votes
           header-required: ""
           url-param: version, site
@@ -65,3 +67,11 @@ api-spec:
           transform:
             page: [header, param_path]
             site: [param_path, header]
+    -
+      service-id: '03'
+      service-name: service3
+      service-minutely-capacity: 5000
+      service-daily-capacity: 100000
+      service-path: /service3
+      outbound-service-host: api.stackexchange.com
+      only-pass-request-without-transform: true

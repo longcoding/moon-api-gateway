@@ -9,8 +9,6 @@ import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ResponseInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.util.MimeTypeUtils;
@@ -51,12 +49,17 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         requestInfo.setRequestProtocol(requestURL[0]);
         requestInfo.setRequestURL(requestURL[1]);
 
+        String accept = request.getParameter(Const.REQUEST_ACCEPT);
+        requestInfo.setAccept(accept != null ? accept : MimeTypeUtils.APPLICATION_JSON_VALUE);
+
         String queryString = new String(Strings.nullToEmpty(request.getQueryString()).getBytes(StandardCharsets.ISO_8859_1.name()), Const.SERVER_DEFAULT_ENCODING_TYPE);
         queryString = URLDecoder.decode(queryString, Const.SERVER_DEFAULT_ENCODING_TYPE);
         requestInfo.setQueryStringMap(createQueryStringMap(queryString));
 
-        String accept = request.getParameter(Const.REQUEST_ACCEPT);
-        requestInfo.setAccept(accept != null ? accept : MimeTypeUtils.APPLICATION_JSON_VALUE);
+        if (!Strings.isNullOrEmpty(request.getServletPath()) && requestInfo.getRequestPath().startsWith("/")) {
+            String[] requestPathInArray = request.getServletPath().substring(1).split("/", 2);
+            if (requestPathInArray.length > 0) requestInfo.setServicePath(requestPathInArray[0]);
+        }
 
         request.setAttribute(Const.REQUEST_INFO_DATA, requestInfo);
 
@@ -84,6 +87,7 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         Map<String, String> headers = Maps.newHashMap();
 
         while ( headerKeys.hasMoreElements() ) {
+
             String headerKey = headerKeys.nextElement();
             String headerValue = request.getHeader(headerKey);
 

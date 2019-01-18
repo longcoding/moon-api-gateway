@@ -1,5 +1,6 @@
 package com.longcoding.undefined.models;
 
+import com.longcoding.undefined.models.enumeration.RoutingType;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.http.HttpEntity;
@@ -18,6 +19,8 @@ public class RequestInfo {
     private String clientIp, userAgent;
     private String requestURI, requestURL, requestPath, requestMethod, requestProtocol;
     private String outboundURL;
+
+    private String servicePath;
 
     private String accept;
 
@@ -40,5 +43,7 @@ public class RequestInfo {
     private int responseStatusCode;
     private String errorCode;
     private long proxyElapsedTime;
+
+    private RoutingType routingType;
 
 }

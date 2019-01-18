@@ -66,6 +66,7 @@ public class ProxyServiceImpl implements ProxyService {
                             deferredResult.setResult(responseEntity);
                         }
                     }
+
                     deferredResult.setErrorResult(new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE));
                 }
             }

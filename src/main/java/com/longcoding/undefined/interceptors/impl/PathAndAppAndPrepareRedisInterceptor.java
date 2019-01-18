@@ -5,12 +5,16 @@ import com.longcoding.undefined.helpers.*;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
+import com.longcoding.undefined.models.ehcache.ServiceInfo;
+import com.longcoding.undefined.models.ehcache.ServiceRoutingInfo;
+import com.longcoding.undefined.models.enumeration.RoutingType;
 import org.apache.logging.log4j.util.Strings;
 import org.ehcache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -33,32 +37,50 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
 
-        // for future update.
+        ServiceRoutingInfo routingInfo = apiExposeSpec.getServiceTypeCache().get(requestInfo.getServicePath());
+        if (Objects.isNull(routingInfo)) generateException(ExceptionType.E_1006_INVALID_API_PATH);
+
+        String apiId = Strings.EMPTY;
+        if (RoutingType.API_TRANSFER == routingInfo.getRoutingType()) {
+            // for future update.
 //        String categoryValue = classifyCategory(requestInfo.getRequestURL(),
 //                messageManager.getBooleanProperty("undefined.service.recognize.subdomain"));
-        String requestProtocolAndMethod = requestInfo.getRequestProtocol() + requestInfo.getRequestMethod();
+            String requestProtocolAndMethod = requestInfo.getRequestProtocol() + requestInfo.getRequestMethod();
 
-        Cache<String, Pattern> apiRoutingPaths = apiExposeSpec.getApiIdCache(requestProtocolAndMethod);
-        if ( apiRoutingPaths == null ) {
-            generateException(ExceptionType.E_1003_METHOD_OR_PROTOCOL_IS_NOT_NOT_ALLOWED);
-        }
+            Cache<String, Pattern> apiRoutingPaths = apiExposeSpec.getApiIdCache(requestProtocolAndMethod);
+            if ( Objects.isNull(apiRoutingPaths) ) {
+                generateException(ExceptionType.E_1003_METHOD_OR_PROTOCOL_IS_NOT_NOT_ALLOWED);
+            }
 
-        String apiId = null;
-        for (Cache.Entry<String, Pattern> pathObj : apiRoutingPaths) {
-            if (pathObj.getValue().matcher(requestInfo.getRequestPath()).matches()) {
-                apiId = pathObj.getKey();
-                requestInfo.setApiId(apiId);
-                break;
+            for (Cache.Entry<String, Pattern> pathObj : apiRoutingPaths) {
+                if (pathObj.getValue().matcher(requestInfo.getRequestPath()).matches()) {
+                    apiId = pathObj.getKey();
+                    break;
+                }
+            }
+
+            if (Strings.isEmpty(apiId)) {
+                generateException(ExceptionType.E_1006_INVALID_API_PATH);
             }
         }
 
-        if (Strings.isEmpty(apiId)) {
-            generateException(ExceptionType.E_1006_INVALID_API_PATH);
+        ApiInfo apiInfo = apiExposeSpec.getApiInfoCache().get(apiId);
+
+        String outboundUrl, serviceId;
+        if (RoutingType.API_TRANSFER == routingInfo.getRoutingType()) {
+            serviceId = apiInfo.getServiceId();
+            outboundUrl = apiInfo.getOutboundURL();
+        } else {
+            ServiceInfo serviceInfo = apiExposeSpec.getServiceInfoCache().get(routingInfo.getServiceId());
+            serviceId = routingInfo.getServiceId();
+            apiId = Strings.EMPTY;
+            outboundUrl = serviceInfo.getOutboundServiceHost() + requestInfo.getRequestPath().substring(requestInfo.getServicePath().length() + 1);
         }
 
-        ApiInfo apiInfo = apiExposeSpec.getApiInfoCache().get(apiId);
-        requestInfo.setServiceId(apiInfo.getServiceId());
-        requestInfo.setOutboundURL(apiInfo.getOutboundURL());
+        requestInfo.setApiId(apiId);
+        requestInfo.setServiceId(serviceId);
+        requestInfo.setOutboundURL(outboundUrl);
+        requestInfo.setRoutingType(routingInfo.getRoutingType());
 
         prepareRedisInterceptors(request);
         return true;

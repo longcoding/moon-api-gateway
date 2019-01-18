@@ -15,4 +15,9 @@
 1102: Internal Server Error. Outbound Service is not unstable.
 1103: Service Capacity is over.
 
+1200: Failed Configuration Init. Please check service info configuration.
+1201: Failed Configuration Init. Please check api info configuration.
+1202: Failed Configuration Init. Please check application info configuration.
+1203: Failed to sync Cluster Info. Please check it.
+
 9999: Internal Server Error.

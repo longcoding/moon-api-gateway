@@ -1,6 +1,8 @@
 package com.longcoding.undefined.models.apis;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,8 +20,10 @@ public class ServiceExpose implements Serializable, Cloneable {
     String serviceId;
     String serviceName;
     String servicePath;
+    String outboundServiceHost;
     int serviceMinutelyCapacity;
     int serviceDailyCapacity;
+    boolean onlyPassRequestWithoutTransform = false;
     List<APIExpose> apis;
 
 }

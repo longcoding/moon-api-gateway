@@ -80,7 +80,7 @@ public class ProxyServiceTest {
     }
 
     @Test
-    public void testCallHttpGet() throws Exception {
+    public void testCallHttpGet_API_TRANSFER_MODE() throws Exception {
 
         HttpClient httpClient = HttpClientBuilder.create().build();
 
@@ -96,6 +96,42 @@ public class ProxyServiceTest {
                 //Insert option query param
                 .setParameter("page", "2")
                 .setParameter("votes", "1");
+
+
+        HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+        //this action is not needed. just for understanding.
+        httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+        httpGet.setHeader("appKey", "1000-1000-1000-1000");
+
+        HttpResponse response = httpClient.execute(httpGet);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        response.getEntity().writeTo(outputStream);
+        log.info("Response: {}", outputStream);
+
+        Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
+        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+
+    }
+
+    @Test
+    public void testCallHttpGet_SKIP_API_TRANSFORM() throws Exception {
+
+        HttpClient httpClient = HttpClientBuilder.create().build();
+
+        //inbound path : /service3/2.2/questions?order=desc&sort=activity&site=stackoverflow
+        //outbound path : http://api.stackexchange.com/2.2/questions?order=desc&sort=activity&site=stackoverflow
+        URIBuilder uriBuilder = new URIBuilder();
+        uriBuilder.setScheme("http")
+                .setHost("localhost")
+                .setPort(8080)
+                .setPath("/service3/2.2/questions")
+                //Insert mandatory query param
+                .setParameter("site", "stackoverflow")
+                //Insert option query param
+                .setParameter("sort", "activity")
+                .setParameter("order", "desc");
 
 
         HttpGet httpGet = new HttpGet(uriBuilder.build());

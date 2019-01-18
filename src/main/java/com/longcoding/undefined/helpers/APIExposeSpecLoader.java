@@ -2,10 +2,14 @@ package com.longcoding.undefined.helpers;
 
 import com.google.common.collect.Lists;
 import com.longcoding.undefined.configs.APIExposeSpecConfig;
+import com.longcoding.undefined.exceptions.ExceptionType;
+import com.longcoding.undefined.exceptions.GeneralException;
 import com.longcoding.undefined.models.apis.TransformData;
 import com.longcoding.undefined.models.cluster.ApiSync;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.ehcache.ServiceInfo;
+import com.longcoding.undefined.models.ehcache.ServiceRoutingInfo;
+import com.longcoding.undefined.models.enumeration.RoutingType;
 import com.longcoding.undefined.models.enumeration.SyncType;
 import com.longcoding.undefined.models.enumeration.TransformType;
 import com.longcoding.undefined.services.sync.SyncService;
@@ -72,26 +76,41 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
                             ApiInfo apiInfo = JsonUtil.fromJson(apiInString, ApiInfo.class);
                             syncService.syncApiInfoToCache(new ApiSync(SyncType.CREATE, apiInfo));
                         });
+            } catch (Exception ex) {
+                throw new GeneralException(ExceptionType.E_1203_FAIL_CLUSTER_SYNC, ex);
             }
         }
 
         if ( !apiExposeSpecConfig.isInitEnable() ) return ;
 
-        //Enroll Service expose
-        apiExposeSpecConfig.getServices().forEach(service -> {
-            ServiceInfo serviceInfo = ServiceInfo.builder()
-                    .serviceId(service.getServiceId())
-                    .serviceName(service.getServiceName())
-                    .minutelyCapacity(String.valueOf(service.getServiceMinutelyCapacity()))
-                    .dailyCapacity(String.valueOf(service.getServiceDailyCapacity()))
-                    .servicePath(service.getServicePath())
-                    .build();
-            apiExposeSpecification.getServiceInfoCache().put(String.valueOf(service.getServiceId()), serviceInfo);
-            jedisFactory.getInstance().hsetnx(Const.REDIS_KEY_INTERNAL_SERVICE_INFO, service.getServiceId(), JsonUtil.fromJson(serviceInfo));
-        });
+        try {
+            //Enroll Service expose
+            apiExposeSpecConfig.getServices().forEach(service -> {
 
-        //Enroll API expose
-        apiExposeSpecConfig.getServices().forEach(service ->
+                RoutingType serviceRoutingType = service.isOnlyPassRequestWithoutTransform()? RoutingType.SKIP_API_TRANSFORM : RoutingType.API_TRANSFER;
+                String servicePath = service.getServicePath().startsWith("/")? service.getServicePath().substring(1) : service.getServicePath();
+                apiExposeSpecification.getServiceTypeCache().put(servicePath, new ServiceRoutingInfo(service.getServiceId(), serviceRoutingType));
+
+                ServiceInfo serviceInfo = ServiceInfo.builder()
+                        .serviceId(service.getServiceId())
+                        .serviceName(service.getServiceName())
+                        .minutelyCapacity(String.valueOf(service.getServiceMinutelyCapacity()))
+                        .dailyCapacity(String.valueOf(service.getServiceDailyCapacity()))
+                        .servicePath(service.getServicePath())
+                        .outboundServiceHost(service.getOutboundServiceHost())
+                        .routingType(serviceRoutingType)
+                        .build();
+                apiExposeSpecification.getServiceInfoCache().put(String.valueOf(service.getServiceId()), serviceInfo);
+                jedisFactory.getInstance().hsetnx(Const.REDIS_KEY_INTERNAL_SERVICE_INFO, service.getServiceId(), JsonUtil.fromJson(serviceInfo));
+            });
+        } catch (Exception ex) {
+            throw new GeneralException(ExceptionType.E_1200_FAIL_SERVICE_INFO_CONFIGURATION_INIT, ex);
+        }
+
+        try {
+            //Enroll API expose
+            apiExposeSpecConfig.getServices().forEach(service -> {
+                if (Objects.isNull(service.getApis())) return ;
                 service.getApis().forEach(apiSpec -> {
 
                     ConcurrentHashMap<String, Boolean> headers = new ConcurrentHashMap<>();
@@ -123,7 +142,7 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
                                 .headers(headers)
                                 .queryParams(queryParams)
                                 .inboundURL(apiSpec.getInboundUrl())
-                                .outboundURL(apiSpec.getOutboundUrl())
+                                .outboundURL(service.getOutboundServiceHost() + apiSpec.getOutboundUrl())
                                 .inboundMethod(apiSpec.getMethod())
                                 .outboundMethod(apiSpec.getMethod())
                                 .protocol(protocol)
@@ -134,20 +153,31 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
                         jedisFactory.getInstance().hsetnx(Const.REDIS_KEY_INTERNAL_API_INFO, String.join("-", String.valueOf(apiInfo.getApiId()), protocol), JsonUtil.fromJson(apiInfo));
                         apiExposeSpecification.getApiInfoCache().put(apiSpec.getApiId(), apiInfo);
                     });
-        }));
+                });
+            });
 
-        //Enroll API Routing URL
-        apiExposeSpecConfig.getServices().forEach(service -> service.getApis().forEach(apiSpec -> {
+            //Enroll API Routing URL
+            apiExposeSpecConfig.getServices().forEach(service -> {
+                if (Objects.isNull(service.getApis())) return ;
+                service.getApis().forEach(apiSpec -> {
 
-            String routingUrl = apiSpec.getInboundUrl();
-            String routingPathInRegex = HttpHelper.getRoutingRegex(routingUrl);
+                    String routingUrl = apiSpec.getInboundUrl();
+                    String routingPathInRegex = HttpHelper.getRoutingRegex(routingUrl);
 
-            String servicePath = (service.getServicePath().startsWith("/"))? service.getServicePath() : "/" + service.getServicePath();
-            Pattern routingUrlInRegex = Pattern.compile(servicePath + routingPathInRegex);
-            apiSpec.getProtocol().forEach(protocol ->
-                    apiExposeSpecification.getApiIdCache(protocol + apiSpec.getMethod()).put(apiSpec.getApiId(), routingUrlInRegex));
+                    String servicePath = (service.getServicePath().startsWith("/"))? service.getServicePath() : "/" + service.getServicePath();
+                    Pattern routingUrlInRegex = Pattern.compile(servicePath + routingPathInRegex);
 
-        }));
+                    apiSpec.getProtocol().forEach(protocol ->
+                            apiExposeSpecification.getApiIdCache(protocol + apiSpec.getMethod()).put(apiSpec.getApiId(), routingUrlInRegex));
+                });
+            });
+        } catch (Exception ex) {
+            throw new GeneralException(ExceptionType.E_1201_FAIL_API_INFO_CONFIGURATION_INIT, ex);
+        }
+
+
+
+
 
     }
 

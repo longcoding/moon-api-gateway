@@ -8,6 +8,7 @@ import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
+import com.longcoding.undefined.models.enumeration.RoutingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
@@ -37,32 +38,38 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
 
-        ApiInfo apiInfo = ehcacheFactory.getApiInfoCache().get(requestInfo.getApiId());
-
-        Map<String, Boolean> headers = apiInfo.getHeaders();
-        Map<String, Boolean> queryParams = apiInfo.getQueryParams();
-
-        Map<String, String> requestHeaders = requestInfo.getHeaders();
-        Map<String, String> requestQueryParams = requestInfo.getQueryStringMap();
-
         Map<String, String> proxyRequestHeaders = Maps.newHashMap();
         Map<String, String> proxyRequestQueryParams = Maps.newHashMap();
 
-        //There are all lowerCase in ehcache.
-        for (String header : headers.keySet()) {
-            if (requestHeaders.containsKey(header) || optionHeaders.contains(header)) {
-                proxyRequestHeaders.put(header, requestHeaders.get(header));
-            } else if (headers.get(header).equals(true)) {
-                generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, "required header is missing.");
-            }
-        }
+        if (RoutingType.API_TRANSFER == requestInfo.getRoutingType()) {
 
-        for (String queryParam : queryParams.keySet()) {
-            if (requestQueryParams.containsKey(queryParam)) {
-                proxyRequestQueryParams.put(queryParam, requestQueryParams.get(queryParam));
-            } else if (queryParams.get(queryParam).equals(true)) {
-                generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, "required query parameter is missing.");
+            ApiInfo apiInfo = ehcacheFactory.getApiInfoCache().get(requestInfo.getApiId());
+
+            Map<String, Boolean> headers = apiInfo.getHeaders();
+            Map<String, Boolean> queryParams = apiInfo.getQueryParams();
+
+            Map<String, String> requestHeaders = requestInfo.getHeaders();
+            Map<String, String> requestQueryParams = requestInfo.getQueryStringMap();
+
+            //There are all lowerCase in ehcache.
+            for (String header : headers.keySet()) {
+                if (requestHeaders.containsKey(header) || optionHeaders.contains(header)) {
+                    proxyRequestHeaders.put(header, requestHeaders.get(header));
+                } else if (headers.get(header).equals(true)) {
+                    generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, "required header is missing.");
+                }
             }
+
+            for (String queryParam : queryParams.keySet()) {
+                if (requestQueryParams.containsKey(queryParam)) {
+                    proxyRequestQueryParams.put(queryParam, requestQueryParams.get(queryParam));
+                } else if (queryParams.get(queryParam).equals(true)) {
+                    generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, "required query parameter is missing.");
+                }
+            }
+        } else if (RoutingType.SKIP_API_TRANSFORM == requestInfo.getRoutingType()) {
+            proxyRequestHeaders = requestInfo.getHeaders();
+            proxyRequestQueryParams = requestInfo.getQueryStringMap();
         }
 
         requestInfo.setHeaders(proxyRequestHeaders);

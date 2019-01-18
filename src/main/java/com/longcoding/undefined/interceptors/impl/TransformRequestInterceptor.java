@@ -6,6 +6,7 @@ import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
+import com.longcoding.undefined.models.enumeration.RoutingType;
 import com.longcoding.undefined.models.enumeration.TransformType;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
         ApiInfo apiInfo = apiExposeSpec.getApiInfoCache().get(requestInfo.getApiId());
-        if (Objects.nonNull(apiInfo.getTransformData())) {
+        if (RoutingType.API_TRANSFER == requestInfo.getRoutingType() && Objects.nonNull(apiInfo.getTransformData())) {
 
             apiInfo.getTransformData().forEach(element -> {
                 String data = getDataByCurrentTransformType(element.getCurrentPoint(), element.getTargetValue(), requestInfo, apiInfo);

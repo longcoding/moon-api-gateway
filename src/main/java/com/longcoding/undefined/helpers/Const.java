@@ -29,8 +29,11 @@ public class Const {
     public static final String REQUEST_ACCEPT = "accept";
     public static final String REQUEST_USER_AGENT = "user-agent";
 
+    public static final String[] HEADER_NEED_TO_REMOVE_LIST = {"appkey", "host", "user-agent"};
+
     public static final String HEADER_CUSTOMIZE_REMOTE_IP = "x-remote-ip";
     public static final String HEADER_CUSTOMIZE_REMOTE_AGENT = "x-user-agent";
+    public static final String HEADER_CUSTOMIZE_APP_ID = "x-app-id";
 
     public static final String REDIS_SERVICE_CAPACITY_MINUTELY = "service_capacity:minutely";
     public static final String REDIS_SERVICE_CAPACITY_MINUTELY_TTL = "service_capacity:minutely-ttl";
