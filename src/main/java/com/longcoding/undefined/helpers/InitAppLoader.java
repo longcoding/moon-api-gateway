@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.ehcache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -24,7 +26,7 @@ import static java.lang.String.valueOf;
 @Slf4j
 @Component
 @EnableConfigurationProperties(InitAppConfig.class)
-public class InitAppLoader {
+public class InitAppLoader implements ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired
     JedisFactory jedisFactory;
@@ -44,9 +46,8 @@ public class InitAppLoader {
     @Autowired
     SyncService syncService;
 
-    @PostConstruct
-    void loadInitApps() {
-
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
         if (enableCluster) {
             jedisFactory.getInstance().hgetAll(Const.REDIS_KEY_INTERNAL_APP_INFO)
                     .forEach((key, appInString) -> {

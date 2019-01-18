@@ -3,6 +3,7 @@ package com.longcoding.undefined.helpers;
 import com.longcoding.undefined.configs.JedisConfig;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -21,14 +22,14 @@ import javax.annotation.PreDestroy;
 @Component
 @AllArgsConstructor
 @EnableConfigurationProperties(JedisConfig.class)
-public class JedisFactory {
+public class JedisFactory implements InitializingBean {
 
     private JedisConfig jedisConfig;
 
     private static JedisPool jedisPool;
 
-    @PostConstruct
-    private void initializeJedisPool() {
+    @Override
+    public void afterPropertiesSet() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxTotal(jedisConfig.getMaxTotal());
         jedisPoolConfig.setMaxWaitMillis(jedisConfig.getMaxWaitMillis());

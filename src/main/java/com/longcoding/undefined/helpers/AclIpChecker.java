@@ -7,7 +7,9 @@ import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -15,15 +17,15 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class AclIpChecker {
+public class AclIpChecker implements InitializingBean {
 
     @Autowired
     APIExposeSpecification apiExposeSpecification;
 
     private static Cache<String, String> ACL_IP_CACHE;
 
-    @PostConstruct
-    private void initAclResolver() {
+    @Override
+    public void afterPropertiesSet() throws Exception {
         ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
                 .heap(10000, EntryUnit.ENTRIES)
                 .disk(1000000, MemoryUnit.MB, false);

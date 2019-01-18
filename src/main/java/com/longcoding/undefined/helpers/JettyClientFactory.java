@@ -2,6 +2,7 @@ package com.longcoding.undefined.helpers;
 
 import com.longcoding.undefined.configs.JettyClientConfig;
 import org.eclipse.jetty.client.HttpClient;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import java.util.concurrent.Executors;
  */
 @Component
 @EnableConfigurationProperties(JettyClientConfig.class)
-public class JettyClientFactory {
+public class JettyClientFactory implements InitializingBean {
 
     @Autowired
     MessageManager messageManager;
@@ -25,9 +26,13 @@ public class JettyClientFactory {
     JettyClientConfig jettyClientConfig;
 
     private static HttpClient httpClient;
+    
+    public HttpClient getJettyClient() {
+        return httpClient;
+    }
 
-    @PostConstruct
-    private void initializeJettyClient() {
+    @Override
+    public void afterPropertiesSet() throws Exception {
         ExecutorService executor = Executors.newFixedThreadPool(jettyClientConfig.getThreadCount());
         httpClient = new HttpClient();
         try {
@@ -39,9 +44,4 @@ public class JettyClientFactory {
             e.printStackTrace();
         }
     }
-
-    public HttpClient getJettyClient() {
-        return httpClient;
-    }
-
 }

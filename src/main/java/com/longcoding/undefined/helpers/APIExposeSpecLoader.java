@@ -11,9 +11,12 @@ import com.longcoding.undefined.models.enumeration.TransformType;
 import com.longcoding.undefined.services.sync.SyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
@@ -30,7 +33,7 @@ import java.util.regex.Pattern;
 @Slf4j
 @Component
 @EnableConfigurationProperties(APIExposeSpecConfig.class)
-public class APIExposeSpecLoader {
+public class APIExposeSpecLoader implements ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired
     APIExposeSpecConfig apiExposeSpecConfig;
@@ -50,8 +53,8 @@ public class APIExposeSpecLoader {
     @Autowired
     JedisFactory jedisFactory;
 
-    @PostConstruct
-    void loadAPIExposeSpecifications() {
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
 
         APIExposeSpecification.setIsEnabledIpAcl(enableIpAcl);
 

@@ -8,6 +8,7 @@ import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.interceptors.RedisBaseValidationInterceptor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -29,7 +30,7 @@ import java.util.concurrent.ExecutorService;
 
 @Slf4j
 @EnableConfigurationProperties(ServiceConfig.class)
-public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseInterceptor {
+public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseInterceptor implements InitializingBean {
 
     @Autowired
     ApplicationContext context;
@@ -42,11 +43,9 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
 
     private static ExecutorService executor;
 
-
-    @PostConstruct
-    private void initializeInterceptor() {
+    @Override
+    public void afterPropertiesSet() throws Exception {
         //executor = Executors.newFixedThreadPool(serviceConfig.async.threadCount);
-
     }
 
     @Override
@@ -97,4 +96,5 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
         return true;
 
     }
+
 }
