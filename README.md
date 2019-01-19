@@ -1,6 +1,6 @@
 # undefined-API-gateway
 
-![feature](https://user-images.githubusercontent.com/3271895/51426821-726a7500-1c33-11e9-8f5b-e1226d757f87.png)
+![feature](https://user-images.githubusercontent.com/3271895/51426856-c412ff80-1c33-11e9-8653-73ec4e7e6a69.png)
 
 
 ## Introduction
