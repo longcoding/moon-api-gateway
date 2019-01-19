@@ -1,6 +1,6 @@
 # undefined-API-gateway
 
-![feature](https://user-images.githubusercontent.com/3271895/51426856-c412ff80-1c33-11e9-8653-73ec4e7e6a69.png)
+![feature](https://user-images.githubusercontent.com/3271895/51427833-6d132780-1c3f-11e9-8f73-7112a7f0da0c.png)
 
 
 ## Introduction
@@ -42,12 +42,13 @@ Undefined API Gateway offers powerful, yet lightweight feature.
 * Jedis 3.0
 
 ## Configuration
-There are required settings to run undefined-api-gateway
+There are required settings to run undefined-api-gateway.
+You do not need to use initialization with the management API.
 
 A. First
  <br />
-    - Enroll init APP configuration in application-apps.yaml <br />
-    - (enroll init APP process is optional)
+    - Please set the initial application registration in application-apps.yaml <br />
+    - (These settings are optional)
 
     init-apps:
       init-enable: true
@@ -69,11 +70,15 @@ A. First
           app-service-contract: ['01', '02']
           app-ip-acl: ['127.0.0.1']
 
+- init-enable: The initial registration setting is not used.
+- app-service-contract: A list of API services that app has permission to use.
+- app-ip-acl: The whitelist of ip that can use this App key(=API Key).
+- app minutely/daily ratelimit: The amount of APIs available to the app. 
 
 B. Second
  <br />
-    - Set up Service and API expose configuration in application-apis.yml <br />
-    - The Gateway brings Service and API information to APIExposeSpecification By APIExposeSpecLoader.
+    - Set up service and API specification configurations in application-apis.yml <br />
+    - The API Gateway obtains Service and API information through the APIExposeSpecLoader.
 
     api-spec:
       init-enable: true
@@ -139,7 +144,20 @@ B. Second
           outbound-service-host: api.stackexchange.com
           only-pass-request-without-transform: true
 
-                          
+- init-enable: The initial registration setting is not used.
+- service-path: URL The first parameter in the Path. The API is routed to the service registered in that parameter.
+- service minutely/daily capacity: The total amount of APIs that the service can route.
+- outbound-service-host: The APIs of the service are routed to that domain.
+- apis/inbound-url: Externally exposed API URL Path specification. ':?' Is a variable.
+- apis/outbound-url: The actual url path of the service connected to the api-gateway.
+- apis/header: This is the header that can be received when requesting API.
+- apis/header-required: This header is mandatory for API requests.
+- apis/url-param: This is the url path parameter that can be received when requesting API.
+- apis/url-param-required: This url path parameter is mandatory for API requests.
+- transform: The param that is received at the time of request is transformed into another variable area at the time of routing.
+    - Possible options: **header**, **param_path**, **param_query**
+    - usage: [source, destination] like [header, param_path]
+- only-pass-request-without-transform: All APIs are routed to services connected to the gateway without any analysis or transformation. 
 
 
 Undefined-api-gateway supports the following protocol and method.
@@ -154,7 +172,7 @@ Undefined API Gateway supports clusters. Each node synchronizes API, APP, IP Whi
 Cluster nodes also work together to calculate the correct API Ratelimiting, Service Capacity.
 
 - **Service, API, APP, IP Whitelist Interval Sync**
-![feature](https://user-images.githubusercontent.com/3271895/51426713-cffdc200-1c31-11e9-9937-b1630c03ffb2.png)
+![feature](https://user-images.githubusercontent.com/3271895/51427837-7b614380-1c3f-11e9-82f3-5a668ba63f00.png)
 
 
 ## Management REST API
@@ -166,8 +184,8 @@ The Management API helps manage a single gateway or cluster group.
   - **APP Update** - [Future Feature]
   - **Appkey(=API Key) Expiry** - [DELETE] /internal/apps/{appId}/appkey
   - **Appkey(=API Key) Regenerate** - [PUT] /internal/apps/{appId}
-  - **Add NEW IP Whiltelist** - [POST] /internal/apps/{appId}/whitelist
-  - **Remove IP Whiltelist** - [DELETE] /internal/apps/{appId}/whitelist
+  - **Add NEW IP Whitelist** - [POST] /internal/apps/{appId}/whitelist
+  - **Remove IP Whitelist** - [DELETE] /internal/apps/{appId}/whitelist
   
 **API Management**
   - **New API Register** - [POST] /internal/apis
@@ -211,12 +229,12 @@ and then input header fields. ( appkey is mandatory header.(or Query Parameter) 
 Execute request and check response code and content.
 
 ## Future update
-* Authentication for private API
-* Docker-compose
+* Authentication for Private API
+* Docker-Compose
     - Easy To Run
 
 ## Contact
 For any inquiries, you can reach me at longcoding@gmail.com 
 
 ## License
-undefined-gateway is released under the MIT license. See LICENSE for details.
+undefined-api-gateway is released under the MIT license. See LICENSE for details.
