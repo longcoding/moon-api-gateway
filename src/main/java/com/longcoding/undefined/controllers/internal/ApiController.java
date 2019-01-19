@@ -28,7 +28,7 @@ public class ApiController {
     @RequestMapping(value = "{apiId}", method = RequestMethod.DELETE)
     public boolean deleteApp(@PathVariable String apiId) { return apiService.deleteApi(apiId); }
 
-    @RequestMapping(value = "{apiId}", method = RequestMethod.GET)
+    @RequestMapping(value = "{apiId}", method = RequestMethod.PUT)
     public List<ApiInfo> updateApi(@PathVariable String apiId, @RequestBody EnrollApi enrollApi) { return apiService.createOrModifyApi(SyncType.UPDATE, enrollApi); }
 
 }
