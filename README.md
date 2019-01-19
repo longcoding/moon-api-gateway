@@ -150,27 +150,27 @@ Undefined-api-gateway supports the following protocol and method.
     - Get, Post, Put, Delete
     
 ## API Gateway Cluster
-undefined API Gateway supports clusters. Each node synchronizes API, APP, IP Whitelist and App Key (= API Key) information in near real time.
+Undefined API Gateway supports clusters. Each node synchronizes API, APP, IP Whitelist and App Key (= API Key) information in near real time.
 Cluster nodes also work together to calculate the correct API Ratelimiting, Service Capacity.
 
 
-
 ## Management REST API
-Support Cluster Sync
+The Management API helps manage a single gateway or cluster group.
 
-- APP Management
-    - **APP Register** - [POST] /internal/apps
-    - **APP UnRegister** - [DELETE] /internal/apps/{appId}
-    - **APP Update** - [Future Feature]
-    - **Appkey(=API Key) Expiry** - [DELETE] /internal/apps/{appId}/appkey
-    - **Appkey(=API Key) Regenerate** - [PUT] /internal/apps/{appId}
-    - **Add NEW IP Whiltelist** - [POST] /internal/apps/{appId}/whitelist
-    - **Remove IP Whiltelist** - [DELETE] /internal/apps/{appId}/whitelist
-- API Management
-    - **New API Register** - [POST] /internal/apis
-    - **API UnRegister** - [DELETE] /internal/apis/{apiId}
-    - **API Update** - [PUT] /internal/apis/{apiId}
-- Service Group API Will be updated
+**APP Management**
+  - APP Register - [POST] /internal/apps
+  - APP UnRegister - [DELETE] /internal/apps/{appId}
+  - APP Update - [Future Feature]
+  - Appkey(=API Key) Expiry - [DELETE] /internal/apps/{appId}/appkey
+  - Appkey(=API Key) Regenerate - [PUT] /internal/apps/{appId}
+  - Add NEW IP Whiltelist - [POST] /internal/apps/{appId}/whitelist
+  - Remove IP Whiltelist - [DELETE] /internal/apps/{appId}/whitelist
+**API Management**
+  - New API Register - [POST] /internal/apis
+  - API UnRegister - [DELETE] /internal/apis/{apiId}
+  - API Update - [PUT] /internal/apis/{apiId}
+
+**Service Group API Will be updated**
 
     
 
