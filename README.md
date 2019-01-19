@@ -100,8 +100,8 @@ B. Second
               outbound-url: /2.2/questions
               header: page, votes
               header-required: ""
-              url-param: version, site
-              url-param-required: site
+              query-param: version, site
+              query-param-required: site
             -
               api-id: '0202'
               api-name: getQuestions
@@ -111,8 +111,8 @@ B. Second
               outbound-url: /2.2/questions
               header: page, votes
               header-required: ""
-              url-param: version, site
-              url-param-required: site
+              query-param: version, site
+              query-param-required: site
         -
           service-id: '02'
           service-name: stackoverflow2
@@ -130,8 +130,8 @@ B. Second
               outbound-url: /:page/:site
               header: page, votes
               header-required: ""
-              url-param: version, site
-              url-param-required: site
+              query-param: version, site
+              query-param-required: site
               transform:
                 page: [header, param_path]
                 site: [param_path, header]
