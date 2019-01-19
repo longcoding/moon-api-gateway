@@ -16,23 +16,23 @@ The Gateway is a network gateway created to provide a single access point for re
 ## Features
 Undefined API Gateway offers powerful, yet lightweight feature.
 
-* **Request Validation** - 요청에 다양한 검증기능을 사용할 수 있습니다. 또한 새로운 feature 를 추가하거나 제거하기 쉽습니다.
+* **Request Validation** - You can use various verification features in your request. It's also easy to add or remove new features.
     - Header, Query, Path Param
-* **Rate Limiting** - API Users 별 강력한 Rate limiting 을 제공합니다. Redis 베이스로 Cluster 서버들은 Ratelimiting 정보를 공유합니다. on a per-key basis
+* **Rate Limiting** - Provides strong rate limiting per API users. Redis-based Cluster servers share Ratelimiting information on a per-key basis
     - App Daily Rate Limiting
     - App Minutely  Rate Limiting
-* **Service Capacity** - 연동된 서비스의 Capacity 를 관리하여 안정적인 운영이 가능하도록 합니다.
+* **Service Capacity** - It manages the capacity of the service linked to the API gateway to ensure stable operation.
     - Service Daily Capacity
     - Service Minutely Capacity
-* **Service Contract(agreement)** - (Optional) API, APP Users 들은 계약관계 혹은 약관에 동의한 API 만 호출 가능합니다.
-* **Request Transform** - (Optional) URI 변경 뿐만 아니라 Header, Query, Path Param 의 변경을 지원합니다. 이는 User 의 요청을 undefiend api Gateway 와 연동된 서비스의 요청으로 적절하게 변경해줍니다.
+* **Service Contract(agreement)** - (Optional) API, App Users can only call APIs that have agreed to the contract relationship or terms.
+* **Request Transform** - (Optional) It supports change of Header, Query, Path Param as well as URI change. This will change the user's request appropriately to the request of the service associated with the undefiend api gateway.
 * **IP Whitelisting** - Block access to non-trusted IP addresses for more secure interactions on a per-key basis
-* **Management API** - API Gateway 를 관리하는 강력한 Rest API 를 제공합니다.
-    - API 추가/삭제/변경
-    - APP 추가/삭제/변경 
-    - IP Whitelist 추가/삭제
+* **Management API** - Provides powerful Rest API to manage API Gateway.
+    - API Add/Delete/Change
+    - APP Add/Delete/Change 
+    - IP Whitelist Add/Delete
     - Key Expiry/Regenerate
-* **Supported Server Cluster** - API Gateway Cluster 를 구성할 수 있습니다. Management API 를 사용하면 모든 서버에서 변경사항이 적용됩니다. Ratelimiting, Service Capacity 정보도 모두 공유됩니다. 
+* **Supported Server Cluster** - API Gateway Cluster can be configured. With the Management API, the changes take effect on all servers. Ratelimiting, and Service Capacity information are all shared. 
 
 ## Dependency
 * Spring Boot 2.1
@@ -172,6 +172,7 @@ Undefined API Gateway supports clusters. Each node synchronizes API, APP, IP Whi
 Cluster nodes also work together to calculate the correct API Ratelimiting, Service Capacity.
 
 - **Service, API, APP, IP Whitelist Interval Sync**
+
 ![feature](https://user-images.githubusercontent.com/3271895/51427837-7b614380-1c3f-11e9-82f3-5a668ba63f00.png)
 
 
