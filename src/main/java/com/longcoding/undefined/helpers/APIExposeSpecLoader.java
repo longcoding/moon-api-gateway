@@ -15,7 +15,6 @@ import com.longcoding.undefined.models.enumeration.TransformType;
 import com.longcoding.undefined.services.sync.SyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -24,7 +23,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -118,8 +116,8 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
                     apiSpec.getHeaderRequired().forEach(requiredHeader -> headers.replace(requiredHeader, true));
 
                     ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
-                    apiSpec.getUrlParam().forEach(param -> queryParams.put(param, false));
-                    apiSpec.getUrlParamRequired().forEach(requiredParam -> queryParams.replace(requiredParam, true));
+                    apiSpec.getQueryParam().forEach(param -> queryParams.put(param, false));
+                    apiSpec.getQueryParamRequired().forEach(requiredParam -> queryParams.replace(requiredParam, true));
 
                     List<TransformData> transformRequests = Lists.newArrayList();
                     Map<String, String[]> transformRequest = apiSpec.getTransform();

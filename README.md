@@ -152,8 +152,8 @@ B. Second
 - apis/outbound-url: The actual url path of the service connected to the api-gateway.
 - apis/header: This is the header that can be received when requesting API.
 - apis/header-required: This header is mandatory for API requests.
-- apis/url-param: This is the url path parameter that can be received when requesting API.
-- apis/url-param-required: This url path parameter is mandatory for API requests.
+- apis/query-param: This is the url query parameter that can be received when requesting API.
+- apis/query-param-required: This url query parameter is mandatory for API requests.
 - transform: The param that is received at the time of request is transformed into another variable area at the time of routing.
     - Possible options: **header**, **param_path**, **param_query**
     - usage: [source, destination] like [header, param_path]

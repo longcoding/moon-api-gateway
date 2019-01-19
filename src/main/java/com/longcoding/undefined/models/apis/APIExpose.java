@@ -22,8 +22,8 @@ public class APIExpose implements Serializable, Cloneable {
     String outboundUrl;
     List<String> header;
     List<String> headerRequired;
-    List<String> urlParam;
-    List<String> urlParamRequired;
+    List<String> queryParam;
+    List<String> queryParamRequired;
     Map<String, String[]> transform;
 
 }
