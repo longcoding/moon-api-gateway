@@ -201,6 +201,36 @@ The Management API helps manage a single gateway or cluster group.
 
 ##### API - stackoverflow API.
 
+- API Expose Specification
+
+
+    service-id: '01'
+          service-name: stackoverflow
+          service-minutely-capacity: 10000
+          service-daily-capacity: 240000
+          service-path: /stackoverflow
+          outbound-service-host: api.stackexchange.com
+          apis:
+            -
+              api-id: '0101'
+              api-name: getInfo
+              protocol: http, https
+              method: get
+              inbound-url: /2.2/question/:first
+              outbound-url: /2.2/questions
+              header: page, votes
+              header-required: ""
+              query-param: version, site
+              query-param-required: site
+              
+- 1) The api service path we want to call is '/stackoverflow'
+- 2) The inbound url path following the service path is '/2.2/question/:first'
+- 3) ': first' is the path parameter and we declare it 'test'.
+- 4) The calling protocol supports http and https, and we will call http.
+- 5) Set the header and url query parameters.
+- 6) When you call the API, the gateway will route the call to api.stackexchange.com set to outbound-service-host.
+- 7) When calling the API, the domain is api.stackexchange.com and the destination url path is '/2.2/questions' set to outbound-url.
+  
 #####1) Use Test Case - Run undefined-api-gateway by gradle
 
     ./gradlew test
