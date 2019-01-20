@@ -199,13 +199,14 @@ The Management API helps manage a single gateway or cluster group.
 
 ## Usage/Test
 
-##### Test Case - stackoverflow API.
+##### API - stackoverflow API.
 
-Run undefined-api-gateway
+#####1) Use Test Case - Run undefined-api-gateway by gradle
 
     ./gradlew test
 
-Use rest-client like Postman. To set method and scheme.
+#####2) Use rest-client like Postman. 
+To set method and scheme.
 
     GET, http 
 
@@ -228,6 +229,10 @@ and then input header fields. ( appkey is mandatory header.(or Query Parameter) 
     votes, 1
 
 Execute request and check response code and content.
+
+#####3) Use cUrl.
+
+    curl -X GET -H "Content-type: application/json" -H "appkey: 1000-1000-1000-1000" -H "page: 5" -H "votes: 1" http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
 ## Future update
 * Authentication for Private API
