@@ -201,7 +201,7 @@ The Management API helps manage a single gateway or cluster group.
 
 ##### API - stackoverflow API.
 
-API Expose Specification
+Service And API Expose Specification for stackoverflow
 
 
     service-id: '01'
@@ -232,11 +232,11 @@ API Expose Specification
 - 6) When you call the API, the gateway will route the call to api.stackexchange.com set to outbound-service-host.
 - 7) When calling the API, the domain is api.stackexchange.com and the destination url path is '/2.2/questions' set to outbound-url.
   
-#####1) Use Test Case - Run undefined-api-gateway by gradle
+##### 1) Use Test Case - Run undefined-api-gateway by gradle
 
     ./gradlew test
 
-#####2) Use rest-client like Postman. 
+##### 2) Use rest-client like Postman. 
 To set method and scheme.
 
     GET, http 
@@ -261,7 +261,7 @@ and then input header fields. ( appkey is mandatory header.(or Query Parameter) 
 
 Execute request and check response code and content.
 
-#####3) Use cUrl.
+##### 3) Use cUrl.
 
     curl -X GET -H "Content-type: application/json" -H "appkey: 1000-1000-1000-1000" -H "page: 5" -H "votes: 1" http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
