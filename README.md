@@ -222,6 +222,7 @@ The Management API helps manage a single gateway or cluster group.
               header-required: ""
               query-param: version, site
               query-param-required: site
+    
               
 - 1) The api service path we want to call is '/stackoverflow'
 - 2) The inbound url path following the service path is '/2.2/question/:first'
