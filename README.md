@@ -201,7 +201,7 @@ The Management API helps manage a single gateway or cluster group.
 
 ##### API - stackoverflow API.
 
-- API Expose Specification
+API Expose Specification
 
 
     service-id: '01'
