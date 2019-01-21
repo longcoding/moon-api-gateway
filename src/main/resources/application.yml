@@ -3,7 +3,7 @@ server:
 
 # spring
 spring:
-  profiles.include: 'apis, apps'
+  profiles.include: 'apis-local, apps-local'
 
   http:
     encoding:
@@ -63,8 +63,8 @@ undefined:
     proxy-timeout: 20000
 
 ---
-spring:
-  profiles: local
+spring.profiles: local
+spring.profiles.include: 'apps-local, apis-local'
 
 undefined:
   service:
@@ -74,8 +74,8 @@ undefined:
       sync-interval: 300000
 
 ---
-spring:
-  profiles: dev
+spring.profiles: dev
+spring.profiles.include: 'apps-dev, apis-dev'
 
 undefined:
   service:

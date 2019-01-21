@@ -101,7 +101,7 @@ B. Second
 - app-ip-acl: The whitelist of ip that can use this App key(=API Key).
 - app minutely/daily ratelimit: The amount of APIs available to the app. 
 
-A. Third
+C. Third
  <br />
     - Set up service and API specification configurations in application-apis.yml <br />
     - The API Gateway obtains Service and API information through the APIExposeSpecLoader.
