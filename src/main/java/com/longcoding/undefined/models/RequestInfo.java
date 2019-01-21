@@ -19,6 +19,7 @@ public class RequestInfo {
     private String clientIp, userAgent;
     private String requestURI, requestURL, requestPath, requestMethod, requestProtocol;
     private String outboundURL;
+    private String contentType;
 
     private String servicePath;
 
@@ -26,6 +27,7 @@ public class RequestInfo {
 
     private Map<String, String> queryStringMap;
     private Map<String, String> headers;
+    private Object requestBody;
 
     private Map<String, String> pathParams;
 

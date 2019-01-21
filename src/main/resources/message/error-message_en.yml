@@ -9,6 +9,8 @@
 1008: Service Contract is not exist.
 1009: App Ratelimit is over. Try again later.
 1010: IP Address is not permitted. Please check ip address.
+1011: Not Supported Content-Type. For post and put methods, content-type only supports [application/json] or [text/plain].
+1012: Not Supported Content-Type. To use the transform's body_json option, the request body must be applicaiton/json unconditionally.
 
 1100: Internal Server Error. quota is not remains.
 1101: Internal Server Error. Proxy server is exhausted.

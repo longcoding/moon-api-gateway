@@ -59,7 +59,7 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
                     targetValue = ":" + targetValue;
                     for (int index=0; index <= inboundUrlsByApiSpec.length; index++) {
                         if (targetValue.equals(inboundUrlsByApiSpec[index])) {
-                            result = inboundUrlsByRequest[index];
+                            result = inboundUrlsByRequest[index + 1];
                             break;
                         }
                     }
@@ -69,6 +69,16 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
                 Map<String, String> queryParams = requestInfo.getQueryStringMap();
                 result = queryParams.get(targetValue);
                 queryParams.remove(targetValue);
+                break;
+            case BODY_JSON:
+                if ( requestInfo.getRequestBody() instanceof Map ) {
+                    Map bodyMap = (Map) requestInfo.getRequestBody();
+                    Object obj = bodyMap.get(targetValue);
+                    result = String.valueOf(obj);
+                    bodyMap.remove(targetValue);
+                } else {
+                    generateException(ExceptionType.E_1011_NOT_SUPPORTED_CONTENT_TYPE);
+                }
                 break;
         }
 
@@ -88,6 +98,15 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
                 break;
             case PARAM_QUERY:
                 requestInfo.getQueryStringMap().put(targetValue, data);
+                break;
+            //TODO: need to check.
+            case BODY_JSON:
+                if ( requestInfo.getRequestBody() instanceof Map ) {
+                    Map bodyMap = (Map) requestInfo.getRequestBody();
+                    bodyMap.put(targetValue, data);
+                } else {
+                    generateException(ExceptionType.E_1011_NOT_SUPPORTED_CONTENT_TYPE);
+                }
                 break;
         }
     }

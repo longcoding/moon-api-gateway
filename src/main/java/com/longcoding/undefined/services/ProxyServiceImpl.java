@@ -7,16 +7,19 @@ import com.longcoding.undefined.helpers.JettyClientFactory;
 import com.longcoding.undefined.helpers.JsonUtil;
 import com.longcoding.undefined.models.ResponseInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.client.api.Result;
 import org.eclipse.jetty.client.util.BufferingResponseListener;
+import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpFields;
 import org.eclipse.jetty.http.HttpHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,7 +65,8 @@ public class ProxyServiceImpl implements ProxyService {
                         if ( contentTypeValue.split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0]
                                 .equals(responseInfo.getRequestAccept().split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0])){
                             responseEntity =
-                                    new ResponseEntity<>(JsonUtil.toJsonNode(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.OK);
+                                    new ResponseEntity<>(JsonUtil.toJsonNode(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.valueOf(result.getResponse().getStatus()));
+
                             deferredResult.setResult(responseEntity);
                         }
                     }
@@ -83,10 +87,19 @@ public class ProxyServiceImpl implements ProxyService {
 
         requestHeaders.forEach(request::header);
 
-        request.method(request.getMethod());
+        request.method(responseInfo.getRequestMethod());
         request.accept(responseInfo.getRequestAccept());
 
-        Map<String, String> requestQueryParams = responseInfo.getQueryStringMap();
+        if (Strings.isNotEmpty(responseInfo.getRequestContentType())) {
+            if (responseInfo.getRequestContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE)) {
+                String body = JsonUtil.fromJson(responseInfo.getRequestBody());
+                request.content(new StringContentProvider(body), responseInfo.getRequestContentType());
+            } else if (responseInfo.getRequestContentType().contains(MimeTypeUtils.TEXT_PLAIN_VALUE)) {
+                String body = String.valueOf(responseInfo.getRequestBody());
+                request.content(new StringContentProvider(body), responseInfo.getRequestContentType());
+            }
+
+            Map<String, String> requestQueryParams = responseInfo.getQueryStringMap();
         requestQueryParams.forEach(request::param);
 
         return request;

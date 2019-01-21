@@ -19,6 +19,8 @@ public class ResponseInfo {
     private String requestAccept;
     private URI requestURI;
     private String requestProtocol;
+    private String requestContentType;
+    private Object requestBody;
 
     private Map<String, String> queryStringMap;
     private Map<String, String> headers;

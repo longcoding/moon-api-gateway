@@ -181,8 +181,9 @@ C. Third
 - apis/query-param: This is the url query parameter that can be received when requesting API.
 - apis/query-param-required: This url query parameter is mandatory for API requests.
 - transform: The param that is received at the time of request is transformed into another variable area at the time of routing.
-    - Possible options: **header**, **param_path**, **param_query**
+    - Possible options: **header**, **param_path**, **param_query**, **body_json**
     - usage: [source, destination] like [header, param_path]
+    - To use the body_json type, the content-type must be the application/json.
 - only-pass-request-without-transform: All APIs are routed to services connected to the gateway without any analysis or transformation. 
 
 

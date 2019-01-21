@@ -52,6 +52,9 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
         responseInfo.setHeaders(createRequestHeaderMap(requestInfo));
         responseInfo.setQueryStringMap(requestInfo.getQueryStringMap());
         responseInfo.setRequestAccept(requestInfo.getAccept());
+        responseInfo.setRequestContentType(requestInfo.getContentType());
+        responseInfo.setRequestBody(requestInfo.getRequestBody());
+
         String outboundURL = createOutBoundURI(requestInfo.getPathParams(), requestInfo.getOutboundURL());
 
         URI uri = new URI(HttpHelper.createURI(responseInfo.getRequestProtocol(), outboundURL));

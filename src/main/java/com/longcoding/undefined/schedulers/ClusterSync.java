@@ -7,6 +7,7 @@ import com.longcoding.undefined.models.cluster.WhitelistIpSync;
 import com.longcoding.undefined.services.sync.SyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,9 @@ public class ClusterSync {
     @Autowired
     ClusterSyncUtil clusterSyncUtil;
 
+    @Value("${server.port}")
+    int serverPort;
+
     @Scheduled(fixedDelayString = "${undefined.service.cluster.sync-interval}")
     private void clusterSync() {
         //Application Information Sync
@@ -47,12 +51,12 @@ public class ClusterSync {
     @Scheduled(fixedDelayString = "${undefined.service.cluster.sync-interval}")
     private void healthCheck() {
         jedisFactory.getInstance()
-                .setex(String.join(":", Const.REDIS_KEY_CLUSTER_SERVER_HEALTH, HttpHelper.getHostName()), Const.SECOND_OF_MINUTE * 10, HttpHelper.getHostName());
+                .setex(String.join(":", Const.REDIS_KEY_CLUSTER_SERVER_HEALTH, HttpHelper.getHostName() + serverPort), Const.SECOND_OF_MINUTE * 10, HttpHelper.getHostName());
     }
 
     private void appWhitelistSync() {
         try (Jedis jedisClient = jedisFactory.getInstance()) {
-            Set<String> targetKeys = jedisClient.keys(String.join("-", Const.REDIS_KEY_APP_WHITELIST_UPDATE, HttpHelper.getHostName() + "*"));
+            Set<String> targetKeys = jedisClient.keys(String.join("-", Const.REDIS_KEY_APP_WHITELIST_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
             targetKeys.forEach(redisKey -> {
                 String whitelistSyncInString = jedisClient.get(redisKey);
                 WhitelistIpSync whitelistIpSync = JsonUtil.fromJson(whitelistSyncInString, WhitelistIpSync.class);
@@ -65,7 +69,7 @@ public class ClusterSync {
 
     private void appInfoSync() {
         try (Jedis jedisClient = jedisFactory.getInstance()) {
-            Set<String> targetKeys = jedisClient.keys(String.join("-", Const.REDIS_KEY_APP_UPDATE, HttpHelper.getHostName() + "*"));
+            Set<String> targetKeys = jedisClient.keys(String.join("-", Const.REDIS_KEY_APP_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
             targetKeys.forEach(redisKey -> {
                 String appSyncInString = jedisClient.get(redisKey);
                 AppSync appSync = JsonUtil.fromJson(appSyncInString, AppSync.class);
@@ -78,7 +82,7 @@ public class ClusterSync {
 
     private void apiInfoSync() {
         try(Jedis jedisClient = jedisFactory.getInstance()) {
-            Set<String> targetKeys = jedisClient.keys(String.join("-", Const.REDIS_KEY_API_UPDATE, HttpHelper.getHostName() + "*"));
+            Set<String> targetKeys = jedisClient.keys(String.join("-", Const.REDIS_KEY_API_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
             targetKeys.forEach(redisKey -> {
                 String apiSyncInString = jedisClient.get(redisKey);
                 ApiSync apiSync = JsonUtil.fromJson(apiSyncInString, ApiSync.class);

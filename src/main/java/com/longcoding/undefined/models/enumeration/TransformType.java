@@ -8,7 +8,8 @@ import java.util.Arrays;
 public enum TransformType {
     HEADER(1),
     PARAM_PATH(2),
-    PARAM_QUERY(3);
+    PARAM_QUERY(3),
+    BODY_JSON(4);
 
     private Integer code;
     private String description;

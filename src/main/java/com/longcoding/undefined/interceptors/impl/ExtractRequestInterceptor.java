@@ -2,15 +2,16 @@ package com.longcoding.undefined.interceptors.impl;
 
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.exceptions.ExceptionType;
-import com.longcoding.undefined.helpers.Const;
-import com.longcoding.undefined.helpers.APIExposeSpecification;
-import com.longcoding.undefined.helpers.HttpHelper;
-import com.longcoding.undefined.helpers.MessageManager;
+import com.longcoding.undefined.helpers.*;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.enumeration.RoutingType;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.MimeTypeUtils;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +45,24 @@ public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
         }
 
         requestInfo.setPathParams(extractedPathParams);
+
+        String contentType = request.getContentType();
+        requestInfo.setContentType(contentType);
+
+        if (RequestMethod.POST.name().equals(request.getMethod()) || RequestMethod.PUT.name().equals(request.getMethod())) {
+            if (Strings.isEmpty(contentType)) requestInfo.setContentType(requestInfo.getAccept());
+
+            try {
+                if (requestInfo.getContentType().toLowerCase().contains(MimeTypeUtils.APPLICATION_JSON_VALUE)) {
+                    Map<String, String> extractedBodyMap = JsonUtil.readValue(request.getInputStream());
+                    requestInfo.setRequestBody(extractedBodyMap);
+                } else if (requestInfo.getContentType().toLowerCase().contains(MimeTypeUtils.TEXT_PLAIN_VALUE)) {
+                    requestInfo.setRequestBody(StreamUtils.copyToByteArray(request.getInputStream()));
+                }
+            } catch (Exception ex) {
+                generateException(ExceptionType.E_1011_NOT_SUPPORTED_CONTENT_TYPE);
+            }
+        }
 
         return true;
     }
