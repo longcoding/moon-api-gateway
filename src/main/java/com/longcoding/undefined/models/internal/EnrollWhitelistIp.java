@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class EnrollWhitelistIp implements Serializable, Cloneable {
 
-    private String appId;
+    private int appId;
     private List<String> requestIps;
 
 }

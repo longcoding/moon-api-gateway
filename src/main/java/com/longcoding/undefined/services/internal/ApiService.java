@@ -62,7 +62,7 @@ public class ApiService {
 
     private ApiInfo convertedEnrollApiToApiInfo(String protocol, EnrollApi enrollApi) {
         return ApiInfo.builder()
-                .apiId(enrollApi.getApiId())
+                .apiId(String.valueOf(enrollApi.getApiId()))
                 .apiName(enrollApi.getApiName())
                 .serviceId(enrollApi.getServiceId())
                 .headers(enrollApi.getHeaders())

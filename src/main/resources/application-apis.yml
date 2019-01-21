@@ -2,7 +2,7 @@ api-spec:
   init-enable: true
   services:
     -
-      service-id: '01'
+      service-id: 1
       service-name: stackoverflow
       service-minutely-capacity: 10000
       service-daily-capacity: 240000
@@ -10,7 +10,7 @@ api-spec:
       outbound-service-host: api.stackexchange.com
       apis:
         -
-          api-id: '0101'
+          api-id: 101
           api-name: getInfo
           protocol: http, https
           method: get
@@ -21,7 +21,7 @@ api-spec:
           query-param: version, site
           query-param-required: site
         -
-          api-id: '0202'
+          api-id: 102
           api-name: getQuestions
           protocol: https
           method: put
@@ -32,7 +32,7 @@ api-spec:
           query-param: version, site
           query-param-required: site
     -
-      service-id: '02'
+      service-id: 2
       service-name: stackoverflow2
       service-minutely-capacity: 5000
       service-daily-capacity: 100000
@@ -40,7 +40,7 @@ api-spec:
       outbound-service-host: api.stackexchange.com
       apis:
         -
-          api-id: '0201'
+          api-id: 201
           api-name: getList
           protocol: http, https
           method: get
@@ -54,7 +54,7 @@ api-spec:
             page: [header, param_query]
             site: [param_path, header]
         -
-          api-id: '0202'
+          api-id: 202
           api-name: transformTest
           protocol: http, https
           method: get
@@ -68,7 +68,7 @@ api-spec:
             page: [header, param_path]
             site: [param_path, header]
     -
-      service-id: '03'
+      service-id: 3
       service-name: service3
       service-minutely-capacity: 5000
       service-daily-capacity: 100000

@@ -100,14 +100,14 @@ public class AppService {
     }
     //TODO
     public boolean removeWhiteIps(EnrollWhitelistIp enrollWhitelistIp) {
-        WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.DELETE, enrollWhitelistIp.getAppId(), enrollWhitelistIp.getRequestIps());
+        WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.DELETE, String.valueOf(enrollWhitelistIp.getAppId()), enrollWhitelistIp.getRequestIps());
         clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_WHITELIST_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(ipSync));
         return true;
     }
 
     //TODO
     public boolean addWhiteIps(EnrollWhitelistIp enrollWhitelistIp) {
-        WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.UPDATE, enrollWhitelistIp.getAppId(), enrollWhitelistIp.getRequestIps());
+        WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.UPDATE, String.valueOf(enrollWhitelistIp.getAppId()), enrollWhitelistIp.getRequestIps());
         clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_WHITELIST_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(ipSync));
         return true;
     }
@@ -119,7 +119,7 @@ public class AppService {
 
     private AppInfo convertedEnrollAppToAppInfo(EnrollApp enrollApp) {
         return AppInfo.builder()
-                .appId(enrollApp.getAppId())
+                .appId(String.valueOf(enrollApp.getAppId()))
                 .appName(enrollApp.getAppName())
                 .appIpAcl(enrollApp.getAppIpAcl())
                 .appKey(enrollApp.getAppKey())

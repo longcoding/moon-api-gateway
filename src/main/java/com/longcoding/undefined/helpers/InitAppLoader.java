@@ -71,7 +71,7 @@ public class InitAppLoader implements ApplicationListener<ApplicationReadyEvent>
                 Cache<String, AppInfo> appInfoCaches = apiExposeSpecification.getAppInfoCache();
                 initAppConfig.getApps().forEach(app -> {
                     AppInfo appInfo = AppInfo.builder()
-                            .appId(app.getAppId())
+                            .appId(String.valueOf(app.getAppId()))
                             .appKey(app.getAppKey())
                             .appName(app.getAppName())
                             .dailyRateLimit(String.valueOf(app.getAppDailyRateLimit()))

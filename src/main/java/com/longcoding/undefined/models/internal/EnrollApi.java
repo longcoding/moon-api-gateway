@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class EnrollApi implements Serializable, Cloneable {
 
-    private String apiId;
+    private int apiId;
     private String apiName;
 
     private String serviceId;
