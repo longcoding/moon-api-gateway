@@ -65,7 +65,7 @@ public class HttpHelper {
         StringTokenizer st = new StringTokenizer(routingUrl, "/");
         while (st.hasMoreTokens()) {
             String element = st.nextToken();
-            if (element.startsWith(":")) element = "[a-zA-Z0-9]+";
+            if (element.startsWith(":")) element = "[a-zA-Z0-9-_]+";
 
             routingPathInRegex.append("/").append(element);
         }

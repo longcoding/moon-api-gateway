@@ -29,7 +29,7 @@ public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
     @Autowired
     MessageManager messageManager;
 
-    private static Pattern pathMandatoryDelimiter = Pattern.compile("^:[a-zA-Z0-9]+");
+    private static Pattern pathMandatoryDelimiter = Pattern.compile("^:[a-zA-Z0-9-_]+");
 
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -53,7 +53,7 @@ public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
         String[] requestUrlTokens = HttpHelper.extractURL(requestURL);
         String[] outboundUrlTokens = HttpHelper.extractURL(outboundURL);
 
-        // outboundUrl has service domain.
+        // requestUrl has service domain.
         if (requestUrlTokens.length != outboundUrlTokens.length + 1 ) {
             generateException(ExceptionType.E_1006_INVALID_API_PATH);
         }
@@ -61,7 +61,7 @@ public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
         Map<String, String> pathParams = Maps.newHashMap();
         for (int index=0; index < outboundUrlTokens.length; index++) {
             if (pathMandatoryDelimiter.matcher(outboundUrlTokens[index]).matches()) {
-                pathParams.put(outboundUrlTokens[index], requestUrlTokens[index]);
+                pathParams.put(outboundUrlTokens[index], requestUrlTokens[index + 1]);
             }
         }
 
