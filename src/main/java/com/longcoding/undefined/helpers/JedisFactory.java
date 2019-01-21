@@ -45,8 +45,9 @@ public class JedisFactory implements InitializingBean {
         String jedisHost = jedisConfig.getHost();
         int jedisPort = jedisConfig.getPort();
         int jedisTimeout = jedisConfig.getTimeout();
+        int jedisDatabase = jedisConfig.getDatabase();
 
-        jedisPool = new JedisPool(jedisPoolConfig, jedisHost, jedisPort, jedisTimeout);
+        jedisPool = new JedisPool(jedisPoolConfig, jedisHost, jedisPort, jedisTimeout, null, jedisDatabase);
     }
 
     public Jedis getInstance() {

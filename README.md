@@ -61,6 +61,7 @@ A. First
       host: '127.0.0.1'
       port: 6379
       timeout: 1000
+      database: 0
       
 - ip-acl-enable: Enable the ip whitelisting feature. It operates on APP basis.
 - cluster/enable: If you enable a server cluster, the daemon thread continues to fetch services, apps, and apis information.

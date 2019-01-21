@@ -26,4 +26,5 @@ public class JedisConfig {
     String host;
     int port;
     int timeout;
+    int database;
 }
