@@ -47,6 +47,31 @@ You do not need to use initialization with the management API.
 
 A. First
  <br />
+    - Please set the global application first in application.yaml <br />
+    
+    undefined:
+      service:       
+        ip-acl-enable: false
+        cluster:
+          enable: false
+          sync-interval: 300000       
+        proxy-timeout: 20000
+        
+    jedis-client:      
+      host: '127.0.0.1'
+      port: 6379
+      timeout: 1000
+      
+- ip-acl-enable: Enable the ip whitelisting feature. It operates on APP basis.
+- cluster/enable: If you enable a server cluster, the daemon thread continues to fetch services, apps, and apis information.
+- cluster/sync-interval: This option allows you to set the interval for the cluster synchronization operation.
+- proxy-timeout: This option allows you to set the timeout for the Rotating service.
+- **jedis-client**: Redis is an essential infrastructure for undefined-api-gateway.
+- jedis-client/host: Host information for Redis.
+- jedis-client/port: Port information for Redis. 
+
+B. Second
+ <br />
     - Please set the initial application registration in application-apps.yaml <br />
     - (These settings are optional)
 
@@ -75,7 +100,7 @@ A. First
 - app-ip-acl: The whitelist of ip that can use this App key(=API Key).
 - app minutely/daily ratelimit: The amount of APIs available to the app. 
 
-B. Second
+A. Third
  <br />
     - Set up service and API specification configurations in application-apis.yml <br />
     - The API Gateway obtains Service and API information through the APIExposeSpecLoader.
