@@ -54,8 +54,8 @@ public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
 
             try {
                 if (requestInfo.getContentType().toLowerCase().contains(MimeTypeUtils.APPLICATION_JSON_VALUE)) {
-                    Map<String, String> extractedBodyMap = JsonUtil.readValue(request.getInputStream());
-                    requestInfo.setRequestBody(extractedBodyMap);
+                    Map<String, Object> extractedBodyMap = JsonUtil.readValue(request.getInputStream());
+                    requestInfo.setRequestBodyMap(extractedBodyMap);
                 } else if (requestInfo.getContentType().toLowerCase().contains(MimeTypeUtils.TEXT_PLAIN_VALUE)) {
                     requestInfo.setRequestBody(StreamUtils.copyToByteArray(request.getInputStream()));
                 }

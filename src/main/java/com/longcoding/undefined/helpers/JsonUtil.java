@@ -45,9 +45,9 @@ public class JsonUtil {
         }
     }
 
-    public static Map<String, String> readValue(final InputStream stream) {
+    public static Map<String, Object> readValue(final InputStream stream) {
         try {
-            return objectMapper.readValue(stream, typeFactory.constructMapType(HashMap.class, String.class, String.class));
+            return objectMapper.readValue(stream, typeFactory.constructMapType(HashMap.class, String.class, Object.class));
         } catch (IOException ex) {
             throw new JsonIOException(ex);
         }
@@ -73,5 +73,9 @@ public class JsonUtil {
         } catch (IOException ex) {
             throw new JsonIOException(ex);
         }
+    }
+
+    public static ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
 }

@@ -18,7 +18,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class TransformData implements Serializable, Cloneable {
 
-    String targetValue;
+    String targetKey;
+    String newKeyName;
     TransformType currentPoint;
     TransformType targetPoint;
 

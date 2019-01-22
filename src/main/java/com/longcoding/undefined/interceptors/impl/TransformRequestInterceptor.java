@@ -8,11 +8,14 @@ import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.enumeration.RoutingType;
 import com.longcoding.undefined.models.enumeration.TransformType;
+import jdk.internal.org.objectweb.asm.TypeReference;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.MimeTypeUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -32,23 +35,23 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
         if (RoutingType.API_TRANSFER == requestInfo.getRoutingType() && Objects.nonNull(apiInfo.getTransformData())) {
 
             apiInfo.getTransformData().forEach(element -> {
-                String data = getDataByCurrentTransformType(element.getCurrentPoint(), element.getTargetValue(), requestInfo, apiInfo);
+                Object data = getDataByCurrentTransformType(element.getCurrentPoint(), element.getTargetKey(), requestInfo, apiInfo);
                 //TODO:
-                if (Strings.isEmpty(data)) generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT);
-                putDataByTargetTransformType(element.getTargetPoint(), element.getTargetValue(), data, requestInfo);
+                if (Objects.isNull(data)) generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT);
+                putDataByTargetTransformType(element.getTargetPoint(), element.getNewKeyName(), data, requestInfo);
             });
         }
 
         return true;
     }
 
-    private String getDataByCurrentTransformType(TransformType type, String targetValue, RequestInfo requestInfo, ApiInfo apiInfo) {
-        String result = Strings.EMPTY;
+    private Object getDataByCurrentTransformType(TransformType type, String targetKey, RequestInfo requestInfo, ApiInfo apiInfo) {
+        Object result = null;
         switch(type) {
             case HEADER:
                 Map<String, String> headers = requestInfo.getHeaders();
-                result = headers.get(targetValue);
-                headers.remove(targetValue);
+                result = headers.get(targetKey);
+                headers.remove(targetKey);
                 break;
             case PARAM_PATH:
                 String[] inboundUrlsByApiSpec = apiInfo.getInboundURL().split("/");
@@ -56,9 +59,9 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
 
                 //Added inboundUrlsByApiSpec.length + 1. Because of Service Path.
                 if (inboundUrlsByApiSpec.length + 1 == inboundUrlsByRequest.length) {
-                    targetValue = ":" + targetValue;
+                    targetKey = ":" + targetKey;
                     for (int index=0; index <= inboundUrlsByApiSpec.length; index++) {
-                        if (targetValue.equals(inboundUrlsByApiSpec[index])) {
+                        if (targetKey.equals(inboundUrlsByApiSpec[index])) {
                             result = inboundUrlsByRequest[index + 1];
                             break;
                         }
@@ -67,15 +70,14 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
                 break;
             case PARAM_QUERY:
                 Map<String, String> queryParams = requestInfo.getQueryStringMap();
-                result = queryParams.get(targetValue);
-                queryParams.remove(targetValue);
+                result = queryParams.get(targetKey);
+                queryParams.remove(targetKey);
                 break;
             case BODY_JSON:
-                if ( requestInfo.getRequestBody() instanceof Map ) {
-                    Map bodyMap = (Map) requestInfo.getRequestBody();
-                    Object obj = bodyMap.get(targetValue);
-                    result = String.valueOf(obj);
-                    bodyMap.remove(targetValue);
+                if ( requestInfo.getContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE)) {
+                    Map<String, Object> bodyMap = requestInfo.getRequestBodyMap();
+                    result = bodyMap.get(targetKey);
+                    bodyMap.remove(targetKey);
                 } else {
                     generateException(ExceptionType.E_1011_NOT_SUPPORTED_CONTENT_TYPE);
                 }
@@ -85,25 +87,24 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
         return result;
     }
 
-    private void putDataByTargetTransformType(TransformType type, String targetValue, String data, RequestInfo requestInfo) {
+    private void putDataByTargetTransformType(TransformType type, String newKeyName, Object data, RequestInfo requestInfo) {
         switch(type) {
             case HEADER:
-                requestInfo.getHeaders().put(targetValue, data);
+                requestInfo.getHeaders().put(newKeyName, String.valueOf(data));
                 break;
             case PARAM_PATH:
-                targetValue = ":" + targetValue;
+                newKeyName = ":" + newKeyName;
                 String outboundURL = requestInfo.getOutboundURL();
-                if (outboundURL.contains(targetValue)) requestInfo.setOutboundURL(outboundURL.replace(targetValue, data));
+                if (outboundURL.contains(newKeyName)) requestInfo.setOutboundURL(outboundURL.replace(newKeyName, String.valueOf(data)));
                 else generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT);
                 break;
             case PARAM_QUERY:
-                requestInfo.getQueryStringMap().put(targetValue, data);
+                requestInfo.getQueryStringMap().put(newKeyName, String.valueOf(data));
                 break;
-            //TODO: need to check.
             case BODY_JSON:
-                if ( requestInfo.getRequestBody() instanceof Map ) {
-                    Map bodyMap = (Map) requestInfo.getRequestBody();
-                    bodyMap.put(targetValue, data);
+                if ( requestInfo.getContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE) ) {
+                    Map<String, Object> bodyMap = requestInfo.getRequestBodyMap();
+                    bodyMap.put(newKeyName, data);
                 } else {
                     generateException(ExceptionType.E_1011_NOT_SUPPORTED_CONTENT_TYPE);
                 }

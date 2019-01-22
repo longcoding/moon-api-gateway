@@ -1,22 +1,32 @@
 package com.longcoding.undefined.interceptors.impl;
 
-import com.google.common.collect.Lists;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.HttpHelper;
+import com.longcoding.undefined.helpers.JsonUtil;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ResponseInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.enumeration.RoutingType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.http.HttpMethod;
+import org.springframework.util.MimeTypeUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,7 +63,16 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
         responseInfo.setQueryStringMap(requestInfo.getQueryStringMap());
         responseInfo.setRequestAccept(requestInfo.getAccept());
         responseInfo.setRequestContentType(requestInfo.getContentType());
-        responseInfo.setRequestBody(requestInfo.getRequestBody());
+
+        if (responseInfo.getRequestMethod().equalsIgnoreCase(HttpMethod.POST.name()) || responseInfo.getRequestMethod().equalsIgnoreCase(HttpMethod.PUT.name())) {
+            if (requestInfo.getContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE)) {
+                ObjectNode bodyObjectNode = convertBodyMapToObjectNode(requestInfo.getRequestBodyMap());
+                byte[] bodyInBytes = getBytesByObjectNode(bodyObjectNode);
+                responseInfo.setRequestBody(bodyInBytes);
+            } else if (requestInfo.getContentType().contains(MimeTypeUtils.TEXT_PLAIN_VALUE)) {
+                responseInfo.setRequestBody(requestInfo.getRequestBody());
+            }
+        }
 
         String outboundURL = createOutBoundURI(requestInfo.getPathParams(), requestInfo.getOutboundURL());
 
@@ -86,5 +105,17 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
         outboundRequestHeaders.put(Const.HEADER_CUSTOMIZE_APP_ID, requestInfo.getAppId());
 
         return outboundRequestHeaders;
+    }
+
+    private ObjectNode convertBodyMapToObjectNode(Map<String, Object> bodyMap) {
+        ObjectNode objectNode = JsonUtil.getObjectMapper().createObjectNode();
+        bodyMap.forEach(objectNode::putPOJO);
+
+        return objectNode;
+    }
+
+    private byte[] getBytesByObjectNode(ObjectNode bodyObjectNode) throws Exception {
+        ObjectWriter writer = JsonUtil.getObjectMapper().writer();
+        return writer.writeValueAsBytes(bodyObjectNode);
     }
 }

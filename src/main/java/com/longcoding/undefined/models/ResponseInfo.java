@@ -20,7 +20,7 @@ public class ResponseInfo {
     private URI requestURI;
     private String requestProtocol;
     private String requestContentType;
-    private Object requestBody;
+    private byte[] requestBody;
 
     private Map<String, String> queryStringMap;
     private Map<String, String> headers;

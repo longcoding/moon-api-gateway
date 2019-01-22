@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
+import java.util.stream.Collectors;
+
 import static java.lang.String.valueOf;
 
 /**
@@ -76,7 +78,7 @@ public class InitAppLoader implements ApplicationListener<ApplicationReadyEvent>
                             .appName(app.getAppName())
                             .dailyRateLimit(String.valueOf(app.getAppDailyRateLimit()))
                             .minutelyRateLimit(String.valueOf(app.getAppMinutelyRateLimit()))
-                            .serviceContract(app.getAppServiceContract())
+                            .serviceContract(app.getAppServiceContract().stream().map(String::valueOf).collect(Collectors.toList()))
                             .appIpAcl(app.getAppIpAcl())
                             .valid(true)
                             .build();

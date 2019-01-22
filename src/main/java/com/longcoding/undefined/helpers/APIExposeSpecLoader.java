@@ -122,11 +122,12 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
                     List<TransformData> transformRequests = Lists.newArrayList();
                     Map<String, String[]> transformRequest = apiSpec.getTransform();
                     if (Objects.nonNull(transformRequest)) {
-                        transformRequest.forEach((targetValue, transformPoint) -> {
+                        transformRequest.forEach((targetKey, transformPoint) -> {
                             TransformData transformData = TransformData.builder()
-                                    .targetValue(targetValue)
+                                    .targetKey(targetKey)
                                     .currentPoint(TransformType.of(transformPoint[0]))
                                     .targetPoint(TransformType.of(transformPoint[1]))
+                                    .newKeyName(transformPoint.length > 2? transformPoint[2]:targetKey)
                                     .build();
                             transformRequests.add(transformData);
                         });

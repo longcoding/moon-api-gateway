@@ -1,6 +1,9 @@
 package com.longcoding.undefined.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.longcoding.undefined.exceptions.ExceptionType;
+import com.longcoding.undefined.exceptions.GeneralException;
 import com.longcoding.undefined.exceptions.ProxyServiceFailException;
 import com.longcoding.undefined.helpers.Const;
 import com.longcoding.undefined.helpers.JettyClientFactory;
@@ -12,10 +15,13 @@ import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.client.api.Result;
 import org.eclipse.jetty.client.util.BufferingResponseListener;
+import org.eclipse.jetty.client.util.BytesContentProvider;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpFields;
 import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.util.BufferUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,6 +29,9 @@ import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -64,8 +73,10 @@ public class ProxyServiceImpl implements ProxyService {
                         String contentTypeValue = responseHeaders.get(HttpHeader.CONTENT_TYPE);
                         if ( contentTypeValue.split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0]
                                 .equals(responseInfo.getRequestAccept().split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0])){
+
+                            JsonNode responseInJsonNode = InputStreamToJsonObj(getContentAsInputStream());
                             responseEntity =
-                                    new ResponseEntity<>(JsonUtil.toJsonNode(getContentAsString(Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE))), HttpStatus.valueOf(result.getResponse().getStatus()));
+                                    new ResponseEntity<>(responseInJsonNode, HttpStatus.valueOf(result.getResponse().getStatus()));
 
                             deferredResult.setResult(responseEntity);
                         }
@@ -91,18 +102,24 @@ public class ProxyServiceImpl implements ProxyService {
         request.accept(responseInfo.getRequestAccept());
 
         if (Strings.isNotEmpty(responseInfo.getRequestContentType())) {
-            if (responseInfo.getRequestContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE)) {
-                String body = JsonUtil.fromJson(responseInfo.getRequestBody());
-                request.content(new StringContentProvider(body), responseInfo.getRequestContentType());
-            } else if (responseInfo.getRequestContentType().contains(MimeTypeUtils.TEXT_PLAIN_VALUE)) {
-                String body = String.valueOf(responseInfo.getRequestBody());
-                request.content(new StringContentProvider(body), responseInfo.getRequestContentType());
+            if (responseInfo.getRequestContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE) || responseInfo.getRequestContentType().contains(MimeTypeUtils.TEXT_PLAIN_VALUE)) {
+                request.content(new BytesContentProvider(responseInfo.getRequestBody()), responseInfo.getRequestContentType());
             }
+        }
 
-            Map<String, String> requestQueryParams = responseInfo.getQueryStringMap();
+        Map<String, String> requestQueryParams = responseInfo.getQueryStringMap();
         requestQueryParams.forEach(request::param);
 
         return request;
+    }
+
+    private static JsonNode InputStreamToJsonObj(InputStream responseInput) {
+        try {
+            InputStreamReader responseInputStreamReader = new InputStreamReader(responseInput, Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE));
+            return JsonUtil.getObjectMapper().readTree(responseInputStreamReader);
+        } catch (IOException ex) {
+            throw new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE);
+        }
     }
 
 }

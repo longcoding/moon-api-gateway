@@ -27,7 +27,8 @@ public class RequestInfo {
 
     private Map<String, String> queryStringMap;
     private Map<String, String> headers;
-    private Object requestBody;
+    private Map<String, Object> requestBodyMap;
+    private byte[] requestBody;
 
     private Map<String, String> pathParams;
 
