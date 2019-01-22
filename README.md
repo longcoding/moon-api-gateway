@@ -5,7 +5,7 @@
 
 ## Introduction
 Asynchronous API Gateway with Spring boot 2.1, Servlet 4, jetty 9 client <br />
-The Gateway is a network gateway created to provide a single access point for real-time web based protocol elevation that supports load balancing, clustering, and lots of validations. It is designed to make the best performance to deliver open API.
+The Gateway is a network gateway created to provide a single access point for real-time web based protocol elevation that supports load balancing, clustering, and several validations. It is designed to make the best performance to deliver open API.
 * Lightweight API Gateway
 * High Performance/Scalability
 
@@ -14,25 +14,25 @@ The Gateway is a network gateway created to provide a single access point for re
 * Supported Server Cluster
 
 ## Features
-Undefined API Gateway offers powerful, yet lightweight feature.
+Undefined API Gateway offers a powerful, yet lightweight feature.
 
 * **Request Validation** - You can use various verification features in your request. It's also easy to add or remove new features.
     - Header, Query, Path Param
-* **Rate Limiting** - Provides strong rate limiting per API users. Redis-based Cluster servers share Ratelimiting information on a per-key basis
+* **Rate Limiting** - Provides strong rate limiting per API users. Redis-based Cluster servers share rate limiting information on a per-key basis.
     - App Daily Rate Limiting
     - App Minutely  Rate Limiting
-* **Service Capacity** - It manages the capacity of the service linked to the API gateway to ensure stable operation.
+* **Service Capacity** - Manages the capacity of the service linked to the API gateway to ensure stable operation.
     - Service Daily Capacity
-    - Service Minutely Capacity
+    - Service Minute Capacity
 * **Service Contract(agreement)** - (Optional) API, App Users can only call APIs that have agreed to the contract relationship or terms.
-* **Request Transform** - (Optional) It supports change of Header, Query, Path Param as well as URI change. This will change the user's request appropriately to the request of the service associated with the undefiend api gateway.
+* **Request Transform** - (Optional) It supports the change of Header, Query, Path Param as well as URI. This will change the user's request appropriately to the request of the service associated with the undefined api gateway.
 * **IP Whitelisting** - Block access to non-trusted IP addresses for more secure interactions on a per-key basis
 * **Management API** - Provides powerful Rest API to manage API Gateway.
     - API Add/Delete/Change
     - APP Add/Delete/Change 
     - IP Whitelist Add/Delete
     - Key Expiry/Regenerate
-* **Supported Server Cluster** - API Gateway Cluster can be configured. With the Management API, the changes take effect on all servers. Ratelimiting, and Service Capacity information are all shared. 
+* **Supported Server Cluster** - API Gateway Cluster can be configured. With the Management API, the changes take effect on all servers. Rate Limiting, and Service Capacity information are all shared. 
 
 ## Dependency
 * Spring Boot 2.1

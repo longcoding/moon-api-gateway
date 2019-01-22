@@ -1,25 +1,25 @@
-1000: Bad Request. Failed request vaildation.
-1001: Bad Reuqest. Appkey is not exist in your request.
+1000: Bad Request. Failed to request vaildation.
+1001: Bad Reuqest. Appkey does not exist in your request.
 1002: Bad Request. API is not exist.
-1003: Bad Request. this Method or Protocol is Not Allowed.
-1004: Resource is not found.
-1005: AppKey is not valid or expired.
+1003: Bad Request. This Method or Protocol is Not Allowed.
+1004: Resource was not found.
+1005: AppKey is not valid or has expired.
 1006: Request API Path is unclear.
-1007: Required Parameter is not exist.
-1008: Service Contract is not exist.
-1009: App Ratelimit is over. Try again later.
-1010: IP Address is not permitted. Please check ip address.
+1007: Required Parameter does not exist.
+1008: Service Contract does not exist.
+1009: Went over the App Rate Limit. Try again later.
+1010: IP Address is not permitted. Please check the IP address.
 1011: Not Supported Content-Type. For post and put methods, content-type only supports [application/json] or [text/plain].
 1012: Not Supported Content-Type. To use the transform's body_json option, the request body must be applicaiton/json unconditionally.
 
-1100: Internal Server Error. quota is not remains.
+1100: Internal Server Error. There is no remaining quota.
 1101: Internal Server Error. Proxy server is exhausted.
-1102: Internal Server Error. Outbound Service is not unstable.
-1103: Service Capacity is over.
+1102: Internal Server Error. Outbound Service is unstable.
+1103: Went over service Capacity.
 
-1200: Failed Configuration Init. Please check service info configuration.
-1201: Failed Configuration Init. Please check api info configuration.
-1202: Failed Configuration Init. Please check application info configuration.
-1203: Failed to sync Cluster Info. Please check it.
+1200: Failed Configuration Init. Please check the service info configuration.
+1201: Failed Configuration Init. Please check the API info configuration.
+1202: Failed Configuration Init. Please check the application info configuration.
+1203: Failed to sync Cluster Info. Please check.
 
 9999: Internal Server Error.
