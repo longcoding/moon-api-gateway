@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class AuthenticationInterceptor extends AbstractBaseInterceptor {
 
-    private static final String HEADER_APP_KEY = "appKey";
+    private static final String HEADER_APP_KEY = "apiKey";
 
     @Autowired
     APIExposeSpecification apiExposeSpec;
@@ -34,14 +34,14 @@ public class AuthenticationInterceptor extends AbstractBaseInterceptor {
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
 
         String appId = Strings.EMPTY;
-        String appKey = appKeyValidation(requestInfo.getQueryStringMap(), requestInfo.getHeaders());
-        if (Strings.isNotEmpty(appKey)) {
-            appId = apiExposeSpec.getAppDistinctionCache().get(appKey);
+        String apiKey = apiKeyValidation(requestInfo.getQueryStringMap(), requestInfo.getHeaders());
+        if (Strings.isNotEmpty(apiKey)) {
+            appId = apiExposeSpec.getAppDistinctionCache().get(apiKey);
             if (Strings.isNotEmpty(appId)) requestInfo.setAppId(appId);
         }
 
-        if ( Strings.isEmpty(appKey)  || Strings.isEmpty(appId) ) {
-            generateException(ExceptionType.E_1005_APPKEY_IS_INVALID);
+        if ( Strings.isEmpty(apiKey)  || Strings.isEmpty(appId) ) {
+            generateException(ExceptionType.E_1005_APIKEY_IS_INVALID);
             return false;
         }
 
@@ -55,9 +55,9 @@ public class AuthenticationInterceptor extends AbstractBaseInterceptor {
         return true;
     }
 
-    private String appKeyValidation(Map<String, String> queryStringMap, Map<String, String> headerMap) {
+    private String apiKeyValidation(Map<String, String> queryStringMap, Map<String, String> headerMap) {
 
-        String appKey = Strings.EMPTY;
+        String apiKey = Strings.EMPTY;
         for ( String header : headerMap.keySet() ) {
             if ( header.equalsIgnoreCase(HEADER_APP_KEY) ) {
                 return headerMap.get(header);
@@ -70,7 +70,7 @@ public class AuthenticationInterceptor extends AbstractBaseInterceptor {
             }
         }
 
-        return appKey;
+        return apiKey;
     }
 
 }

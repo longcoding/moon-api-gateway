@@ -42,8 +42,10 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         requestInfo.setRequestURI(request.getRequestURI().toLowerCase());
         requestInfo.setUserAgent(request.getHeader(Const.REQUEST_USER_AGENT));
         requestInfo.setHeaders(createHeaderMap(request));
-        requestInfo.setRequestPath(request.getServletPath());
         requestInfo.setRequestStartTime(System.currentTimeMillis());
+
+        String requestPath = request.getServletPath();
+        requestInfo.setRequestPath(requestPath.endsWith("/")? requestPath.substring(0, requestPath.length() - 1):requestPath);
 
         String[] requestURL = request.getRequestURL().toString().split(PROTOCOL_DELIMITER);
         requestInfo.setRequestProtocol(requestURL[0]);

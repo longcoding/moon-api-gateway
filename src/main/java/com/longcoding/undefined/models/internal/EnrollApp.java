@@ -13,7 +13,7 @@ import java.util.List;
 public class EnrollApp implements Serializable, Cloneable {
 
     int appId;
-    String appKey;
+    String apiKey;
     String appName;
     int appMinutelyRateLimit;
     int appDailyRateLimit;

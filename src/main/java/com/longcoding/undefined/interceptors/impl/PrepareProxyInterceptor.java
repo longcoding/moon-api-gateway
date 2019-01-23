@@ -1,7 +1,5 @@
 package com.longcoding.undefined.interceptors.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Maps;
@@ -15,19 +13,14 @@ import com.longcoding.undefined.models.ResponseInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.enumeration.RoutingType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.MimeTypeUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by longcoding on 16. 4. 9..
@@ -62,7 +55,7 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
         responseInfo.setHeaders(createRequestHeaderMap(requestInfo));
         responseInfo.setQueryStringMap(requestInfo.getQueryStringMap());
         responseInfo.setRequestAccept(requestInfo.getAccept());
-        responseInfo.setRequestContentType(requestInfo.getContentType());
+        responseInfo.setRequestContentType(Objects.nonNull(requestInfo.getContentType())? requestInfo.getContentType() : "");
 
         if (responseInfo.getRequestMethod().equalsIgnoreCase(HttpMethod.POST.name()) || responseInfo.getRequestMethod().equalsIgnoreCase(HttpMethod.PUT.name())) {
             if (requestInfo.getContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE)) {

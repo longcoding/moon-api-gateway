@@ -42,7 +42,7 @@ public class AppService {
             appInfo = convertedEnrollAppToAppInfo(enrollApp);
             appInfo.setAppId(totalApps.toString());
             appInfo.setValid(true);
-            appInfo.setAppKey(createUniqueAppKey().toString());
+            appInfo.setApiKey(createUniqueApiKey().toString());
 
             AppSync appSync = new AppSync(SyncType.CREATE, appInfo);
             jedis.hset(Const.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(totalApps), JsonUtil.fromJson(appInfo));
@@ -72,12 +72,12 @@ public class AppService {
         }
     }
 
-    public boolean expireAppKey(@PathVariable String appId) {
+    public boolean expireApiKey(@PathVariable String appId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
             String appInfoInString = jedis.hget(Const.REDIS_KEY_INTERNAL_APP_INFO, appId);
             if (Strings.isNotEmpty(appInfoInString)) {
                 AppInfo appInfo = JsonUtil.fromJson(appInfoInString, AppInfo.class);
-                appInfo.setAppKey(Strings.EMPTY);
+                appInfo.setApiKey(Strings.EMPTY);
 
                 clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.UPDATE, appInfo)));
                 return jedis.hset(Const.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(appInfo.getAppId()), JsonUtil.fromJson(appInfo)) == 1;
@@ -86,12 +86,12 @@ public class AppService {
     }
 
 
-    public AppInfo refreshAppKey(@PathVariable String appId) {
+    public AppInfo refreshApiKey(@PathVariable String appId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
             String appInfoInString = jedis.hget(Const.REDIS_KEY_INTERNAL_APP_INFO, appId);
             if (Strings.isNotEmpty(appInfoInString)) {
                 AppInfo appInfo = JsonUtil.fromJson(appInfoInString, AppInfo.class);
-                appInfo.setAppKey(createUniqueAppKey().toString());
+                appInfo.setApiKey(createUniqueApiKey().toString());
                 jedis.hset(Const.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(appInfo.getAppId()), JsonUtil.fromJson(appInfo));
                 clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.UPDATE, appInfo)));
                 return appInfo;
@@ -112,7 +112,7 @@ public class AppService {
         return true;
     }
 
-    private static UUID createUniqueAppKey() {
+    private static UUID createUniqueApiKey() {
         byte[] uuidBySystemCurrentTimeMillis = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(System.currentTimeMillis()).array();
         return UUID.nameUUIDFromBytes(uuidBySystemCurrentTimeMillis);
     }
@@ -122,7 +122,7 @@ public class AppService {
                 .appId(String.valueOf(enrollApp.getAppId()))
                 .appName(enrollApp.getAppName())
                 .appIpAcl(enrollApp.getAppIpAcl())
-                .appKey(enrollApp.getAppKey())
+                .apiKey(enrollApp.getApiKey())
                 .dailyRateLimit(String.valueOf(enrollApp.getAppDailyRateLimit()))
                 .minutelyRateLimit(String.valueOf(enrollApp.getAppMinutelyRateLimit()))
                 .valid(true)

@@ -68,13 +68,13 @@ public class InitAppLoader implements ApplicationListener<ApplicationReadyEvent>
         try {
             if (initAppConfig.isInitEnable()) {
                 Cache<String, String> appDistinction = apiExposeSpecification.getAppDistinctionCache();
-                initAppConfig.getApps().forEach(app -> appDistinction.put(app.getAppKey(), String.valueOf(app.getAppId())));
+                initAppConfig.getApps().forEach(app -> appDistinction.put(app.getApiKey(), String.valueOf(app.getAppId())));
 
                 Cache<String, AppInfo> appInfoCaches = apiExposeSpecification.getAppInfoCache();
                 initAppConfig.getApps().forEach(app -> {
                     AppInfo appInfo = AppInfo.builder()
                             .appId(String.valueOf(app.getAppId()))
-                            .appKey(app.getAppKey())
+                            .apiKey(app.getApiKey())
                             .appName(app.getAppName())
                             .dailyRateLimit(String.valueOf(app.getAppDailyRateLimit()))
                             .minutelyRateLimit(String.valueOf(app.getAppMinutelyRateLimit()))

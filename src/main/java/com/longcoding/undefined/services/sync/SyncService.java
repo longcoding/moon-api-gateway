@@ -58,7 +58,7 @@ public class SyncService {
 
     private boolean createApp(AppInfo appInfo) {
         Cache<String, String> appDistinction = apiExposeSpec.getAppDistinctionCache();
-        appDistinction.putIfAbsent(appInfo.getAppKey(), appInfo.getAppId());
+        appDistinction.putIfAbsent(appInfo.getApiKey(), appInfo.getAppId());
 
         Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
         appInfoCaches.putIfAbsent(appInfo.getAppId(), appInfo);
@@ -84,7 +84,7 @@ public class SyncService {
 
     private boolean deleteApp(AppInfo appInfo) {
         Cache<String, String> appDistinction = apiExposeSpec.getAppDistinctionCache();
-        appDistinction.remove(appInfo.getAppKey());
+        appDistinction.remove(appInfo.getApiKey());
 
         Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
         appInfoCaches.remove(appInfo.getAppId());

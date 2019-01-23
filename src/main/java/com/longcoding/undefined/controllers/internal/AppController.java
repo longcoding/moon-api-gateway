@@ -31,13 +31,13 @@ public class AppController {
     @RequestMapping(value = "{appId}", method = RequestMethod.GET)
     public AppInfo getAppInfo(@PathVariable String appId) { return appService.getAppInfo(appId); }
 
-    @RequestMapping(value = "{appId}/appKey", method = RequestMethod.DELETE)
-    public boolean expireAppKey(@PathVariable String appId) {
-        return appService.expireAppKey(appId);
+    @RequestMapping(value = "{appId}/apiKey", method = RequestMethod.DELETE)
+    public boolean expireApiKey(@PathVariable String appId) {
+        return appService.expireApiKey(appId);
     }
 
-    @RequestMapping(value = "{appId}/appKey", method = RequestMethod.PUT)
-    public AppInfo refreshAppKey(@PathVariable String appId) { return appService.refreshAppKey(appId); }
+    @RequestMapping(value = "{appId}/apiKey", method = RequestMethod.PUT)
+    public AppInfo refreshApiKey(@PathVariable String appId) { return appService.refreshApiKey(appId); }
 
     @RequestMapping(value = "{appId}/whitelist", method = RequestMethod.POST)
     public boolean addWhitelistIps(@RequestBody EnrollWhitelistIp enrollWhitelistIps) { return appService.addWhiteIps(enrollWhitelistIps); }

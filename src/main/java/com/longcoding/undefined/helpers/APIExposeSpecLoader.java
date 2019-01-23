@@ -112,22 +112,22 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
                 service.getApis().forEach(apiSpec -> {
 
                     ConcurrentHashMap<String, Boolean> headers = new ConcurrentHashMap<>();
-                    apiSpec.getHeader().forEach(header -> headers.put(header, false));
-                    apiSpec.getHeaderRequired().forEach(requiredHeader -> headers.replace(requiredHeader, true));
+                    apiSpec.getHeader().forEach(header -> headers.put(header.toLowerCase(), false));
+                    apiSpec.getHeaderRequired().forEach(requiredHeader -> headers.replace(requiredHeader.toLowerCase(), true));
 
                     ConcurrentHashMap<String, Boolean> queryParams = new ConcurrentHashMap<>();
-                    apiSpec.getQueryParam().forEach(param -> queryParams.put(param, false));
-                    apiSpec.getQueryParamRequired().forEach(requiredParam -> queryParams.replace(requiredParam, true));
+                    apiSpec.getQueryParam().forEach(param -> queryParams.put(param.toLowerCase(), false));
+                    apiSpec.getQueryParamRequired().forEach(requiredParam -> queryParams.replace(requiredParam.toLowerCase(), true));
 
                     List<TransformData> transformRequests = Lists.newArrayList();
                     Map<String, String[]> transformRequest = apiSpec.getTransform();
                     if (Objects.nonNull(transformRequest)) {
                         transformRequest.forEach((targetKey, transformPoint) -> {
                             TransformData transformData = TransformData.builder()
-                                    .targetKey(targetKey)
+                                    .targetKey(targetKey.toLowerCase())
                                     .currentPoint(TransformType.of(transformPoint[0]))
                                     .targetPoint(TransformType.of(transformPoint[1]))
-                                    .newKeyName(transformPoint.length > 2? transformPoint[2]:targetKey)
+                                    .newKeyName(transformPoint.length > 2? transformPoint[2]:targetKey.toLowerCase())
                                     .build();
                             transformRequests.add(transformData);
                         });
@@ -140,8 +140,8 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
                                 .serviceId(service.getServiceId())
                                 .headers(headers)
                                 .queryParams(queryParams)
-                                .inboundURL(apiSpec.getInboundUrl())
-                                .outboundURL(service.getOutboundServiceHost() + apiSpec.getOutboundUrl())
+                                .inboundURL(apiSpec.getInboundUrl().toLowerCase())
+                                .outboundURL(service.getOutboundServiceHost() + apiSpec.getOutboundUrl().toLowerCase())
                                 .inboundMethod(apiSpec.getMethod())
                                 .outboundMethod(apiSpec.getMethod())
                                 .protocol(protocol)
@@ -173,11 +173,6 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
         } catch (Exception ex) {
             throw new GeneralException(ExceptionType.E_1201_FAIL_API_INFO_CONFIGURATION_INIT, ex);
         }
-
-
-
-
-
     }
 
 }

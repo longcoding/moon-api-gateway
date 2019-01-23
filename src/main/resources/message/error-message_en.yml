@@ -1,9 +1,9 @@
 1000: Bad Request. Failed to request vaildation.
-1001: Bad Reuqest. Appkey does not exist in your request.
+1001: Bad Reuqest. API key does not exist in your request.
 1002: Bad Request. API is not exist.
 1003: Bad Request. This Method or Protocol is Not Allowed.
 1004: Resource was not found.
-1005: AppKey is not valid or has expired.
+1005: API Key is not valid or has expired.
 1006: Request API Path is unclear.
 1007: Required Parameter does not exist.
 1008: Service Contract does not exist.

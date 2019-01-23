@@ -21,7 +21,7 @@ public class AppInfo implements Serializable, Cloneable {
     private static final long serialVersionUID = 1532927748257139491L;
 
     private String appId;
-    private String appKey;
+    private String apiKey;
     private String appName;
 
     private String dailyRateLimit;

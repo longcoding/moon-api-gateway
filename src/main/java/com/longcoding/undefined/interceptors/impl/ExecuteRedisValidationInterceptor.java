@@ -80,7 +80,7 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
                 // This is Jedis Bug. I wish it will be fixed.
                 generateException(ExceptionType.E_1101_API_GATEWAY_IS_EXHAUSTED);
             } catch (NullPointerException e) {
-                // AppKey is not exist or service is exhausted.
+                // ApiKey is not exist or service is exhausted.
                 generateException(ExceptionType.E_1101_API_GATEWAY_IS_EXHAUSTED);
             }
             if (!interceptorResult){

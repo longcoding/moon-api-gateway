@@ -6,6 +6,7 @@
 ## Introduction
 Asynchronous API Gateway with Spring boot 2.1, Servlet 4, jetty 9 client <br />
 The Gateway is a network gateway created to provide a single access point for real-time web based protocol elevation that supports load balancing, clustering, and several validations. It is designed to make the best performance to deliver open API.
+
 * Lightweight API Gateway
 * High Performance/Scalability
 
@@ -82,23 +83,23 @@ B. Second
         -
           app-id: 0
           app-name: TestApp
-          app-key: 1000-1000-1000-1000
+          api-key: 1000-1000-1000-1000
           app-minutely-ratelimit: 2000
           app-daily-ratelimit: 10000
-          app-service-contract: ['01', '02', '03']
+          app-service-contract: [1, 2, 3]
           app-ip-acl: ['192.168.0.1', '127.0.0.1']
         -
           app-id: 1
           app-name: BestApp
-          app-key: e3938427-1e27-3a37-a854-0ac5a40d84a8
+          api-key: e3938427-1e27-3a37-a854-0ac5a40d84a8
           app-minutely-ratelimit: 1000
           app-daily-ratelimit: 50000
-          app-service-contract: ['01', '02']
+          app-service-contract: [1, 2]
           app-ip-acl: ['127.0.0.1']
 
 - init-enable: The initial registration setting is not used.
 - app-service-contract: A list of API services that app has permission to use.
-- app-ip-acl: The whitelist of ip that can use this App key(=API Key).
+- app-ip-acl: The whitelist of ip that can use this API Key.
 - app minutely/daily ratelimit: The amount of APIs available to the app. 
 
 C. Third
@@ -110,7 +111,7 @@ C. Third
       init-enable: true
       services:
         -
-          service-id: '01'
+          service-id: 1
           service-name: stackoverflow
           service-minutely-capacity: 10000
           service-daily-capacity: 240000
@@ -118,7 +119,7 @@ C. Third
           outbound-service-host: api.stackexchange.com
           apis:
             -
-              api-id: '0101'
+              api-id: 101
               api-name: getInfo
               protocol: http, https
               method: get
@@ -129,7 +130,7 @@ C. Third
               query-param: version, site
               query-param-required: site
             -
-              api-id: '0202'
+              api-id: 202
               api-name: getQuestions
               protocol: https
               method: put
@@ -140,7 +141,7 @@ C. Third
               query-param: version, site
               query-param-required: site
         -
-          service-id: '02'
+          service-id: 2
           service-name: stackoverflow2
           service-minutely-capacity: 5000
           service-daily-capacity: 100000
@@ -148,7 +149,7 @@ C. Third
           outbound-service-host: api.stackexchange.com
           apis:
             -
-              api-id: '0201'
+              api-id: 201
               api-name: transformTest
               protocol: http, https
               method: get
@@ -210,8 +211,8 @@ The Management API helps manage a single gateway or cluster group.
   - **APP Register** - [POST] /internal/apps
   - **APP UnRegister** - [DELETE] /internal/apps/{appId}
   - **APP Update** - [Future Feature]
-  - **Appkey(=API Key) Expiry** - [DELETE] /internal/apps/{appId}/appkey
-  - **Appkey(=API Key) Regenerate** - [PUT] /internal/apps/{appId}
+  - **API Key Expiry** - [DELETE] /internal/apps/{appId}/apikey
+  - **API Key Regenerate** - [PUT] /internal/apps/{appId}
   - **Add NEW IP Whitelist** - [POST] /internal/apps/{appId}/whitelist
   - **Remove IP Whitelist** - [DELETE] /internal/apps/{appId}/whitelist
   
@@ -280,9 +281,9 @@ OR you can input URL like below.
 
     http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
-and then input header fields. ( appkey is mandatory header.(or Query Parameter) )
+and then input header fields. ( apikey is mandatory header.(or Query Parameter) )
 
-    appkey, 1000-1000-1000-1000
+    apikey, 1000-1000-1000-1000
     page, 5
     votes, 1
 
@@ -290,7 +291,7 @@ Execute request and check response code and content.
 
 ##### 3) Use cUrl.
 
-    curl -X GET -H "Content-type: application/json" -H "appkey: 1000-1000-1000-1000" -H "page: 5" -H "votes: 1" http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
+    curl -X GET -H "Content-type: application/json" -H "apikey: 1000-1000-1000-1000" -H "page: 5" -H "votes: 1" http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
 ## Future update
 * Authentication for Private API

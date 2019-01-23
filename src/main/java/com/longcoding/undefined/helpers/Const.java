@@ -29,7 +29,7 @@ public class Const {
     public static final String REQUEST_ACCEPT = "accept";
     public static final String REQUEST_USER_AGENT = "user-agent";
 
-    public static final String[] HEADER_NEED_TO_REMOVE_LIST = {"appkey", "host", "user-agent"};
+    public static final String[] HEADER_NEED_TO_REMOVE_LIST = {"apikey", "host", "user-agent"};
 
     public static final String HEADER_CUSTOMIZE_REMOTE_IP = "x-remote-ip";
     public static final String HEADER_CUSTOMIZE_REMOTE_AGENT = "x-user-agent";

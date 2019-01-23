@@ -8,14 +8,11 @@ import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.enumeration.RoutingType;
 import com.longcoding.undefined.models.enumeration.TransformType;
-import jdk.internal.org.objectweb.asm.TypeReference;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MimeTypeUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -36,7 +33,6 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
 
             apiInfo.getTransformData().forEach(element -> {
                 Object data = getDataByCurrentTransformType(element.getCurrentPoint(), element.getTargetKey(), requestInfo, apiInfo);
-                //TODO:
                 if (Objects.isNull(data)) generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT);
                 putDataByTargetTransformType(element.getTargetPoint(), element.getNewKeyName(), data, requestInfo);
             });
@@ -76,8 +72,11 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
             case BODY_JSON:
                 if ( requestInfo.getContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE)) {
                     Map<String, Object> bodyMap = requestInfo.getRequestBodyMap();
-                    result = bodyMap.get(targetKey);
-                    bodyMap.remove(targetKey);
+                    for (String key : bodyMap.keySet()) if (key.equalsIgnoreCase(targetKey)) {
+                        result = bodyMap.get(key);
+                        bodyMap.remove(targetKey);
+                        break;
+                    }
                 } else {
                     generateException(ExceptionType.E_1011_NOT_SUPPORTED_CONTENT_TYPE);
                 }
@@ -111,5 +110,4 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
                 break;
         }
     }
-
 }

@@ -102,7 +102,7 @@ public class ProxyServiceTest {
 
         //this action is not needed. just for understanding.
         httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-        httpGet.setHeader("appKey", "1000-1000-1000-1000");
+        httpGet.setHeader("apiKey", "1000-1000-1000-1000");
 
         HttpResponse response = httpClient.execute(httpGet);
 
@@ -138,7 +138,7 @@ public class ProxyServiceTest {
 
         //this action is not needed. just for understanding.
         httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-        httpGet.setHeader("appKey", "1000-1000-1000-1000");
+        httpGet.setHeader("apiKey", "1000-1000-1000-1000");
 
         HttpResponse response = httpClient.execute(httpGet);
 
