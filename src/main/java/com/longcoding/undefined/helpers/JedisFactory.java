@@ -3,6 +3,7 @@ package com.longcoding.undefined.helpers;
 import com.longcoding.undefined.configs.JedisConfig;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ import javax.annotation.PreDestroy;
 @Component
 @AllArgsConstructor
 @EnableConfigurationProperties(JedisConfig.class)
-public class JedisFactory implements InitializingBean {
+public class JedisFactory implements InitializingBean, DisposableBean {
 
     private JedisConfig jedisConfig;
 
@@ -53,10 +54,9 @@ public class JedisFactory implements InitializingBean {
     public Jedis getInstance() {
         return jedisPool.getResource();
     }
-
-    @PreDestroy
-    private void releaseResource() {
+    
+    @Override
+    public void destroy() throws Exception {
         jedisPool.close();
     }
-
 }

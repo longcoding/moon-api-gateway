@@ -13,6 +13,7 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ import java.util.regex.Pattern;
  */
 @Component
 @EnableConfigurationProperties(ServiceConfig.class)
-public class APIExposeSpecification {
+public class APIExposeSpecification implements DisposableBean {
 
     @Autowired
     ServiceConfig serviceConfig;
@@ -128,9 +129,8 @@ public class APIExposeSpecification {
         return null;
     }
 
-    @PreDestroy
-    public void releaseResource() {
+    @Override
+    public void destroy() throws Exception {
         cacheManager.close();
     }
-
 }
