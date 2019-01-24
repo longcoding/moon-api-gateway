@@ -5,6 +5,7 @@ import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.ehcache.AppInfo;
 import com.longcoding.undefined.models.ehcache.ServiceInfo;
 import com.longcoding.undefined.models.ehcache.ServiceRoutingInfo;
+import com.longcoding.undefined.models.enumeration.MethodType;
 import com.longcoding.undefined.models.enumeration.RoutingType;
 import org.ehcache.Cache;
 import org.ehcache.PersistentCacheManager;
@@ -49,15 +50,10 @@ public class APIExposeSpecification implements DisposableBean {
     private static Cache<String, ApiInfo> apiInfoCache;
     private static Cache<String, ServiceInfo> serviceInfoCache;
 
-    private static Cache<String, Pattern> apiMatchHttpGet;
-    private static Cache<String, Pattern> apiMatchHttpPost;
-    private static Cache<String, Pattern> apiMatchHttpPut;
-    private static Cache<String, Pattern> apiMatchHttpDelete;
-
-    private static Cache<String, Pattern> apiMatchHttpsGet;
-    private static Cache<String, Pattern> apiMatchHttpsPost;
-    private static Cache<String, Pattern> apiMatchHttpsPut;
-    private static Cache<String, Pattern> apiMatchHttpsDelete;
+    private static Cache<String, Pattern> apiMatchGet;
+    private static Cache<String, Pattern> apiMatchPost;
+    private static Cache<String, Pattern> apiMatchPut;
+    private static Cache<String, Pattern> apiMatchDelete;
 
     private static String EHCACHE_PERSISTENCE_SPACE = System.getProperty("java.io.tmpdir");
 
@@ -67,7 +63,7 @@ public class APIExposeSpecification implements DisposableBean {
                 .build(true);
 
         ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
-                .heap(10000, EntryUnit.ENTRIES)
+                .heap(20000, EntryUnit.ENTRIES)
                 .disk(1000000, MemoryUnit.MB, false);
 
         appDistinctionCache = cacheManager.createCache(CACHE_APP_DISTINCTION, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
@@ -77,15 +73,10 @@ public class APIExposeSpecification implements DisposableBean {
         apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiInfo.class, resourcePoolsBuilder).build());
         serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceInfo.class, resourcePoolsBuilder).build());
 
-        apiMatchHttpGet = cacheManager.createCache(Const.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchHttpPost = cacheManager.createCache(Const.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchHttpPut = cacheManager.createCache(Const.API_MATCH_HTTP_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchHttpDelete = cacheManager.createCache(Const.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-
-        apiMatchHttpsGet = cacheManager.createCache(Const.API_MATCH_HTTPS_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchHttpsPost = cacheManager.createCache(Const.API_MATCH_HTTPS_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchHttpsPut = cacheManager.createCache(Const.API_MATCH_HTTPS_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchHttpsDelete = cacheManager.createCache(Const.API_MATCH_HTTPS_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchGet = cacheManager.createCache(Const.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchPost = cacheManager.createCache(Const.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchPut = cacheManager.createCache(Const.API_MATCH_HTTP_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchDelete = cacheManager.createCache(Const.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
     }
 
     public static boolean isEnabledIpAcl() { return IS_ENABLED_IP_ACL; }
@@ -106,24 +97,15 @@ public class APIExposeSpecification implements DisposableBean {
 
     public Cache<String, ServiceRoutingInfo> getServiceTypeCache() { return serviceRoutngTypeCache; }
 
-    public Cache<String, Pattern> getRoutingPathCache(String protocolAndMethod) {
-        protocolAndMethod = protocolAndMethod.toUpperCase();
-        if (Const.API_MATCH_HTTP_GET_MAP.equals(protocolAndMethod)) {
-            return apiMatchHttpGet;
-        } else if (Const.API_MATCH_HTTP_POST_MAP.equals(protocolAndMethod)) {
-            return apiMatchHttpPost;
-        } else if (Const.API_MATCH_HTTP_PUT_MAP.equals(protocolAndMethod)) {
-            return apiMatchHttpPut;
-        } else if (Const.API_MATCH_HTTP_DELETE_MAP.equals(protocolAndMethod)) {
-            return apiMatchHttpDelete;
-        } else if (Const.API_MATCH_HTTPS_GET_MAP.equals(protocolAndMethod)) {
-            return apiMatchHttpsGet;
-        } else if (Const.API_MATCH_HTTPS_POST_MAP.equals(protocolAndMethod)) {
-            return apiMatchHttpsPost;
-        } else if (Const.API_MATCH_HTTPS_PUT_MAP.equals(protocolAndMethod)) {
-            return apiMatchHttpsPut;
-        } else if (Const.API_MATCH_HTTPS_DELETE_MAP.equals(protocolAndMethod)) {
-            return apiMatchHttpsDelete;
+    public Cache<String, Pattern> getRoutingPathCache(MethodType requestMethodType) {
+        if (MethodType.GET == requestMethodType) {
+            return apiMatchGet;
+        } else if (MethodType.POST == requestMethodType) {
+            return apiMatchPost;
+        } else if (MethodType.PUT == requestMethodType) {
+            return apiMatchPut;
+        } else if (MethodType.DELETE == requestMethodType) {
+            return apiMatchDelete;
         }
         return null;
     }

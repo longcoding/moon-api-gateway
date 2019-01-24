@@ -8,6 +8,7 @@ import com.longcoding.undefined.models.cluster.WhitelistIpSync;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.ehcache.AppInfo;
 import com.longcoding.undefined.models.ehcache.ServiceInfo;
+import com.longcoding.undefined.models.enumeration.MethodType;
 import com.longcoding.undefined.models.enumeration.ProtocolType;
 import com.longcoding.undefined.models.enumeration.SyncType;
 import lombok.extern.slf4j.Slf4j;
@@ -131,7 +132,7 @@ public class SyncService {
             Cache<String, ApiInfo> apiInfoCache = apiExposeSpec.getApiInfoCache();
             apiInfo.getProtocol().forEach(protocol -> {
 
-                Cache<String, Pattern> apiRoutingCache = apiExposeSpec.getRoutingPathCache(protocol.name() + apiInfo.getInboundMethod());
+                Cache<String, Pattern> apiRoutingCache = apiExposeSpec.getRoutingPathCache(MethodType.of(apiInfo.getInboundMethod()));
                 if (SyncType.CREATE == syncType) {
                     apiInfoCache.put(apiInfo.getApiId(), apiInfo);
                     apiRoutingCache.put(apiInfo.getApiId(), routingUrlInRegex);
@@ -151,8 +152,7 @@ public class SyncService {
         Cache<String, ApiInfo> apiInfoCache = apiExposeSpec.getApiInfoCache();
         apiInfoCache.remove(apiInfo.getApiId());
 
-        apiExposeSpec.getRoutingPathCache(apiInfo.getProtocol() + apiInfo.getInboundMethod())
-                .remove(apiInfo.getApiId());
+        apiExposeSpec.getRoutingPathCache(MethodType.of(apiInfo.getInboundMethod())).remove(apiInfo.getApiId());
 
         return true;
     }

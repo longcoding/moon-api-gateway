@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class AuthenticationInterceptor extends AbstractBaseInterceptor {
 
-    private static final String HEADER_APP_KEY = "apiKey";
+    private static final String HEADER_API_KEY = "apiKey";
 
     @Autowired
     APIExposeSpecification apiExposeSpec;
@@ -59,13 +59,13 @@ public class AuthenticationInterceptor extends AbstractBaseInterceptor {
 
         String apiKey = Strings.EMPTY;
         for ( String header : headerMap.keySet() ) {
-            if ( header.equalsIgnoreCase(HEADER_APP_KEY) ) {
+            if ( header.equalsIgnoreCase(HEADER_API_KEY) ) {
                 return headerMap.get(header);
             }
         }
 
         for ( String queryString : queryStringMap.keySet() ){
-            if ( queryString.equalsIgnoreCase(HEADER_APP_KEY) ) {
+            if ( queryString.equalsIgnoreCase(HEADER_API_KEY) ) {
                 return queryStringMap.get(queryString);
             }
         }

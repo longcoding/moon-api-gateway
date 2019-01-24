@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by longcoding on 16. 4. 6..
@@ -103,7 +104,7 @@ public class ProxyServiceImpl implements ProxyService {
 
         if (Strings.isNotEmpty(responseInfo.getRequestContentType())) {
             if (responseInfo.getRequestContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE) || responseInfo.getRequestContentType().contains(MimeTypeUtils.TEXT_PLAIN_VALUE)) {
-                request.content(new BytesContentProvider(responseInfo.getRequestBody()), responseInfo.getRequestContentType());
+                if (Objects.nonNull(responseInfo.getRequestBody())) request.content(new BytesContentProvider(responseInfo.getRequestBody()), responseInfo.getRequestContentType());
             }
         }
 

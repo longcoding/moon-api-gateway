@@ -9,18 +9,14 @@ import com.longcoding.undefined.models.enumeration.SyncType;
 import com.longcoding.undefined.services.sync.SyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.ehcache.Cache;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-
 import java.util.stream.Collectors;
-
-import static java.lang.String.valueOf;
 
 /**
  * Created by longcoding on 19. 1. 4..
@@ -30,7 +26,7 @@ import static java.lang.String.valueOf;
 @Slf4j
 @Component
 @EnableConfigurationProperties(InitAppConfig.class)
-public class InitAppLoader implements ApplicationListener<ApplicationReadyEvent> {
+public class InitAppLoader implements InitializingBean {
 
     @Autowired
     JedisFactory jedisFactory;
@@ -51,7 +47,7 @@ public class InitAppLoader implements ApplicationListener<ApplicationReadyEvent>
     SyncService syncService;
 
     @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
+    public void afterPropertiesSet() throws Exception {
 
         if (enableCluster) {
             try {

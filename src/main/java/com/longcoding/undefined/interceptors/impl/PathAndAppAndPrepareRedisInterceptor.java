@@ -7,6 +7,7 @@ import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.ehcache.ServiceInfo;
 import com.longcoding.undefined.models.ehcache.ServiceRoutingInfo;
+import com.longcoding.undefined.models.enumeration.MethodType;
 import com.longcoding.undefined.models.enumeration.RoutingType;
 import org.apache.logging.log4j.util.Strings;
 import org.ehcache.Cache;
@@ -45,9 +46,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
             // for future update.
 //        String categoryValue = classifyCategory(requestInfo.getRequestURL(),
 //                messageManager.getBooleanProperty("undefined.service.recognize.subdomain"));
-            String requestProtocolAndMethod = requestInfo.getRequestProtocol() + requestInfo.getRequestMethod();
-
-            Cache<String, Pattern> apiRoutingPaths = apiExposeSpec.getRoutingPathCache(requestProtocolAndMethod);
+            Cache<String, Pattern> apiRoutingPaths = apiExposeSpec.getRoutingPathCache(MethodType.of(requestInfo.getRequestMethod()));
             if ( Objects.isNull(apiRoutingPaths) ) {
                 generateException(ExceptionType.E_1003_METHOD_OR_PROTOCOL_IS_NOT_NOT_ALLOWED);
             }

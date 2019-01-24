@@ -2,6 +2,7 @@ package com.longcoding.undefined.services;
 
 import com.longcoding.undefined.UndefinedApplication;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
+import com.longcoding.undefined.helpers.InitAppLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -9,6 +10,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.ByteArrayOutputStream;
@@ -30,6 +34,8 @@ import java.io.ByteArrayOutputStream;
 //@ContextConfiguration(classes = UndefinedInitializer.class, inheritInitializers = true)
 @SpringBootTest(classes = UndefinedApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ProxyServiceTest {
+
+    protected final Logger logger = LogManager.getLogger(ProxyServiceTest.class);
 
 /*
     Default Test Setting
@@ -108,7 +114,7 @@ public class ProxyServiceTest {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         response.getEntity().writeTo(outputStream);
-        log.info("Response: {}", outputStream);
+        logger.info("Response: {}", outputStream);
 
         Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
         Assert.assertEquals(200, response.getStatusLine().getStatusCode());
@@ -144,7 +150,7 @@ public class ProxyServiceTest {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         response.getEntity().writeTo(outputStream);
-        log.info("Response: {}", outputStream);
+        logger.info("Response: {}", outputStream);
 
         Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
         Assert.assertEquals(200, response.getStatusLine().getStatusCode());

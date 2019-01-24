@@ -9,21 +9,18 @@ import com.longcoding.undefined.models.cluster.ApiSync;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.ehcache.ServiceInfo;
 import com.longcoding.undefined.models.ehcache.ServiceRoutingInfo;
-import com.longcoding.undefined.models.enumeration.ProtocolType;
-import com.longcoding.undefined.models.enumeration.RoutingType;
-import com.longcoding.undefined.models.enumeration.SyncType;
-import com.longcoding.undefined.models.enumeration.TransformType;
+import com.longcoding.undefined.models.enumeration.*;
 import com.longcoding.undefined.services.sync.SyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,7 +34,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @EnableConfigurationProperties(APIExposeSpecConfig.class)
-public class APIExposeSpecLoader implements ApplicationListener<ApplicationReadyEvent> {
+public class APIExposeSpecLoader implements InitializingBean {
 
     @Autowired
     APIExposeSpecConfig apiExposeSpecConfig;
@@ -58,7 +55,7 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
     JedisFactory jedisFactory;
 
     @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
+    public void afterPropertiesSet() throws Exception {
 
         APIExposeSpecification.setIsEnabledIpAcl(enableIpAcl);
 
@@ -167,13 +164,12 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
                     String servicePath = (service.getServicePath().startsWith("/"))? service.getServicePath() : "/" + service.getServicePath();
                     Pattern routingUrlInRegex = Pattern.compile(servicePath + routingPathInRegex);
 
-                    apiSpec.getProtocol().forEach(protocol ->
-                            apiExposeSpecification.getRoutingPathCache(protocol + apiSpec.getMethod()).put(apiSpec.getApiId(), routingUrlInRegex));
+                    apiExposeSpecification.getRoutingPathCache(MethodType.of(apiSpec.getMethod())).put(apiSpec.getApiId(), routingUrlInRegex);
+
                 });
             });
         } catch (Exception ex) {
             throw new GeneralException(ExceptionType.E_1201_FAIL_API_INFO_CONFIGURATION_INIT, ex);
         }
     }
-
 }
