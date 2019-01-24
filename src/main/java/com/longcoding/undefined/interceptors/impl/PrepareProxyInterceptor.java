@@ -11,6 +11,7 @@ import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ResponseInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
+import com.longcoding.undefined.models.enumeration.ProtocolType;
 import com.longcoding.undefined.models.enumeration.RoutingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -41,8 +42,12 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
 
             ApiInfo apiInfo = apiExposeSpec.getApiInfoCache().get(requestInfo.getApiId());
             responseInfo.setRequestMethod(apiInfo.getOutboundMethod());
-            responseInfo.setRequestProtocol(apiInfo.getProtocol());
             responseInfo.setRequestURL(apiInfo.getOutboundURL());
+
+            //TODO: need to think about logic.
+            String proxyMethod = apiInfo.getProtocol().contains(ProtocolType.of(requestInfo.getRequestProtocol()))?
+                    requestInfo.getRequestProtocol() : apiInfo.getProtocol().get(0).name();
+            responseInfo.setRequestProtocol(proxyMethod);
 
         } else if (RoutingType.SKIP_API_TRANSFORM == requestInfo.getRoutingType()) {
 

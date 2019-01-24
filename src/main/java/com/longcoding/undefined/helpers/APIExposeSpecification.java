@@ -106,8 +106,7 @@ public class APIExposeSpecification implements DisposableBean {
 
     public Cache<String, ServiceRoutingInfo> getServiceTypeCache() { return serviceRoutngTypeCache; }
 
-    //TODO: need to rename
-    public Cache<String, Pattern> getApiIdCache(String protocolAndMethod) {
+    public Cache<String, Pattern> getRoutingPathCache(String protocolAndMethod) {
         protocolAndMethod = protocolAndMethod.toUpperCase();
         if (Const.API_MATCH_HTTP_GET_MAP.equals(protocolAndMethod)) {
             return apiMatchHttpGet;

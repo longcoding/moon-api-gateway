@@ -9,6 +9,7 @@ import com.longcoding.undefined.models.cluster.ApiSync;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.ehcache.ServiceInfo;
 import com.longcoding.undefined.models.ehcache.ServiceRoutingInfo;
+import com.longcoding.undefined.models.enumeration.ProtocolType;
 import com.longcoding.undefined.models.enumeration.RoutingType;
 import com.longcoding.undefined.models.enumeration.SyncType;
 import com.longcoding.undefined.models.enumeration.TransformType;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by longcoding on 19. 1. 1..
@@ -133,25 +135,24 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
                         });
                     }
 
-                    apiSpec.getProtocol().forEach(protocol -> {
-                        ApiInfo apiInfo = ApiInfo.builder()
-                                .apiId(apiSpec.getApiId())
-                                .apiName(apiSpec.getApiName())
-                                .serviceId(service.getServiceId())
-                                .headers(headers)
-                                .queryParams(queryParams)
-                                .inboundURL(apiSpec.getInboundUrl().toLowerCase())
-                                .outboundURL(service.getOutboundServiceHost() + apiSpec.getOutboundUrl().toLowerCase())
-                                .inboundMethod(apiSpec.getMethod())
-                                .outboundMethod(apiSpec.getMethod())
-                                .protocol(protocol)
-                                .isOpenApi(true)
-                                .transformData(transformRequests)
-                                .build();
+                    ApiInfo apiInfo = ApiInfo.builder()
+                            .apiId(apiSpec.getApiId())
+                            .apiName(apiSpec.getApiName())
+                            .serviceId(service.getServiceId())
+                            .headers(headers)
+                            .queryParams(queryParams)
+                            .inboundURL(apiSpec.getInboundUrl().toLowerCase())
+                            .outboundURL(service.getOutboundServiceHost() + apiSpec.getOutboundUrl().toLowerCase())
+                            .inboundMethod(apiSpec.getMethod())
+                            .outboundMethod(apiSpec.getMethod())
+                            .protocol(apiSpec.getProtocol().stream().map(ProtocolType::of).collect(Collectors.toList()))
+                            .isOpenApi(true)
+                            .transformData(transformRequests)
+                            .build();
 
-                        jedisFactory.getInstance().hsetnx(Const.REDIS_KEY_INTERNAL_API_INFO, String.join("-", String.valueOf(apiInfo.getApiId()), protocol), JsonUtil.fromJson(apiInfo));
-                        apiExposeSpecification.getApiInfoCache().put(apiSpec.getApiId(), apiInfo);
-                    });
+                    jedisFactory.getInstance().hsetnx(Const.REDIS_KEY_INTERNAL_API_INFO, String.valueOf(apiInfo.getApiId()), JsonUtil.fromJson(apiInfo));
+                    apiExposeSpecification.getApiInfoCache().put(apiSpec.getApiId(), apiInfo);
+
                 });
             });
 
@@ -167,7 +168,7 @@ public class APIExposeSpecLoader implements ApplicationListener<ApplicationReady
                     Pattern routingUrlInRegex = Pattern.compile(servicePath + routingPathInRegex);
 
                     apiSpec.getProtocol().forEach(protocol ->
-                            apiExposeSpecification.getApiIdCache(protocol + apiSpec.getMethod()).put(apiSpec.getApiId(), routingUrlInRegex));
+                            apiExposeSpecification.getRoutingPathCache(protocol + apiSpec.getMethod()).put(apiSpec.getApiId(), routingUrlInRegex));
                 });
             });
         } catch (Exception ex) {

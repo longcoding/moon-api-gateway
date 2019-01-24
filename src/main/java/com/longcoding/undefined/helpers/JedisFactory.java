@@ -54,7 +54,7 @@ public class JedisFactory implements InitializingBean, DisposableBean {
     public Jedis getInstance() {
         return jedisPool.getResource();
     }
-    
+
     @Override
     public void destroy() throws Exception {
         jedisPool.close();

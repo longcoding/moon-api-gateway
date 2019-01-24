@@ -2,6 +2,7 @@ package com.longcoding.undefined.models.ehcache;
 
 import com.google.common.collect.Lists;
 import com.longcoding.undefined.models.apis.TransformData;
+import com.longcoding.undefined.models.enumeration.ProtocolType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,7 +39,7 @@ public class ApiInfo implements Serializable, Cloneable {
     private String inboundMethod;
     private String outboundMethod;
 
-    private String protocol;
+    private List<ProtocolType> protocol;
     private List<TransformData> transformData;
 
     private boolean isOpenApi;

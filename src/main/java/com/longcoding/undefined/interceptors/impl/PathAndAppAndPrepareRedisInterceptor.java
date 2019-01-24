@@ -47,7 +47,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 //                messageManager.getBooleanProperty("undefined.service.recognize.subdomain"));
             String requestProtocolAndMethod = requestInfo.getRequestProtocol() + requestInfo.getRequestMethod();
 
-            Cache<String, Pattern> apiRoutingPaths = apiExposeSpec.getApiIdCache(requestProtocolAndMethod);
+            Cache<String, Pattern> apiRoutingPaths = apiExposeSpec.getRoutingPathCache(requestProtocolAndMethod);
             if ( Objects.isNull(apiRoutingPaths) ) {
                 generateException(ExceptionType.E_1003_METHOD_OR_PROTOCOL_IS_NOT_NOT_ALLOWED);
             }

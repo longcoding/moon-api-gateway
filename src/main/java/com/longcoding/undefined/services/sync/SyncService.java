@@ -8,6 +8,7 @@ import com.longcoding.undefined.models.cluster.WhitelistIpSync;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.ehcache.AppInfo;
 import com.longcoding.undefined.models.ehcache.ServiceInfo;
+import com.longcoding.undefined.models.enumeration.ProtocolType;
 import com.longcoding.undefined.models.enumeration.SyncType;
 import lombok.extern.slf4j.Slf4j;
 import org.ehcache.Cache;
@@ -128,15 +129,18 @@ public class SyncService {
             Pattern routingUrlInRegex = Pattern.compile(servicePath + routingPathInRegex);
 
             Cache<String, ApiInfo> apiInfoCache = apiExposeSpec.getApiInfoCache();
-            Cache<String, Pattern> apiRoutingCache = apiExposeSpec.getApiIdCache(apiInfo.getProtocol() + apiInfo.getInboundMethod());
-            if (SyncType.CREATE == syncType) {
-                apiInfoCache.put(apiInfo.getApiId(), apiInfo);
-                apiRoutingCache.put(apiInfo.getApiId(), routingUrlInRegex);
-            } else if (SyncType.UPDATE == syncType) {
-                apiInfoCache.replace(apiInfo.getApiId(), apiInfo);
-                apiRoutingCache.replace(apiInfo.getApiId(), routingUrlInRegex);
-            }
+            apiInfo.getProtocol().forEach(protocol -> {
 
+                Cache<String, Pattern> apiRoutingCache = apiExposeSpec.getRoutingPathCache(protocol.name() + apiInfo.getInboundMethod());
+                if (SyncType.CREATE == syncType) {
+                    apiInfoCache.put(apiInfo.getApiId(), apiInfo);
+                    apiRoutingCache.put(apiInfo.getApiId(), routingUrlInRegex);
+                } else if (SyncType.UPDATE == syncType) {
+                    apiInfoCache.replace(apiInfo.getApiId(), apiInfo);
+                    apiRoutingCache.replace(apiInfo.getApiId(), routingUrlInRegex);
+                }
+
+            });
             return true;
         }
 
@@ -147,7 +151,7 @@ public class SyncService {
         Cache<String, ApiInfo> apiInfoCache = apiExposeSpec.getApiInfoCache();
         apiInfoCache.remove(apiInfo.getApiId());
 
-        apiExposeSpec.getApiIdCache(apiInfo.getProtocol() + apiInfo.getInboundMethod())
+        apiExposeSpec.getRoutingPathCache(apiInfo.getProtocol() + apiInfo.getInboundMethod())
                 .remove(apiInfo.getApiId());
 
         return true;
