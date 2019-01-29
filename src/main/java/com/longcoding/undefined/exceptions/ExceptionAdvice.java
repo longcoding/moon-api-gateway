@@ -29,7 +29,8 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity exception(Exception e, HttpServletRequest request) {
-        log.error("{}", getStackTrace(e));
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+        log.error("[ Request ID : {} ]\n, {}", Objects.nonNull(requestInfo)? requestInfo.getRequestId():"none", getStackTrace(e));
         ExceptionType exceptionType = ExceptionType.E_9999_INTERNAL_SERVER_ERROR;
         setHttpResponseErrorCode(request, ExceptionType.E_9999_INTERNAL_SERVER_ERROR.getCode());
         CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), messageManager.getProperty(exceptionType.getCode()));
@@ -38,6 +39,8 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(RatelimitFailException.class)
     public ResponseEntity ratelimtFailException(RatelimitFailException e, HttpServletRequest request) {
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+        log.error("[ Request ID : {} ]\n, {}", Objects.nonNull(requestInfo)? requestInfo.getRequestId():"none", getStackTrace(e));
         ExceptionType exceptionType = ExceptionType.E_1009_SERVICE_RATELIMIT_OVER;
         setHttpResponseErrorCode(request, ExceptionType.E_1009_SERVICE_RATELIMIT_OVER.getCode());
         CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), messageManager.getProperty(exceptionType.getCode()));
@@ -46,7 +49,8 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(ValidationFailException.class)
     public ResponseEntity validationFailException(ValidationFailException e, HttpServletRequest request) {
-        log.error("{}", getStackTrace(e));
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+        log.error("[ Request ID : {} ]\n, {}", Objects.nonNull(requestInfo)? requestInfo.getRequestId():"none", getStackTrace(e));
         ExceptionType exceptionType = ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT;
         setHttpResponseErrorCode(request, ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT.getCode());
         CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), messageManager.getProperty(exceptionType.getCode()));
@@ -55,7 +59,8 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(ProxyServiceFailException.class)
     public ResponseEntity proxyServiceFailException(ProxyServiceFailException e, HttpServletRequest request) {
-        log.error("{}", getStackTrace(e));
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+        log.error("[ Request ID : {} ]\n, {}", Objects.nonNull(requestInfo)? requestInfo.getRequestId():"none", getStackTrace(e));
         ExceptionType exceptionType = ExceptionType.E_1102_OUTBOUND_SERVICE_IS_NOT_UNSTABLE;
         setHttpResponseErrorCode(request, ExceptionType.E_1102_OUTBOUND_SERVICE_IS_NOT_UNSTABLE.getCode());
         String message = messageManager.getProperty(exceptionType.getCode()) + e.getMessage();
@@ -65,7 +70,8 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity generalException(GeneralException e, HttpServletRequest request) {
-        log.error("{}", getStackTrace(e));
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+        log.error("[ Request ID : {} ]\n, {}", Objects.nonNull(requestInfo)? requestInfo.getRequestId():"none", getStackTrace(e));
         ExceptionType exceptionType = e.getExceptionType();
         setHttpResponseErrorCode(request, exceptionType.getCode());
         String message = messageManager.getProperty(exceptionType.getCode());

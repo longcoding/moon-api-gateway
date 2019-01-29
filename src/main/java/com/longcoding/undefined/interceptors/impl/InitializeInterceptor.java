@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.ApplicationLogFormatter;
 import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.HttpHelper;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ResponseInfo;
@@ -37,12 +38,14 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
 
         requestInfo.setRequestId(UUID.randomUUID().toString());
         requestInfo.setClientIp(request.getRemoteAddr());
-        requestInfo.setAcceptHostIp(request.getLocalAddr());
+        requestInfo.setAcceptHostIp(HttpHelper.getHostIp());
+        requestInfo.setAcceptHostName(HttpHelper.getHostName());
         requestInfo.setRequestMethod(request.getMethod());
         requestInfo.setRequestURI(request.getRequestURI().toLowerCase());
         requestInfo.setUserAgent(request.getHeader(Const.REQUEST_USER_AGENT));
         requestInfo.setHeaders(createHeaderMap(request));
         requestInfo.setRequestStartTime(System.currentTimeMillis());
+        requestInfo.setRequestDataSize(request.getContentLength());
 
         String requestPath = request.getServletPath();
         requestInfo.setRequestPath(requestPath.endsWith("/")? requestPath.substring(0, requestPath.length() - 1):requestPath);
@@ -108,7 +111,8 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
 
         requestInfo.setResponseStatusCode(response.getStatus());
         requestInfo.setProxyElapsedTime(Objects.nonNull(responseInfo)? responseInfo.getProxyElapsedTime(): 0L);
-        requestInfo.setResponseDataSize(Objects.nonNull(responseInfo)? responseInfo.getResponseDataSize(): 0);
+        requestInfo.setResponseDataSize(response.getBufferSize());
+        requestInfo.setErrorCode(Objects.nonNull(responseInfo)? responseInfo.getResponseCode(): "");
 
         log.info(ApplicationLogFormatter.generateGeneralLog(requestInfo));
     }

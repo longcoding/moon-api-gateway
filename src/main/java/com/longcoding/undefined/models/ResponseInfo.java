@@ -25,7 +25,7 @@ public class ResponseInfo {
     private Map<String, String> queryStringMap;
     private Map<String, String> headers;
 
-    private Integer responseCode;
+    private String responseCode;
     private String responseData, encodingType;
     private int responseDataSize;
 

@@ -9,6 +9,7 @@ import java.util.StringTokenizer;
 
 /**
  * Created by longcoding on 16. 4. 9..
+ * Updated by longcoding on 19. 1. 29..
  */
 public class HttpHelper {
 
@@ -53,6 +54,18 @@ public class HttpHelper {
 
         try {
             hostname = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            return "UnknownHost";
+        }
+
+        return hostname;
+    }
+
+    public static String getHostIp() {
+        String hostname = Strings.EMPTY;
+
+        try {
+            hostname = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             return "UnknownHost";
         }

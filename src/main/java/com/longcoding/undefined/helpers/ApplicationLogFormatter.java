@@ -16,6 +16,7 @@ public final class ApplicationLogFormatter {
 
     public static String generateGeneralLog(RequestInfo requestInfo) throws IOException {
         Map<String, Object> accessLog = Maps.newHashMap();
+        accessLog.put("requestId", requestInfo.getRequestId());
         accessLog.put("appId", requestInfo.getAppId());
         accessLog.put("serviceId", requestInfo.getServiceId());
         accessLog.put("apiId", requestInfo.getApiId());
@@ -26,9 +27,11 @@ public final class ApplicationLogFormatter {
         accessLog.put("getRequestPath", requestInfo.getRequestPath());
         accessLog.put("elapseTime", System.currentTimeMillis() - requestInfo.getRequestStartTime());
         accessLog.put("requestDataSize", String.valueOf(requestInfo.getRequestDataSize()));
-        accessLog.put("acceptHost", requestInfo.getAcceptHostIp());
+        accessLog.put("acceptHostIp", requestInfo.getAcceptHostIp());
+        accessLog.put("acceptHostName", requestInfo.getAcceptHostName());
         accessLog.put("proxyElapsedTime", requestInfo.getProxyElapsedTime());
         accessLog.put("responseDataSize", requestInfo.getResponseDataSize());
+        accessLog.put("userAgent", requestInfo.getUserAgent());
         return JsonUtil.fromJson(accessLog);
     }
 

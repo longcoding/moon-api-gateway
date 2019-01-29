@@ -54,10 +54,10 @@ public class ProxyServiceImpl implements ProxyService {
 
     public void requestProxyService(HttpServletRequest request, DeferredResult<ResponseEntity> deferredResult) {
 
-        long start = System.currentTimeMillis();
-
         this.responseInfo = (ResponseInfo) request.getAttribute(Const.RESPONSE_INFO_DATA);
         Request proxyRequest = jettyClientFactory.getJettyClient().newRequest(responseInfo.getRequestURI());
+
+        long proxyStartTime = System.currentTimeMillis();
 
         setHeaderAndQueryInfo(proxyRequest, responseInfo).send(new BufferingResponseListener() {
             @Override
@@ -65,8 +65,10 @@ public class ProxyServiceImpl implements ProxyService {
                 if (result.isSucceeded()) {
                     ResponseEntity<JsonNode> responseEntity;
 
+                    responseInfo.setProxyElapsedTime(System.currentTimeMillis() - proxyStartTime);
+
                     if (log.isDebugEnabled()){
-                        log.debug("Http Time " + (System.currentTimeMillis() - start));
+                        log.debug("Http Proxy ElapsedTime " + responseInfo.getProxyElapsedTime());
                     }
 
                     HttpFields responseHeaders = result.getResponse().getHeaders();

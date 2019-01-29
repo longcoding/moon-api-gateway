@@ -36,13 +36,13 @@ public class RequestInfo {
 
     private long requestStartTime, requestProxyStartTime;
 
-    private String acceptHostIp;
+    private String acceptHostIp, acceptHostName;
 
-    private int requestDataSize;
+    private long requestDataSize;
     private HttpEntity multipartTypeEntity;
 
     //for access logging
-    private int responseDataSize;
+    private long responseDataSize;
     private int responseStatusCode;
     private String errorCode;
     private long proxyElapsedTime;
