@@ -5,6 +5,7 @@ import com.longcoding.undefined.models.RequestInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 /**
@@ -14,9 +15,13 @@ import java.util.Map;
 @Slf4j
 public final class ApplicationLogFormatter {
 
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+
     public static String generateGeneralLog(RequestInfo requestInfo) throws IOException {
         Map<String, Object> accessLog = Maps.newHashMap();
         accessLog.put("requestId", requestInfo.getRequestId());
+        accessLog.put("dateString", sdf.format(System.currentTimeMillis()));
+        accessLog.put("timeStamp", System.currentTimeMillis());
         accessLog.put("appId", requestInfo.getAppId());
         accessLog.put("serviceId", requestInfo.getServiceId());
         accessLog.put("apiId", requestInfo.getApiId());
