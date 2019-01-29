@@ -2,6 +2,7 @@ package com.longcoding.undefined.helpers;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.springframework.beans.factory.DisposableBean;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
@@ -13,7 +14,7 @@ import java.util.LinkedHashMap;
  */
 @Getter
 @EqualsAndHashCode
-public class RedisValidator<T> {
+public class RedisValidator<T> implements DisposableBean {
 
     private Jedis jedis;
     private Transaction jedisMulti;
@@ -31,4 +32,8 @@ public class RedisValidator<T> {
 
     public void offerFutureMethodQueue(String className, T responseValue) { futureMethodQueue.put(className, responseValue); }
 
+    @Override
+    public void destroy() throws Exception {
+        this.jedis.close();
+    }
 }

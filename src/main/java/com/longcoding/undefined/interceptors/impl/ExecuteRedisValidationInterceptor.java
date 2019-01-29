@@ -65,35 +65,33 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
 
         LinkedHashMap<String, T> futureMethodQueue = redisValidator.getFutureMethodQueue();
 
-        Jedis jedis = jedisFactory.getInstance();
-        Transaction jedisMulti = jedis.multi();
-
         T futureValue;
         boolean interceptorResult = false;
-        for (String className : futureMethodQueue.keySet()) {
-            futureValue = (futureMethodQueue.get(className));
-            try {
-                RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
-                interceptorResult = objectBean.executeJudge(futureValue, jedisMulti);
-            } catch (JedisDataException e) {
-                // This is Jedis Bug. I wish it will be fixed.
-                generateException(ExceptionType.E_1101_API_GATEWAY_IS_EXHAUSTED);
-            } catch (NullPointerException e) {
-                // ApiKey is not exist or service is exhausted.
-                generateException(ExceptionType.E_1101_API_GATEWAY_IS_EXHAUSTED);
+        try (Jedis jedis = jedisFactory.getInstance(); Transaction jedisMulti = jedis.multi()) {
+
+            for (String className : futureMethodQueue.keySet()) {
+                futureValue = (futureMethodQueue.get(className));
+                try {
+                    RedisBaseValidationInterceptor objectBean = (RedisBaseValidationInterceptor) context.getBean(className);
+                    interceptorResult = objectBean.executeJudge(futureValue, jedisMulti);
+                } catch (JedisDataException e) {
+                    // This is Jedis Bug. I wish it will be fixed.
+                    generateException(ExceptionType.E_1101_API_GATEWAY_IS_EXHAUSTED);
+                } catch (NullPointerException e) {
+                    // ApiKey is not exist or service is exhausted.
+                    generateException(ExceptionType.E_1101_API_GATEWAY_IS_EXHAUSTED);
+                }
+                if (!interceptorResult){
+                    generateException(ExceptionType.E_1009_SERVICE_RATELIMIT_OVER);
+                    jedisMulti.exec();
+                    jedis.close();
+                    return false;
+                }
             }
-            if (!interceptorResult){
-                generateException(ExceptionType.E_1009_SERVICE_RATELIMIT_OVER);
-                jedisMulti.exec();
-                jedis.close();
-                return false;
-            }
+
         }
-        jedisMulti.exec();
-        jedis.close();
 
         return true;
-
     }
 
 }

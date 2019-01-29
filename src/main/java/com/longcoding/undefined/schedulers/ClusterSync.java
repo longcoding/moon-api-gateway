@@ -50,8 +50,9 @@ public class ClusterSync {
 
     @Scheduled(fixedDelayString = "${undefined.service.cluster.sync-interval}")
     private void healthCheck() {
-        jedisFactory.getInstance()
-                .setex(String.join(":", Constant.REDIS_KEY_CLUSTER_SERVER_HEALTH, HttpHelper.getHostName() + serverPort), Constant.SECOND_OF_MINUTE * 10, HttpHelper.getHostName());
+        try (Jedis jedis = jedisFactory.getInstance()) {
+            jedis.setex(String.join(":", Constant.REDIS_KEY_CLUSTER_SERVER_HEALTH, HttpHelper.getHostName() + serverPort), Constant.SECOND_OF_MINUTE * 10, HttpHelper.getHostName());
+        }
     }
 
     private void appWhitelistSync() {

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.Jedis;
 
 import java.util.stream.Collectors;
 
@@ -49,8 +50,8 @@ public class InitAppLoader implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
 
         if (enableCluster) {
-            try {
-                jedisFactory.getInstance().hgetAll(Constant.REDIS_KEY_INTERNAL_APP_INFO)
+            try(Jedis jedis = jedisFactory.getInstance()) {
+                jedis.hgetAll(Constant.REDIS_KEY_INTERNAL_APP_INFO)
                         .forEach((key, appInString) -> {
                             AppInfo appInfo = JsonUtil.fromJson(appInString, AppInfo.class);
                             syncService.syncAppInfoToCache(new AppSync(SyncType.CREATE, appInfo));
@@ -60,8 +61,9 @@ public class InitAppLoader implements InitializingBean {
             }
         }
 
-        try {
-            if (initAppConfig.isInitEnable()) {
+        if (initAppConfig.isInitEnable()) {
+            try(Jedis jedis = jedisFactory.getInstance()) {
+
                 Cache<String, String> appDistinction = apiExposeSpecification.getAppDistinctionCache();
                 initAppConfig.getApps().forEach(app -> appDistinction.put(app.getApiKey(), String.valueOf(app.getAppId())));
 
@@ -80,14 +82,14 @@ public class InitAppLoader implements InitializingBean {
 
                     appInfoCaches.put(String.valueOf(app.getAppId()), appInfo);
 
-                    jedisFactory.getInstance().hsetnx(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(app.getAppId()), JsonUtil.fromJson(appInfo));
+                    jedis.hsetnx(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(app.getAppId()), JsonUtil.fromJson(appInfo));
                     aclIpChecker.enrolledInitAclIp(String.valueOf(app.getAppId()), app.getAppIpAcl());
                 });
-            }
-        } catch (Exception ex) {
-            throw new GeneralException(ExceptionType.E_1202_FAIL_APP_INFO_CONFIGURATION_INIT, ex);
-        }
 
+            } catch (Exception ex) {
+                throw new GeneralException(ExceptionType.E_1202_FAIL_APP_INFO_CONFIGURATION_INIT, ex);
+            }
+        }
     }
 
 }
