@@ -75,10 +75,10 @@ public class ProxyServiceTest {
         JedisPool jedisPool = new JedisPool("127.0.0.1", 6379);
         Jedis jedis = jedisPool.getResource();
         Pipeline pipeline = jedis.pipelined();
-        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_DAILY, "300", "10000");
-        pipeline.hset(Const.REDIS_SERVICE_CAPACITY_MINUTELY, "300", "2000");
-        pipeline.hset(Const.REDIS_APP_RATELIMIT_DAILY, "100", "10000");
-        pipeline.hset(Const.REDIS_APP_RATELIMIT_MINUTELY, "100", "1500");
+        pipeline.hset(Constant.REDIS_SERVICE_CAPACITY_DAILY, "300", "10000");
+        pipeline.hset(Constant.REDIS_SERVICE_CAPACITY_MINUTELY, "300", "2000");
+        pipeline.hset(Constant.REDIS_APP_RATELIMIT_DAILY, "100", "10000");
+        pipeline.hset(Constant.REDIS_APP_RATELIMIT_MINUTELY, "100", "1500");
         pipeline.sync();
         jedis.close();
         */

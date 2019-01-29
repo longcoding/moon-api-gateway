@@ -36,7 +36,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
 
         ServiceRoutingInfo routingInfo = apiExposeSpec.getServiceTypeCache().get(requestInfo.getServicePath());
         if (Objects.isNull(routingInfo)) generateException(ExceptionType.E_1006_INVALID_API_PATH);
@@ -108,7 +108,7 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 
     private void prepareRedisInterceptors(HttpServletRequest request) {
         RedisValidator redisValidator = new RedisValidator(jedisFactory);
-        request.setAttribute(Const.OBJECT_GET_REDIS_VALIDATION, redisValidator);
+        request.setAttribute(Constant.OBJECT_GET_REDIS_VALIDATION, redisValidator);
     }
 
 }

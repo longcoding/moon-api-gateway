@@ -3,7 +3,7 @@ package com.longcoding.undefined.interceptors.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.exceptions.ExceptionType;
-import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
@@ -36,7 +36,7 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
 
         Map<String, String> proxyRequestHeaders = Maps.newHashMap();
         Map<String, String> proxyRequestQueryParams = Maps.newHashMap();

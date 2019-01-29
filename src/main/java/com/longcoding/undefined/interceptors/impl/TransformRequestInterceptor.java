@@ -2,7 +2,7 @@ package com.longcoding.undefined.interceptors.impl;
 
 import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
-import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
@@ -27,7 +27,7 @@ public class TransformRequestInterceptor extends AbstractBaseInterceptor {
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
         ApiInfo apiInfo = apiExposeSpec.getApiInfoCache().get(requestInfo.getApiId());
         if (RoutingType.API_TRANSFER == requestInfo.getRoutingType() && Objects.nonNull(apiInfo.getTransformData())) {
 

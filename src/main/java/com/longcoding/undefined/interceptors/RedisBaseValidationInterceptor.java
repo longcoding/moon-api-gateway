@@ -1,7 +1,7 @@
 package com.longcoding.undefined.interceptors;
 
 import com.google.common.base.CaseFormat;
-import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.RedisValidator;
 import com.longcoding.undefined.models.RequestInfo;
@@ -41,8 +41,8 @@ public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInte
     public boolean preHandler(HttpServletRequest request,
                                           HttpServletResponse response, Object handler) throws Exception {
 
-        this.requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
-        this.redisValidator = (RedisValidator) request.getAttribute(Const.OBJECT_GET_REDIS_VALIDATION);
+        this.requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
+        this.redisValidator = (RedisValidator) request.getAttribute(Constant.OBJECT_GET_REDIS_VALIDATION);
         this.futureValue = setJedisMultiCommand(redisValidator.getJedisMulti());
         redisValidator.offerFutureMethodQueue(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, getClass().getSimpleName()), futureValue);
 

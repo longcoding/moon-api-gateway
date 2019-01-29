@@ -6,7 +6,6 @@ import com.longcoding.undefined.models.ehcache.AppInfo;
 import com.longcoding.undefined.models.ehcache.ServiceInfo;
 import com.longcoding.undefined.models.ehcache.ServiceRoutingInfo;
 import com.longcoding.undefined.models.enumeration.MethodType;
-import com.longcoding.undefined.models.enumeration.RoutingType;
 import org.ehcache.Cache;
 import org.ehcache.PersistentCacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PreDestroy;
 import java.util.regex.Pattern;
 
 /**
@@ -73,10 +71,10 @@ public class APIExposeSpecification implements DisposableBean {
         apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiInfo.class, resourcePoolsBuilder).build());
         serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceInfo.class, resourcePoolsBuilder).build());
 
-        apiMatchGet = cacheManager.createCache(Const.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchPost = cacheManager.createCache(Const.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchPut = cacheManager.createCache(Const.API_MATCH_HTTP_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchDelete = cacheManager.createCache(Const.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchGet = cacheManager.createCache(Constant.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchPost = cacheManager.createCache(Constant.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchPut = cacheManager.createCache(Constant.API_MATCH_HTTP_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchDelete = cacheManager.createCache(Constant.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
     }
 
     public static boolean isEnabledIpAcl() { return IS_ENABLED_IP_ACL; }

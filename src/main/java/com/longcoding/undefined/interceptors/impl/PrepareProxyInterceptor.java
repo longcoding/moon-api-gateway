@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
-import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.helpers.HttpHelper;
 import com.longcoding.undefined.helpers.JsonUtil;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
@@ -34,7 +34,7 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
 
         ResponseInfo responseInfo = new ResponseInfo();
 
@@ -77,7 +77,7 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
         URI uri = new URI(HttpHelper.createURI(responseInfo.getRequestProtocol(), outboundURL));
         responseInfo.setRequestURI(uri);
 
-        request.setAttribute(Const.RESPONSE_INFO_DATA, responseInfo);
+        request.setAttribute(Constant.RESPONSE_INFO_DATA, responseInfo);
 
         return true;
     }
@@ -96,11 +96,11 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
         Map<String, String> requestHeaders = requestInfo.getHeaders();
 
         outboundRequestHeaders.putAll(requestHeaders);
-        for (String headerKey : Const.HEADER_NEED_TO_REMOVE_LIST) outboundRequestHeaders.remove(headerKey);
+        for (String headerKey : Constant.HEADER_NEED_TO_REMOVE_LIST) outboundRequestHeaders.remove(headerKey);
 
-        outboundRequestHeaders.put(Const.HEADER_CUSTOMIZE_REMOTE_IP, requestInfo.getClientIp());
-        outboundRequestHeaders.put(Const.HEADER_CUSTOMIZE_REMOTE_AGENT, requestInfo.getUserAgent());
-        outboundRequestHeaders.put(Const.HEADER_CUSTOMIZE_APP_ID, requestInfo.getAppId());
+        outboundRequestHeaders.put(Constant.HEADER_CUSTOMIZE_REMOTE_IP, requestInfo.getClientIp());
+        outboundRequestHeaders.put(Constant.HEADER_CUSTOMIZE_REMOTE_AGENT, requestInfo.getUserAgent());
+        outboundRequestHeaders.put(Constant.HEADER_CUSTOMIZE_APP_ID, requestInfo.getAppId());
 
         return outboundRequestHeaders;
     }

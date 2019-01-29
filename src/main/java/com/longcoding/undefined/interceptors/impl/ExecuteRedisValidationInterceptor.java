@@ -2,7 +2,7 @@ package com.longcoding.undefined.interceptors.impl;
 
 import com.longcoding.undefined.configs.ServiceConfig;
 import com.longcoding.undefined.exceptions.ExceptionType;
-import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.helpers.RedisValidator;
 import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
@@ -17,7 +17,6 @@ import redis.clients.jedis.Transaction;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisDataException;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedHashMap;
@@ -52,7 +51,7 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
     @SuppressWarnings("unchecked")
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        RedisValidator redisValidator = (RedisValidator) request.getAttribute(Const.OBJECT_GET_REDIS_VALIDATION);
+        RedisValidator redisValidator = (RedisValidator) request.getAttribute(Constant.OBJECT_GET_REDIS_VALIDATION);
 
         try {
             redisValidator.getJedisMulti().exec();

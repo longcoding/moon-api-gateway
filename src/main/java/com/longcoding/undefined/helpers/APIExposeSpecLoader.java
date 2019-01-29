@@ -20,7 +20,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -61,14 +60,14 @@ public class APIExposeSpecLoader implements InitializingBean {
 
         if (enableCluster) {
             try (Jedis jedisClient = jedisFactory.getInstance()) {
-                jedisClient.hgetAll(Const.REDIS_KEY_INTERNAL_SERVICE_INFO)
+                jedisClient.hgetAll(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO)
                         .forEach((key, serviceInString) -> {
                             ServiceInfo serviceInfo = JsonUtil.fromJson(serviceInString, ServiceInfo.class);
                             apiExposeSpecification.getServiceInfoCache().put(String.valueOf(serviceInfo.getServiceId()), serviceInfo);
                         });
 
 
-                jedisClient.hgetAll(Const.REDIS_KEY_INTERNAL_API_INFO)
+                jedisClient.hgetAll(Constant.REDIS_KEY_INTERNAL_API_INFO)
                         .forEach((key, apiInString) -> {
                             ApiInfo apiInfo = JsonUtil.fromJson(apiInString, ApiInfo.class);
                             syncService.syncApiInfoToCache(new ApiSync(SyncType.CREATE, apiInfo));
@@ -98,7 +97,7 @@ public class APIExposeSpecLoader implements InitializingBean {
                         .routingType(serviceRoutingType)
                         .build();
                 apiExposeSpecification.getServiceInfoCache().put(String.valueOf(service.getServiceId()), serviceInfo);
-                jedisFactory.getInstance().hsetnx(Const.REDIS_KEY_INTERNAL_SERVICE_INFO, service.getServiceId(), JsonUtil.fromJson(serviceInfo));
+                jedisFactory.getInstance().hsetnx(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO, service.getServiceId(), JsonUtil.fromJson(serviceInfo));
             });
         } catch (Exception ex) {
             throw new GeneralException(ExceptionType.E_1200_FAIL_SERVICE_INFO_CONFIGURATION_INIT, ex);
@@ -147,7 +146,7 @@ public class APIExposeSpecLoader implements InitializingBean {
                             .transformData(transformRequests)
                             .build();
 
-                    jedisFactory.getInstance().hsetnx(Const.REDIS_KEY_INTERNAL_API_INFO, String.valueOf(apiInfo.getApiId()), JsonUtil.fromJson(apiInfo));
+                    jedisFactory.getInstance().hsetnx(Constant.REDIS_KEY_INTERNAL_API_INFO, String.valueOf(apiInfo.getApiId()), JsonUtil.fromJson(apiInfo));
                     apiExposeSpecification.getApiInfoCache().put(apiSpec.getApiId(), apiInfo);
 
                 });

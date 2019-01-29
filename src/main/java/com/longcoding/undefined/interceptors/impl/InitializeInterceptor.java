@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
 import com.longcoding.undefined.helpers.ApplicationLogFormatter;
-import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.helpers.HttpHelper;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
@@ -42,7 +42,7 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         requestInfo.setAcceptHostName(HttpHelper.getHostName());
         requestInfo.setRequestMethod(request.getMethod());
         requestInfo.setRequestURI(request.getRequestURI().toLowerCase());
-        requestInfo.setUserAgent(request.getHeader(Const.REQUEST_USER_AGENT));
+        requestInfo.setUserAgent(request.getHeader(Constant.REQUEST_USER_AGENT));
         requestInfo.setHeaders(createHeaderMap(request));
         requestInfo.setRequestStartTime(System.currentTimeMillis());
         requestInfo.setRequestDataSize(request.getContentLength());
@@ -54,11 +54,11 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         requestInfo.setRequestProtocol(requestURL[0]);
         requestInfo.setRequestURL(requestURL[1]);
 
-        String accept = request.getParameter(Const.REQUEST_ACCEPT);
+        String accept = request.getParameter(Constant.REQUEST_ACCEPT);
         requestInfo.setAccept(accept != null ? accept : MimeTypeUtils.APPLICATION_JSON_VALUE);
 
-        String queryString = new String(Strings.nullToEmpty(request.getQueryString()).getBytes(StandardCharsets.ISO_8859_1.name()), Const.SERVER_DEFAULT_ENCODING_TYPE);
-        queryString = URLDecoder.decode(queryString, Const.SERVER_DEFAULT_ENCODING_TYPE);
+        String queryString = new String(Strings.nullToEmpty(request.getQueryString()).getBytes(StandardCharsets.ISO_8859_1.name()), Constant.SERVER_DEFAULT_ENCODING_TYPE);
+        queryString = URLDecoder.decode(queryString, Constant.SERVER_DEFAULT_ENCODING_TYPE);
         requestInfo.setQueryStringMap(createQueryStringMap(queryString));
 
         if (!Strings.isNullOrEmpty(request.getServletPath()) && requestInfo.getRequestPath().startsWith("/")) {
@@ -66,7 +66,7 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
             if (requestPathInArray.length > 0) requestInfo.setServicePath(requestPathInArray[0]);
         }
 
-        request.setAttribute(Const.REQUEST_INFO_DATA, requestInfo);
+        request.setAttribute(Constant.REQUEST_INFO_DATA, requestInfo);
 
         return true;
     }
@@ -106,8 +106,8 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 @Nullable Exception ex) throws Exception {
 
-        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
-        ResponseInfo responseInfo = Objects.nonNull(request.getAttribute(Const.RESPONSE_INFO_DATA))? (ResponseInfo) request.getAttribute(Const.RESPONSE_INFO_DATA) : null;
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
+        ResponseInfo responseInfo = Objects.nonNull(request.getAttribute(Constant.RESPONSE_INFO_DATA))? (ResponseInfo) request.getAttribute(Constant.RESPONSE_INFO_DATA) : null;
 
         requestInfo.setResponseStatusCode(response.getStatus());
         requestInfo.setProxyElapsedTime(Objects.nonNull(responseInfo)? responseInfo.getProxyElapsedTime(): 0L);

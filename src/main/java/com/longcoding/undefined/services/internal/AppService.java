@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import redis.clients.jedis.Jedis;
 
 import java.nio.ByteBuffer;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -37,7 +36,7 @@ public class AppService {
     public AppInfo createApp(EnrollApp enrollApp) {
         AppInfo appInfo;
         try (Jedis jedis = jedisFactory.getInstance()) {
-            Long totalApps = jedis.hlen(Const.REDIS_KEY_INTERNAL_APP_INFO);
+            Long totalApps = jedis.hlen(Constant.REDIS_KEY_INTERNAL_APP_INFO);
 
             appInfo = convertedEnrollAppToAppInfo(enrollApp);
             appInfo.setAppId(totalApps.toString());
@@ -45,9 +44,9 @@ public class AppService {
             appInfo.setApiKey(createUniqueApiKey().toString());
 
             AppSync appSync = new AppSync(SyncType.CREATE, appInfo);
-            jedis.hset(Const.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(totalApps), JsonUtil.fromJson(appInfo));
+            jedis.hset(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(totalApps), JsonUtil.fromJson(appInfo));
 
-            clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(appSync));
+            clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(appSync));
         }
 
         return appInfo;
@@ -55,7 +54,7 @@ public class AppService {
 
     public AppInfo getAppInfo(@PathVariable String appId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
-            String appInfo = jedis.hget(Const.REDIS_KEY_INTERNAL_APP_INFO, appId);
+            String appInfo = jedis.hget(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
             if (Strings.isNotEmpty(appInfo)) return JsonUtil.fromJson(appInfo, AppInfo.class);
             else throw new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND);
         }
@@ -66,21 +65,21 @@ public class AppService {
             AppInfo appInfo = new AppInfo();
             appInfo.setAppId(appId);
 
-            clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.DELETE, appInfo)));
-            Long id = jedis.hdel(Const.REDIS_KEY_INTERNAL_APP_INFO, appId);
+            clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.DELETE, appInfo)));
+            Long id = jedis.hdel(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
             return id == 1;
         }
     }
 
     public boolean expireApiKey(@PathVariable String appId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
-            String appInfoInString = jedis.hget(Const.REDIS_KEY_INTERNAL_APP_INFO, appId);
+            String appInfoInString = jedis.hget(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
             if (Strings.isNotEmpty(appInfoInString)) {
                 AppInfo appInfo = JsonUtil.fromJson(appInfoInString, AppInfo.class);
                 appInfo.setApiKey(Strings.EMPTY);
 
-                clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.UPDATE, appInfo)));
-                return jedis.hset(Const.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(appInfo.getAppId()), JsonUtil.fromJson(appInfo)) == 1;
+                clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.UPDATE, appInfo)));
+                return jedis.hset(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(appInfo.getAppId()), JsonUtil.fromJson(appInfo)) == 1;
             } throw new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND);
         }
     }
@@ -88,12 +87,12 @@ public class AppService {
 
     public AppInfo refreshApiKey(@PathVariable String appId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
-            String appInfoInString = jedis.hget(Const.REDIS_KEY_INTERNAL_APP_INFO, appId);
+            String appInfoInString = jedis.hget(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
             if (Strings.isNotEmpty(appInfoInString)) {
                 AppInfo appInfo = JsonUtil.fromJson(appInfoInString, AppInfo.class);
                 appInfo.setApiKey(createUniqueApiKey().toString());
-                jedis.hset(Const.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(appInfo.getAppId()), JsonUtil.fromJson(appInfo));
-                clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.UPDATE, appInfo)));
+                jedis.hset(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(appInfo.getAppId()), JsonUtil.fromJson(appInfo));
+                clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.UPDATE, appInfo)));
                 return appInfo;
             } throw new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND);
         }
@@ -101,14 +100,14 @@ public class AppService {
     //TODO
     public boolean removeWhiteIps(EnrollWhitelistIp enrollWhitelistIp) {
         WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.DELETE, String.valueOf(enrollWhitelistIp.getAppId()), enrollWhitelistIp.getRequestIps());
-        clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_WHITELIST_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(ipSync));
+        clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_WHITELIST_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(ipSync));
         return true;
     }
 
     //TODO
     public boolean addWhiteIps(EnrollWhitelistIp enrollWhitelistIp) {
         WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.UPDATE, String.valueOf(enrollWhitelistIp.getAppId()), enrollWhitelistIp.getRequestIps());
-        clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_APP_WHITELIST_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(ipSync));
+        clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_WHITELIST_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(ipSync));
         return true;
     }
 

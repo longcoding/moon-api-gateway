@@ -1,8 +1,7 @@
 package com.longcoding.undefined.services.internal;
 
-import com.google.common.collect.Lists;
 import com.longcoding.undefined.helpers.ClusterSyncUtil;
-import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.helpers.JedisFactory;
 import com.longcoding.undefined.helpers.JsonUtil;
 import com.longcoding.undefined.models.cluster.ApiSync;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -40,8 +38,8 @@ public class ApiService {
             apiInfo = convertedEnrollApiToApiInfo(enrollApi);
             ApiSync apiSync = new ApiSync(syncType, apiInfo);
 
-            jedis.hset(Const.REDIS_KEY_INTERNAL_API_INFO, apiInfo.getApiId(), JsonUtil.fromJson(apiInfo));
-            clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_API_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(apiSync));
+            jedis.hset(Constant.REDIS_KEY_INTERNAL_API_INFO, apiInfo.getApiId(), JsonUtil.fromJson(apiInfo));
+            clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_API_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(apiSync));
         }
 
         return apiInfo;
@@ -53,8 +51,8 @@ public class ApiService {
             ApiInfo apiInfo = new ApiInfo();
             apiInfo.setApiId(apiId);
 
-            clusterSyncUtil.setexInfoToHealthyNode(Const.REDIS_KEY_API_UPDATE, Const.SECOND_OF_HOUR, JsonUtil.fromJson(new ApiSync(SyncType.DELETE, apiInfo)));
-            return jedis.hdel(Const.REDIS_KEY_INTERNAL_API_INFO, apiId) == 1;
+            clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_API_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(new ApiSync(SyncType.DELETE, apiInfo)));
+            return jedis.hdel(Constant.REDIS_KEY_INTERNAL_API_INFO, apiId) == 1;
         }
     }
 
@@ -77,7 +75,7 @@ public class ApiService {
 
     public ApiInfo selectApi(String apiId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
-            String apiInfoInString = jedis.hget(Const.REDIS_KEY_INTERNAL_API_INFO, apiId);
+            String apiInfoInString = jedis.hget(Constant.REDIS_KEY_INTERNAL_API_INFO, apiId);
 
             return JsonUtil.fromJson(apiInfoInString, ApiInfo.class);
         }

@@ -51,12 +51,12 @@ public class ClusterSync {
     @Scheduled(fixedDelayString = "${undefined.service.cluster.sync-interval}")
     private void healthCheck() {
         jedisFactory.getInstance()
-                .setex(String.join(":", Const.REDIS_KEY_CLUSTER_SERVER_HEALTH, HttpHelper.getHostName() + serverPort), Const.SECOND_OF_MINUTE * 10, HttpHelper.getHostName());
+                .setex(String.join(":", Constant.REDIS_KEY_CLUSTER_SERVER_HEALTH, HttpHelper.getHostName() + serverPort), Constant.SECOND_OF_MINUTE * 10, HttpHelper.getHostName());
     }
 
     private void appWhitelistSync() {
         try (Jedis jedisClient = jedisFactory.getInstance()) {
-            Set<String> targetKeys = jedisClient.keys(String.join("-", Const.REDIS_KEY_APP_WHITELIST_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
+            Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_APP_WHITELIST_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
             targetKeys.forEach(redisKey -> {
                 String whitelistSyncInString = jedisClient.get(redisKey);
                 WhitelistIpSync whitelistIpSync = JsonUtil.fromJson(whitelistSyncInString, WhitelistIpSync.class);
@@ -69,7 +69,7 @@ public class ClusterSync {
 
     private void appInfoSync() {
         try (Jedis jedisClient = jedisFactory.getInstance()) {
-            Set<String> targetKeys = jedisClient.keys(String.join("-", Const.REDIS_KEY_APP_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
+            Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_APP_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
             targetKeys.forEach(redisKey -> {
                 String appSyncInString = jedisClient.get(redisKey);
                 AppSync appSync = JsonUtil.fromJson(appSyncInString, AppSync.class);
@@ -82,7 +82,7 @@ public class ClusterSync {
 
     private void apiInfoSync() {
         try(Jedis jedisClient = jedisFactory.getInstance()) {
-            Set<String> targetKeys = jedisClient.keys(String.join("-", Const.REDIS_KEY_API_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
+            Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_API_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
             targetKeys.forEach(redisKey -> {
                 String apiSyncInString = jedisClient.get(redisKey);
                 ApiSync apiSync = JsonUtil.fromJson(apiSyncInString, ApiSync.class);

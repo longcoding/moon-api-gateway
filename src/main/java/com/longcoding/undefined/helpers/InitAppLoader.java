@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.stream.Collectors;
 
 /**
@@ -51,7 +50,7 @@ public class InitAppLoader implements InitializingBean {
 
         if (enableCluster) {
             try {
-                jedisFactory.getInstance().hgetAll(Const.REDIS_KEY_INTERNAL_APP_INFO)
+                jedisFactory.getInstance().hgetAll(Constant.REDIS_KEY_INTERNAL_APP_INFO)
                         .forEach((key, appInString) -> {
                             AppInfo appInfo = JsonUtil.fromJson(appInString, AppInfo.class);
                             syncService.syncAppInfoToCache(new AppSync(SyncType.CREATE, appInfo));
@@ -81,7 +80,7 @@ public class InitAppLoader implements InitializingBean {
 
                     appInfoCaches.put(String.valueOf(app.getAppId()), appInfo);
 
-                    jedisFactory.getInstance().hsetnx(Const.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(app.getAppId()), JsonUtil.fromJson(appInfo));
+                    jedisFactory.getInstance().hsetnx(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(app.getAppId()), JsonUtil.fromJson(appInfo));
                     aclIpChecker.enrolledInitAclIp(String.valueOf(app.getAppId()), app.getAppIpAcl());
                 });
             }

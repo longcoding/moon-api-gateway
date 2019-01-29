@@ -2,7 +2,7 @@ package com.longcoding.undefined.interceptors.impl;
 
 import com.longcoding.undefined.exceptions.ExceptionType;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
-import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.AppInfo;
@@ -23,7 +23,7 @@ public class ServiceContractValidationInterceptor extends AbstractBaseIntercepto
     @Override
     public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Const.REQUEST_INFO_DATA);
+        RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
 
         String appId = requestInfo.getAppId();
         String requestServceId = requestInfo.getServiceId();

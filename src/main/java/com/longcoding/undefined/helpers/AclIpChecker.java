@@ -10,7 +10,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Component
@@ -28,7 +27,7 @@ public class AclIpChecker implements InitializingBean {
                 .heap(10000, EntryUnit.ENTRIES)
                 .disk(1000000, MemoryUnit.MB, false);
 
-        ACL_IP_CACHE = apiExposeSpecification.getCacheManager().createCache(Const.ACL_IP_CHECKER, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        ACL_IP_CACHE = apiExposeSpecification.getCacheManager().createCache(Constant.ACL_IP_CHECKER, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
     }
 
     public boolean isAllowedPartnerAndIp(String appId, String remoteIp) {

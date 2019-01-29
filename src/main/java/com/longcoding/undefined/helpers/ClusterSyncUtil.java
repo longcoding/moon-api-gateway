@@ -22,7 +22,7 @@ public class ClusterSyncUtil {
 
         if (clusterEnable) {
             try (Jedis jedisClient = jedisFactory.getInstance()) {
-                jedisClient.keys(Const.REDIS_KEY_CLUSTER_SERVER_HEALTH + "*").forEach(nodeKey -> {
+                jedisClient.keys(Constant.REDIS_KEY_CLUSTER_SERVER_HEALTH + "*").forEach(nodeKey -> {
                     String[] redisKeyInArray = nodeKey.split(":");
                     String nodeName = redisKeyInArray[redisKeyInArray.length - 1];
                     String uuidByNode = String.join("-", nodeName, UUID.randomUUID().toString());

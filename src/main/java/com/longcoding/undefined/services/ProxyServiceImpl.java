@@ -1,11 +1,8 @@
 package com.longcoding.undefined.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.longcoding.undefined.exceptions.ExceptionType;
-import com.longcoding.undefined.exceptions.GeneralException;
 import com.longcoding.undefined.exceptions.ProxyServiceFailException;
-import com.longcoding.undefined.helpers.Const;
+import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.helpers.JettyClientFactory;
 import com.longcoding.undefined.helpers.JsonUtil;
 import com.longcoding.undefined.models.ResponseInfo;
@@ -16,12 +13,9 @@ import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.client.api.Result;
 import org.eclipse.jetty.client.util.BufferingResponseListener;
 import org.eclipse.jetty.client.util.BytesContentProvider;
-import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpFields;
 import org.eclipse.jetty.http.HttpHeader;
-import org.eclipse.jetty.util.BufferUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -44,8 +38,6 @@ import java.util.Objects;
 @Service
 public class ProxyServiceImpl implements ProxyService {
 
-    private static final String CONST_CONTENT_TYPE_EXTRACT_DELIMITER = ";";
-
     @Autowired
     JettyClientFactory jettyClientFactory;
 
@@ -54,7 +46,7 @@ public class ProxyServiceImpl implements ProxyService {
 
     public void requestProxyService(HttpServletRequest request, DeferredResult<ResponseEntity> deferredResult) {
 
-        this.responseInfo = (ResponseInfo) request.getAttribute(Const.RESPONSE_INFO_DATA);
+        this.responseInfo = (ResponseInfo) request.getAttribute(Constant.RESPONSE_INFO_DATA);
         Request proxyRequest = jettyClientFactory.getJettyClient().newRequest(responseInfo.getRequestURI());
 
         long proxyStartTime = System.currentTimeMillis();
@@ -74,8 +66,8 @@ public class ProxyServiceImpl implements ProxyService {
                     HttpFields responseHeaders = result.getResponse().getHeaders();
                     if (responseHeaders.contains(HttpHeader.CONTENT_TYPE)) {
                         String contentTypeValue = responseHeaders.get(HttpHeader.CONTENT_TYPE);
-                        if ( contentTypeValue.split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0]
-                                .equals(responseInfo.getRequestAccept().split(CONST_CONTENT_TYPE_EXTRACT_DELIMITER)[0])){
+                        if ( contentTypeValue.split(Constant.CONTENT_TYPE_EXTRACT_DELIMITER)[0]
+                                .equals(responseInfo.getRequestAccept().split(Constant.CONTENT_TYPE_EXTRACT_DELIMITER)[0])){
 
                             JsonNode responseInJsonNode = InputStreamToJsonObj(getContentAsInputStream());
                             responseEntity =
@@ -118,7 +110,7 @@ public class ProxyServiceImpl implements ProxyService {
 
     private static JsonNode InputStreamToJsonObj(InputStream responseInput) {
         try {
-            InputStreamReader responseInputStreamReader = new InputStreamReader(responseInput, Charset.forName(Const.SERVER_DEFAULT_ENCODING_TYPE));
+            InputStreamReader responseInputStreamReader = new InputStreamReader(responseInput, Charset.forName(Constant.SERVER_DEFAULT_ENCODING_TYPE));
             return JsonUtil.getObjectMapper().readTree(responseInputStreamReader);
         } catch (IOException ex) {
             throw new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE);
