@@ -15,7 +15,7 @@ import java.util.Map;
 @Slf4j
 public final class ApplicationLogFormatter {
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss.SSS");
 
     public static String generateGeneralLog(RequestInfo requestInfo) throws IOException {
         Map<String, Object> accessLog = Maps.newHashMap();
