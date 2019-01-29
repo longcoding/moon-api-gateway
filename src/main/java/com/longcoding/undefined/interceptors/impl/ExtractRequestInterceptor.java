@@ -53,11 +53,11 @@ public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
 
             try {
                 if (requestInfo.getContentType().toLowerCase().contains(MimeTypeUtils.APPLICATION_JSON_VALUE)) {
-                    Map<String, Object> extractedBodyMap = JsonUtil.readValue(request.getInputStream());
-                    requestInfo.setRequestBodyMap(extractedBodyMap);
-                } else if (requestInfo.getContentType().toLowerCase().contains(MimeTypeUtils.TEXT_PLAIN_VALUE)) {
-                    requestInfo.setRequestBody(StreamUtils.copyToByteArray(request.getInputStream()));
-                }
+                    if (request.getInputStream().available() == 1) {
+                        Map<String, Object> extractedBodyMap = JsonUtil.readValue(request.getInputStream());
+                        requestInfo.setRequestBodyMap(extractedBodyMap);
+                    } else requestInfo.setRequestBodyMap(Maps.newHashMap());
+                } else requestInfo.setRequestBody(StreamUtils.copyToByteArray(request.getInputStream()));
             } catch (Exception ex) {
                 generateException(ExceptionType.E_1011_NOT_SUPPORTED_CONTENT_TYPE);
             }

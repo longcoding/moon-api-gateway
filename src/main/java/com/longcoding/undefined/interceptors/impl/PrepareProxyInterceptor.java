@@ -63,13 +63,12 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
         responseInfo.setRequestContentType(Objects.nonNull(requestInfo.getContentType())? requestInfo.getContentType() : "");
 
         if (responseInfo.getRequestMethod().equalsIgnoreCase(HttpMethod.POST.name()) || responseInfo.getRequestMethod().equalsIgnoreCase(HttpMethod.PUT.name())) {
-            if (requestInfo.getContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE)) {
+            //TODO: need to occur exception when not in json format
+            if (requestInfo.getContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE) && !requestInfo.getRequestBodyMap().isEmpty()) {
                 ObjectNode bodyObjectNode = convertBodyMapToObjectNode(requestInfo.getRequestBodyMap());
                 byte[] bodyInBytes = getBytesByObjectNode(bodyObjectNode);
                 responseInfo.setRequestBody(bodyInBytes);
-            } else if (requestInfo.getContentType().contains(MimeTypeUtils.TEXT_PLAIN_VALUE)) {
-                responseInfo.setRequestBody(requestInfo.getRequestBody());
-            }
+            } else responseInfo.setRequestBody(requestInfo.getRequestBody());
         }
 
         String outboundURL = createOutBoundURI(requestInfo.getPathParams(), requestInfo.getOutboundURL());

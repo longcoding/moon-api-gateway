@@ -96,10 +96,8 @@ public class ProxyServiceImpl implements ProxyService {
         request.method(responseInfo.getRequestMethod());
         request.accept(responseInfo.getRequestAccept());
 
-        if (Strings.isNotEmpty(responseInfo.getRequestContentType())) {
-            if (responseInfo.getRequestContentType().contains(MimeTypeUtils.APPLICATION_JSON_VALUE) || responseInfo.getRequestContentType().contains(MimeTypeUtils.TEXT_PLAIN_VALUE)) {
-                if (Objects.nonNull(responseInfo.getRequestBody())) request.content(new BytesContentProvider(responseInfo.getRequestBody()), responseInfo.getRequestContentType());
-            }
+        if (Strings.isNotEmpty(responseInfo.getRequestContentType()) && Objects.nonNull(responseInfo.getRequestBody())) {
+            request.content(new BytesContentProvider(responseInfo.getRequestBody()), responseInfo.getRequestContentType());
         }
 
         Map<String, String> requestQueryParams = responseInfo.getQueryStringMap();
