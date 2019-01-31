@@ -13,8 +13,12 @@ import org.springframework.web.context.request.async.DeferredResult;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by longcoding on 16. 4. 5..
- * Updated by longcoding on 18. 12. 26..
+ * The Controller class is responsible for delivering the newly created request from the PrepareProxyInterceptor
+ * to the outbound service. In addition, the outbound service sends the response to the user.
+ * The api-gateway is developed based on the interceptor.
+ * If all interceptors have been passed, the ProxyController will be reached.
+ *
+ * @author longcoding
  */
 
 @Slf4j
@@ -30,6 +34,15 @@ public class ProxyController {
     @Value("${undefined.service.proxy-timeout}")
     private long proxyServiceTimeout;
 
+    /**
+     * All api requests will reach that method.
+     * It forwards the user's request to the outbound service and forwards the response back to the user.
+     *
+     * swagger and internal api are not accepted.
+     *
+     * @param request Request received from user.
+     * @return The response data from the outbound service.
+     */
     @RequestMapping(value = "/{serviceName:^(?!swagger-ui.html|webjars|internal).*}/**")
     public DeferredResult<ResponseEntity> responseHttpResult(HttpServletRequest request) {
 
