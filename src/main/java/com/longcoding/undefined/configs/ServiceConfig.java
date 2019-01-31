@@ -5,7 +5,9 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Created by longcoding on 18. 12. 26..
+ * This is an experimental class.
+ *
+ * @author longcoding
  */
 
 @Getter

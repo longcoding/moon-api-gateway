@@ -9,7 +9,12 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import java.util.List;
 
 /**
- * Created by longcoding on 18. 12. 31..
+ * It is the information that has parsed init api specification information in application-apis.yml configuration.
+ * The class determines whether to register api specification information to be registered at boot time.
+ * If the initEnable variable is true, register the init api specification information defined in yml.
+ * If you are in cluster mode or already registered, you do not need to initialize.
+ *
+ * @author longcoding
  */
 
 @Getter

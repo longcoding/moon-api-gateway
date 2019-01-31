@@ -4,7 +4,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Created by longcoding on 16. 4. 5..
+ * Contains settings for the root application context.
+ * The project defined a package for component scan.
+ *
+ * @author longcoding
  */
 
 @Configuration

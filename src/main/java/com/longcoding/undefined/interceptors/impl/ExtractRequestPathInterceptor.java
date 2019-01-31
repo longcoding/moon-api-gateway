@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 /**
  * Created by longcoding on 16. 4. 9..
  */
-public class ExtractRequestInterceptor extends AbstractBaseInterceptor {
+public class ExtractRequestPathInterceptor extends AbstractBaseInterceptor {
 
     @Autowired
     APIExposeSpecification ehcacheFactory;

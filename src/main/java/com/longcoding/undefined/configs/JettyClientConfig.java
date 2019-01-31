@@ -5,7 +5,10 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Created by longcoding on 18. 12. 26..
+ * It is a config class for jetty client and is defined in application.yml.
+ * Defines the connection pool, timeout, and threadcount of the jetty client.
+ *
+ * @author longcoding
  */
 
 @Getter

@@ -10,6 +10,15 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * It is a swagger configuration for internal api.
+ * With the internal API, you can register, change, or delete a new API.
+ * app registration, change deletion.
+ * service registration, change deletion can be done.
+ *
+ * @author longcoding
+ */
+
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {

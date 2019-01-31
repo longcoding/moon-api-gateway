@@ -8,8 +8,9 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import javax.servlet.Filter;
 
 /**
- * Created by longcoding on 16. 4. 5..
- * Updated by longcoding on 18. 12. 26..
+ * Contains the servlet settings for the project.
+ *
+ * @author longcoding
  */
 
 @EnableConfigurationProperties
@@ -27,6 +28,10 @@ public class UndefinedInitializer extends AbstractAnnotationConfigDispatcherServ
     protected String[] getServletMappings() {
         return new String[] { "/" };
     }
+
+    /**
+     * The project has set the default encodingType to UTF-8 for Web requests and responses via CharacterEncodingFilter.
+     */
 
     @Override
     protected Filter[] getServletFilters() {
