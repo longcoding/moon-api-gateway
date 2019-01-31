@@ -9,7 +9,6 @@ import com.longcoding.undefined.models.ehcache.ApiInfo;
 import com.longcoding.undefined.models.ehcache.AppInfo;
 import com.longcoding.undefined.models.ehcache.ServiceInfo;
 import com.longcoding.undefined.models.enumeration.MethodType;
-import com.longcoding.undefined.models.enumeration.ProtocolType;
 import com.longcoding.undefined.models.enumeration.SyncType;
 import lombok.extern.slf4j.Slf4j;
 import org.ehcache.Cache;
@@ -21,7 +20,13 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
- * Created by longcoding on 19. 1. 17..
+ * A class that contains the methods needed by nodes in a cluster to synchronize information.
+ * It takes that information and loads it into the cache.
+ * When a new event occurs through the interval scheduler, it calls the corresponding class.
+ *
+ * Information is about application, service, and api.
+ *
+ * @author longcoding
  */
 
 @Slf4j
@@ -31,6 +36,12 @@ public class SyncService {
     @Autowired
     APIExposeSpecification apiExposeSpec;
 
+    /**
+     * Synchronize the allowed ip list information belonging to the application.
+     * The CRUD is determined through the SyncType variable of the input object.
+     *
+     * @param whitelistIpSync An object containing CRUD type, app Id, and allowed ip information.
+     */
     public boolean syncAppWhitelistToCache(WhitelistIpSync whitelistIpSync) {
 
         SyncType crudType = whitelistIpSync.getType();
@@ -44,6 +55,12 @@ public class SyncService {
 
     }
 
+    /**
+     * Synchronize application information.
+     * The goal is to cache the changed information.
+     *
+     * @param appSyncInfo An object containing CRUD type, application information.
+     */
     public boolean syncAppInfoToCache(AppSync appSyncInfo) {
 
         SyncType crudType = appSyncInfo.getType();
@@ -58,6 +75,11 @@ public class SyncService {
         return false;
     }
 
+    /**
+     * Create a new app and load it into the cache.
+     *
+     * @param appInfo This is application information to be newly registered.
+     */
     private boolean createApp(AppInfo appInfo) {
         Cache<String, String> appDistinction = apiExposeSpec.getAppDistinctionCache();
         appDistinction.putIfAbsent(appInfo.getApiKey(), appInfo.getAppId());
@@ -68,6 +90,11 @@ public class SyncService {
         return true;
     }
 
+    /**
+     * The changed application information is reflected in the cache.
+     *
+     * @param appInfo Changed application information.
+     */
     private boolean updateApp(AppInfo appInfo) {
         Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
         appInfoCaches.replace(appInfo.getAppId(), appInfo);
@@ -75,6 +102,12 @@ public class SyncService {
         return true;
     }
 
+    /**
+     * Change the allowed ip for a specific application and apply it to the cache.
+     *
+     * @param appId The application Id.
+     * @param requestIps These are the allowed ips for the application. You only need to add ip.
+     */
     private boolean updateWhitelistIp(String appId, List<String> requestIps) {
         Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
         AppInfo appInfo = appInfoCaches.get(appId);
@@ -84,6 +117,11 @@ public class SyncService {
         return true;
     }
 
+    /**
+     * Clears the application information from the cache.
+     *
+     * @param appInfo Application information object. The apikey and appId variables are required.
+     */
     private boolean deleteApp(AppInfo appInfo) {
         Cache<String, String> appDistinction = apiExposeSpec.getAppDistinctionCache();
         appDistinction.remove(appInfo.getApiKey());
@@ -94,6 +132,12 @@ public class SyncService {
         return true;
     }
 
+    /**
+     * Delete the allowed ip for the application.
+     *
+     * @param appId The Application Id.
+     * @param requestIps The ip list to delete.
+     */
     private boolean deleteWhitelistIp(String appId, List<String> requestIps) {
         Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
         AppInfo appInfo = appInfoCaches.get(appId);
@@ -104,6 +148,11 @@ public class SyncService {
     }
 
 
+    /**
+     * It is a role to reflect changed API specification information in cache.
+     *
+     * @param apiSyncInfo An object containing CRUD type, api specification information.
+     */
     public boolean syncApiInfoToCache(ApiSync apiSyncInfo) {
 
         SyncType crudType = apiSyncInfo.getType();
@@ -118,6 +167,13 @@ public class SyncService {
         return false;
     }
 
+    /**
+     * The role of creating or updating the api specification information in the cache.
+     * It also includes creating a regex to create an api inbound path.
+     *
+     * @param syncType An object that determines CRUD.
+     * @param apiInfo It has specification information of the api to be changed.
+     */
     private boolean createOrUpdateApi(SyncType syncType, ApiInfo apiInfo) {
 
         String routingPathInRegex = HttpHelper.getRoutingRegex(apiInfo.getInboundURL());
@@ -148,6 +204,11 @@ public class SyncService {
         return false;
     }
 
+    /**
+     * Delete the api and reflect it in the cache.
+     *
+     * @param apiInfo It has specification information of the api to be changed.
+     */
     private boolean deleteApi(ApiInfo apiInfo) {
         Cache<String, ApiInfo> apiInfoCache = apiExposeSpec.getApiInfoCache();
         apiInfoCache.remove(apiInfo.getApiId());

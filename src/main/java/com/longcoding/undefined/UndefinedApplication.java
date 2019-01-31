@@ -1,15 +1,22 @@
 package com.longcoding.undefined;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.TimeZone;
 
 /**
- * Created by longcoding on 18. 12. 26..
+ * Application settings for api-gateway.
+ * The project added a classpath through the properties.
+ * Because config yml for apis, apps can not be read as an existing classpath.
+ *
+ * EnableScheduling annotation exists for cluster mode.
+ * The cluster mode synchronizes information through interval scheduling.
+ *
+ * For reference, the project is implemented based on interceptors.
+ *
+ * @author longcoding
  */
 
 @EnableScheduling
