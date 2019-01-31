@@ -1,8 +1,12 @@
 # undefined-API-gateway
 
-[![Build Status](https://travis-ci.org/longcoding/undefined-api-gateway.svg?branch=master)](https://travis-ci.org/longcoding/undefined-api-gateway)
-[![HitCount](http://hits.dwyl.io/longcoding@gmail.com/longcoding/undefined-api-gateway.svg)](http://hits.dwyl.io/longcoding@gmail.com/longcoding/undefined-api-gateway)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/longcoding/undefined-api-gateway.svg?branch=master&maxAge=2592000)]()
+[![codecov](https://codecov.io/gh/longcoding/undefined-api-gateway/branch/master/graph/badge.svg?maxAge=2592000)]()
+[![Release](https://img.shields.io/github/release/longcoding/undefined-api-gateway.svg?maxAge=2592000)]()
+[![HitCount](http://hits.dwyl.io/longcoding@gmail.com/longcoding/undefined-api-gateway.svg)]()
+[![LastCommit](https://img.shields.io/github/last-commit/longcoding/undefined-api-gateway.svg)]()
+[![TotalCommit](https://img.shields.io/github/commit-activity/y/longcoding/undefined-api-gateway.svg)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?maxAge=2592000)]()
 
 ![feature](https://user-images.githubusercontent.com/3271895/51427833-6d132780-1c3f-11e9-8f73-7112a7f0da0c.png)
 
@@ -14,7 +18,7 @@ The Gateway is a network gateway created to provide a single access point for re
 * Lightweight API Gateway
 * High Performance/Scalability
 
-## New Feature(1-15-2019)
+## New Feature(January-2019)
 * Management API
 * Supported Server Cluster
 
