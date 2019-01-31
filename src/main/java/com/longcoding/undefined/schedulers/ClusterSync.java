@@ -16,9 +16,18 @@ import redis.clients.jedis.Jedis;
 import java.util.Set;
 
 /**
- * Created by longcoding on 19. 1. 17..
+ * A scheduler class for synchronizing information between nodes in a cluster.
+ * The current version uses redis as a persistence layer.
+ * Nodes in the cluster continue to reflect health check information in redis.
+ *
+ * If one of the nodes receives an internal api request, the node sees the health information of the redis.
+ * It then issues new information to all the surviving nodes.
+ * Each node checks the interval schedule to see if there is an event issued to it
+ * and reflects it in the cache when there is a newly issued event.
+ * Then delete the event from redis.
+ *
+ * @author longcoding
  */
-
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "undefined.service.cluster.enable")
@@ -36,6 +45,10 @@ public class ClusterSync {
     @Value("${server.port}")
     int serverPort;
 
+    /**
+     * Synchronize app, api, and app whilte information through interval schedule.
+     * The interval time can be changed in application.yml
+     */
     @Scheduled(fixedDelayString = "${undefined.service.cluster.sync-interval}")
     private void clusterSync() {
         //Application Information Sync
@@ -48,6 +61,12 @@ public class ClusterSync {
         appWhitelistSync();
     }
 
+    /**
+     * The node sends its health check information to redis each time.
+     * The health check information is deleted if it does not continue to flow because TTL is applied.
+     *
+     * The interval for sending health check information can be changed in application.yml
+     */
     @Scheduled(fixedDelayString = "${undefined.service.cluster.sync-interval}")
     private void healthCheck() {
         try (Jedis jedis = jedisFactory.getInstance()) {
@@ -55,6 +74,10 @@ public class ClusterSync {
         }
     }
 
+    /**
+     * Check whether there is new application whiltelist information issued to the node.
+     * Apply that information to the node's cache and remove it from redis.
+     */
     private void appWhitelistSync() {
         try (Jedis jedisClient = jedisFactory.getInstance()) {
             Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_APP_WHITELIST_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
@@ -68,6 +91,10 @@ public class ClusterSync {
         }
     }
 
+    /**
+     * Check whether there is new application information issued to the node.
+     * Apply that information to the node's cache and remove it from redis.
+     */
     private void appInfoSync() {
         try (Jedis jedisClient = jedisFactory.getInstance()) {
             Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_APP_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
@@ -81,6 +108,10 @@ public class ClusterSync {
         }
     }
 
+    /**
+     * Check whether there is new api specification information issued to the node.
+     * Apply that information to the node's cache and remove it from redis.
+     */
     private void apiInfoSync() {
         try(Jedis jedisClient = jedisFactory.getInstance()) {
             Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_API_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
