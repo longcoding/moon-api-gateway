@@ -41,6 +41,7 @@ public class SyncService {
      * The CRUD is determined through the SyncType variable of the input object.
      *
      * @param whitelistIpSync An object containing CRUD type, app Id, and allowed ip information.
+     * @return Whether the operation was successful. Not yet applied.
      */
     public boolean syncAppWhitelistToCache(WhitelistIpSync whitelistIpSync) {
 
@@ -60,6 +61,7 @@ public class SyncService {
      * The goal is to cache the changed information.
      *
      * @param appSyncInfo An object containing CRUD type, application information.
+     * @return Whether the operation was successful. Not yet applied.
      */
     public boolean syncAppInfoToCache(AppSync appSyncInfo) {
 
@@ -79,6 +81,7 @@ public class SyncService {
      * Create a new app and load it into the cache.
      *
      * @param appInfo This is application information to be newly registered.
+     * @return Whether the operation was successful. Not yet applied.
      */
     private boolean createApp(AppInfo appInfo) {
         Cache<String, String> appDistinction = apiExposeSpec.getAppDistinctionCache();
@@ -94,6 +97,7 @@ public class SyncService {
      * The changed application information is reflected in the cache.
      *
      * @param appInfo Changed application information.
+     * @return Whether the operation was successful. Not yet applied.
      */
     private boolean updateApp(AppInfo appInfo) {
         Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
@@ -107,6 +111,7 @@ public class SyncService {
      *
      * @param appId The application Id.
      * @param requestIps These are the allowed ips for the application. You only need to add ip.
+     * @return Whether the operation was successful. Not yet applied.
      */
     private boolean updateWhitelistIp(String appId, List<String> requestIps) {
         Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
@@ -121,6 +126,7 @@ public class SyncService {
      * Clears the application information from the cache.
      *
      * @param appInfo Application information object. The apikey and appId variables are required.
+     * @return Whether the operation was successful. Not yet applied.
      */
     private boolean deleteApp(AppInfo appInfo) {
         Cache<String, String> appDistinction = apiExposeSpec.getAppDistinctionCache();
@@ -137,6 +143,7 @@ public class SyncService {
      *
      * @param appId The Application Id.
      * @param requestIps The ip list to delete.
+     * @return Whether the operation was successful. Not yet applied.
      */
     private boolean deleteWhitelistIp(String appId, List<String> requestIps) {
         Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
@@ -152,6 +159,7 @@ public class SyncService {
      * It is a role to reflect changed API specification information in cache.
      *
      * @param apiSyncInfo An object containing CRUD type, api specification information.
+     * @return Whether the operation was successful. Not yet applied.
      */
     public boolean syncApiInfoToCache(ApiSync apiSyncInfo) {
 
@@ -173,6 +181,7 @@ public class SyncService {
      *
      * @param syncType An object that determines CRUD.
      * @param apiInfo It has specification information of the api to be changed.
+     * @return Whether the operation was successful. Not yet applied.
      */
     private boolean createOrUpdateApi(SyncType syncType, ApiInfo apiInfo) {
 
@@ -208,6 +217,7 @@ public class SyncService {
      * Delete the api and reflect it in the cache.
      *
      * @param apiInfo It has specification information of the api to be changed.
+     * @return Whether the operation was successful. Not yet applied.
      */
     private boolean deleteApi(ApiInfo apiInfo) {
         Cache<String, ApiInfo> apiInfoCache = apiExposeSpec.getApiInfoCache();
