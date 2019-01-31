@@ -22,6 +22,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'jacoco'
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web') {
@@ -71,4 +72,11 @@ dependencies {
 	testCompile('junit:junit:4.13-beta-1')
 	testCompile('ai.grakn:redis-mock:0.1.6')
 
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled true
+		html.enabled false
+	}
 }
