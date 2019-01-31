@@ -1,10 +1,9 @@
 package com.longcoding.undefined.services;
 
+import ai.grakn.redismock.RedisServer;
 import com.longcoding.undefined.UndefinedApplication;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
-import com.longcoding.undefined.helpers.InitAppLoader;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -12,16 +11,18 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import redis.clients.jedis.Jedis;
 
 import java.io.ByteArrayOutputStream;
 
@@ -31,11 +32,20 @@ import java.io.ByteArrayOutputStream;
  */
 @Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)
+@Configuration
 //@ContextConfiguration(classes = UndefinedInitializer.class, inheritInitializers = true)
 @SpringBootTest(classes = UndefinedApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+//@ComponentScan(basePackages = { "com.longcoding.undefined" },
+//        excludeFilters = {@ComponentScan.Filter(value = JedisFactory.class)})
 public class ProxyServiceTest {
 
     protected final Logger logger = LogManager.getLogger(ProxyServiceTest.class);
+
+//    @Bean
+//    @Primary
+//    public JedisFactory jedisFactory() {
+//        return new JedisFactory();
+//    }
 
 /*
     Default Test Setting
@@ -68,7 +78,7 @@ public class ProxyServiceTest {
     APIExposeSpecification apiExposeSpecification;
 
     @Before
-    public void setUp() throws Exception {
+    public final void setUp() throws Exception {
         //input redis data
         //this action is not needed. just for understanding.
         /*
@@ -82,7 +92,6 @@ public class ProxyServiceTest {
         pipeline.sync();
         jedis.close();
         */
-
     }
 
     @Test
@@ -117,7 +126,9 @@ public class ProxyServiceTest {
         logger.info("Response: {}", outputStream);
 
         Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+
+        //if redis is not existing
+        Assert.assertEquals(400, response.getStatusLine().getStatusCode());
 
     }
 
@@ -153,7 +164,9 @@ public class ProxyServiceTest {
         logger.info("Response: {}", outputStream);
 
         Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+
+        //if redis is not existing
+        Assert.assertEquals(400, response.getStatusLine().getStatusCode());
 
     }
 }
