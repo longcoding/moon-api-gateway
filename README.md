@@ -1,7 +1,8 @@
 # undefined-API-gateway
 
-[![Build Status](https://travis-ci.org/longcoding/undefined-api-gateway.svg?branch=master)](https://travis-ci.org/longcoding/undefined-api-gateway) 
+[![Build Status](https://travis-ci.org/longcoding/undefined-api-gateway.svg?branch=master)](https://travis-ci.org/longcoding/undefined-api-gateway)
 [![HitCount](http://hits.dwyl.io/longcoding@gmail.com/longcoding/undefined-api-gateway.svg)](http://hits.dwyl.io/longcoding@gmail.com/longcoding/undefined-api-gateway)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ![feature](https://user-images.githubusercontent.com/3271895/51427833-6d132780-1c3f-11e9-8f73-7112a7f0da0c.png)
 
