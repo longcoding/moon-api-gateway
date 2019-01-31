@@ -20,7 +20,10 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 /**
- * Created by longcoding on 19. 1. 17..
+ * When a request is received, the request is reflected in the persistence layer first.
+ * It then sends events to other nodes in the cluster.
+ *
+ * @author longcoding
  */
 
 @Slf4j
@@ -33,6 +36,14 @@ public class AppService {
     @Autowired
     ClusterSyncUtil clusterSyncUtil;
 
+    /**
+     * A method that creates a new application registration request.
+     * After registering new application information in redis, it issues event to all nodes of cluster using redis.
+     * It also includes injecting a unique API key into a new application.
+     *
+     * @param enrollApp model for client request.
+     * @return Reflected Application information model.
+     */
     public AppInfo createApp(EnrollApp enrollApp) {
         AppInfo appInfo;
         try (Jedis jedis = jedisFactory.getInstance()) {
@@ -52,6 +63,13 @@ public class AppService {
         return appInfo;
     }
 
+    /**
+     * Retrieves existing application information from redis.
+     *
+     * @param appId Application Id.
+     * @return Application information model.
+     * @throws GeneralException (RESOURCE_NOT_FOUND) When there is no application information corresponding to app id
+     */
     public AppInfo getAppInfo(@PathVariable String appId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
             String appInfo = jedis.hget(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
@@ -60,6 +78,12 @@ public class AppService {
         }
     }
 
+    /**
+     * After removing the corresponding application information in redis, it sends an event to all nodes in the cluster.
+     *
+     * @param appId Application Id.
+     * @return Returns success or failure.
+     */
     public boolean deleteApp(@PathVariable String appId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
             AppInfo appInfo = new AppInfo();
@@ -71,6 +95,13 @@ public class AppService {
         }
     }
 
+    /**
+     * After removing the application's api key in redis, it sends an event to all nodes in the cluster.
+     *
+     * @param appId Application Id.
+     * @return Returns success or failure.
+     * @throws GeneralException (RESOURCE_NOT_FOUND) When there is no application information corresponding to app id
+     */
     public boolean expireApiKey(@PathVariable String appId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
             String appInfoInString = jedis.hget(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
@@ -84,7 +115,13 @@ public class AppService {
         }
     }
 
-
+    /**
+     * After regenerate the application's api key in redis, it sends an event to all nodes in the cluster.
+     *
+     * @param appId Application Id.
+     * @return Application information model.
+     * @throws GeneralException (RESOURCE_NOT_FOUND) When there is no application information corresponding to app id
+     */
     public AppInfo refreshApiKey(@PathVariable String appId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
             String appInfoInString = jedis.hget(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
@@ -111,11 +148,25 @@ public class AppService {
         return true;
     }
 
+    /**
+     * Creates a new unique api key.
+     * Uses the current time as seed to generate a unique key.
+     *
+     * @return UUID unique ID.
+     */
     private static UUID createUniqueApiKey() {
         byte[] uuidBySystemCurrentTimeMillis = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(System.currentTimeMillis()).array();
         return UUID.nameUUIDFromBytes(uuidBySystemCurrentTimeMillis);
     }
 
+    /**
+     * Change the model for client request to model for service layer.
+     * For internal convenience, the int type may be changed to the string type,
+     * or the string type may be changed to the corresponding enum type.
+     *
+     * @param enrollApp model for client request.
+     * @return The newly created application model.
+     */
     private AppInfo convertedEnrollAppToAppInfo(EnrollApp enrollApp) {
         return AppInfo.builder()
                 .appId(String.valueOf(enrollApp.getAppId()))

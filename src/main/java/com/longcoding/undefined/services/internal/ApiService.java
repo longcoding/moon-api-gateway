@@ -17,7 +17,9 @@ import redis.clients.jedis.Jedis;
 import java.util.stream.Collectors;
 
 /**
- * Created by longcoding on 19. 1. 17..
+ * When a request is received, this is a service class that is responsible for sending events to all nodes in the cluster.
+ *
+ * @author longcoding
  */
 
 @Slf4j
@@ -30,6 +32,14 @@ public class ApiService {
     @Autowired
     ClusterSyncUtil clusterSyncUtil;
 
+    /**
+     * Create new api specification information and reflect it in redis.
+     * It sends events to all nodes in the cluster using redis.
+     *
+     * @param syncType Enum type to select CRUD.
+     * @param enrollApi model for client request.
+     * @return Reflected api specification information model.
+     */
     public ApiInfo createOrModifyApi(SyncType syncType, EnrollApi enrollApi) {
         ApiInfo apiInfo;
         try (Jedis jedis = jedisFactory.getInstance()) {
@@ -45,6 +55,13 @@ public class ApiService {
         return apiInfo;
     }
 
+    /**
+     * Delete existing api specification information from redis.
+     * It then sends a delete event to all nodes in the cluster using redis.
+     *
+     * @param apiId Api Id.
+     * @return Returns success or failure.
+     */
     public boolean deleteApi(String apiId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
 
@@ -56,6 +73,14 @@ public class ApiService {
         }
     }
 
+    /**
+     * Change the model for client request to model for service layer.
+     * For internal convenience, the int type may be changed to the string type,
+     * or the string type may be changed to the corresponding enum type.
+     *
+     * @param enrollApi model for client request.
+     * @return The newly created api specification model.
+     */
     private ApiInfo convertedEnrollApiToApiInfo(EnrollApi enrollApi) {
         return ApiInfo.builder()
                 .apiId(String.valueOf(enrollApi.getApiId()))
@@ -73,6 +98,12 @@ public class ApiService {
                 .build();
     }
 
+    /**
+     * Retrieves and returns API information in redis(persistence layer).
+     *
+     * @param apiId Api Id.
+     * @return It is the api information model that is inquired.
+     */
     public ApiInfo selectApi(String apiId) {
         try (Jedis jedis = jedisFactory.getInstance()) {
             String apiInfoInString = jedis.hget(Constant.REDIS_KEY_INTERNAL_API_INFO, apiId);
