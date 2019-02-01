@@ -13,10 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-
 /**
- * Created by longcoding on 19. 1. 7..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
+
 public class AuthenticationInterceptor extends AbstractBaseInterceptor {
 
     private static final String HEADER_API_KEY = "apiKey";

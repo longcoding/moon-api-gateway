@@ -3,7 +3,9 @@ package com.longcoding.undefined.helpers;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Created by longcoding on 16. 4. 5..
+ * A class that has a collection of constants used by the application.
+ *
+ * @author longcoding
  */
 public class Constant {
 

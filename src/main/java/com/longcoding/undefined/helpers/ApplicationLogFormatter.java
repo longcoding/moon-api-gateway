@@ -9,7 +9,11 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 
 /**
- * Created by longcoding on 19. 1. 4..
+ * It is a collection of logs from the application.
+ * Currently there is an access log for monitoring.
+ * If necessary, add a new log and use it.
+ *
+ * @author longcoding
  */
 
 @Slf4j

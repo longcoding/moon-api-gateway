@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by longcoding on 19. 1. 4..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
 
 public class ServiceContractValidationInterceptor extends AbstractBaseInterceptor {

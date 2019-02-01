@@ -1,7 +1,9 @@
 package com.longcoding.undefined.exceptions;
 
 /**
- * Created by longcoding on 16. 4. 9..
+ * The exception class for when an API request to the outbound service fails.
+ *
+ * @author longcoding
  */
 public class ProxyServiceFailException extends RuntimeException {
 

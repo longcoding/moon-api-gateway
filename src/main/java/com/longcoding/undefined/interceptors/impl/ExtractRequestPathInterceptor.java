@@ -19,8 +19,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Created by longcoding on 16. 4. 9..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
+
 public class ExtractRequestPathInterceptor extends AbstractBaseInterceptor {
 
     @Autowired

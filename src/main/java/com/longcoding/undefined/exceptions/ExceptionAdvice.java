@@ -18,8 +18,16 @@ import java.io.StringWriter;
 import java.util.Objects;
 
 /**
- * Created by longcoding on 16. 4. 9..
- * Updated by longcoding 0n 19. 1. 7..
+ * If a logic exception occurs, then the declared exception will be caught by this class.
+ * By default, we are sending a generic exception with a common exception.
+ * The code table for the exception condition can be referenced to the exceptionType.
+ *
+ * You can refer to this uuid when tracking error situations by including uuid in every request.
+ *
+ * @see GeneralException
+ * @see ExceptionType
+ *
+ * @author longcoding
  */
 @Slf4j
 @ControllerAdvice

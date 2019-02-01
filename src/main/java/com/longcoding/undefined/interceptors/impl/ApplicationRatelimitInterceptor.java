@@ -9,9 +9,11 @@ import redis.clients.jedis.Transaction;
 import java.util.Map;
 
 /**
- * Created by longcoding on 16. 4. 11..
- * Updated by longcoding on 18. 12. 27..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
+
 public class ApplicationRatelimitInterceptor extends RedisBaseValidationInterceptor<Map<String, Response<Long>>> {
 
     @Override

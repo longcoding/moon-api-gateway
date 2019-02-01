@@ -18,7 +18,7 @@ import java.io.Serializable;
  * Variable name, and position in the current request.
  * It then contains the name of the new variable to be changed in the future and the new location.
  *
- * @author longcoding 
+ * @author longcoding
  */
 
 @Data

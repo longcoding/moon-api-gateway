@@ -3,8 +3,10 @@ package com.longcoding.undefined.exceptions;
 import lombok.Getter;
 
 /**
- * Created by longcoding on 16. 4. 9..
- * Updated by longcoding on 19. 1. 7..
+ * The exception class for general exception situations.
+ * Actually it belongs to almost all categories.
+ *
+ * @author longcoding
  */
 @Getter
 public class GeneralException extends RuntimeException {

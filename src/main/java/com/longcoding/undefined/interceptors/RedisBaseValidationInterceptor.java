@@ -1,8 +1,8 @@
 package com.longcoding.undefined.interceptors;
 
 import com.google.common.base.CaseFormat;
-import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
+import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.helpers.RedisValidator;
 import com.longcoding.undefined.models.RequestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by longcoding on 16. 4. 7..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
 public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInterceptor {
 

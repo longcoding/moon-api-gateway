@@ -21,8 +21,12 @@ import org.springframework.stereotype.Component;
 import java.util.regex.Pattern;
 
 /**
- * Created by longcoding on 16. 4. 8..
- * Updated by longcoding on 18. 12. 26..
+ * A management class that contains API, Application, and Service specification information.
+ * (The most important class.)
+ *
+ * Each interceptor takes a corresponding cache and determines where the request is or is to be routed.
+ *
+ * @author longcoding
  */
 @Component
 @EnableConfigurationProperties(ServiceConfig.class)
@@ -41,13 +45,36 @@ public class APIExposeSpecification implements DisposableBean {
     private static boolean IS_ENABLED_IP_ACL = false;
 
     private static PersistentCacheManager cacheManager;
+
+    /**
+     * With this cache, you can find the apiId via the apiKey.
+     */
     private static Cache<String, String> appDistinctionCache;
+
+    /**
+     * Using the cache, you can see whether the requested service needs to be analyzed or immediately routed.
+     */
     private static Cache<String, ServiceRoutingInfo> serviceRoutngTypeCache;
 
+    /**
+     * Using the cache, you can get all the information of the application with the appId.
+     */
     private static Cache<String, AppInfo> appInfoCache;
+
+    /**
+     * Using the cache, you can get all the specification information of api with apiId.
+     */
     private static Cache<String, ApiInfo> apiInfoCache;
+
+    /**
+     * Using the cache, service specification information can be retrieved.
+     */
     private static Cache<String, ServiceInfo> serviceInfoCache;
 
+    /**
+     * Each of the four caches has regex pattern information for api path.
+     * For the performance of the regex operation, we separated api path by http method.
+     */
     private static Cache<String, Pattern> apiMatchGet;
     private static Cache<String, Pattern> apiMatchPost;
     private static Cache<String, Pattern> apiMatchPut;
@@ -55,6 +82,7 @@ public class APIExposeSpecification implements DisposableBean {
 
     private static String EHCACHE_PERSISTENCE_SPACE = System.getProperty("java.io.tmpdir");
 
+     // Initialize all caches with application loading.
     static {
         cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
                 .with(CacheManagerBuilder.persistence(EHCACHE_PERSISTENCE_SPACE))
@@ -77,24 +105,69 @@ public class APIExposeSpecification implements DisposableBean {
         apiMatchDelete = cacheManager.createCache(Constant.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
     }
 
+
     public static boolean isEnabledIpAcl() { return IS_ENABLED_IP_ACL; }
 
+    /**
+     * It is a variable for IP-ACL.
+     * If false, no IP ACL is checked. All IPs are passed.
+     *
+     * @param isEnabledIpAcl Whether ip-acl is used
+     */
     public static void setIsEnabledIpAcl(boolean isEnabledIpAcl) { IS_ENABLED_IP_ACL = isEnabledIpAcl; }
 
+    /**
+     * If you take the cache manager, you can create another cache.
+     * You can take this to create a custom cache.
+     *
+     * @return cacheManager.
+     */
     protected PersistentCacheManager getCacheManager() { return cacheManager; }
 
+    /**
+     * Takes the cache that fetches the appId using apiKey.
+     *
+     * @return EhCache Object about ApiKey-AppId
+     */
     public Cache<String, String> getAppDistinctionCache() { return appDistinctionCache; }
 
-    public Cache<String, AppInfo> getAppInfoCache() {
-        return appInfoCache;
-    }
+    /**
+     * Takes the cache that fetches the appInfo using appId.
+     *
+     * @return EhCache Object about AppId-AppInfo
+     */
+    public Cache<String, AppInfo> getAppInfoCache() { return appInfoCache; }
 
+    /**
+     * Takes the cache that fetches the apiInfo using apiId.
+     *
+     * @return EhCache Object about ApiId-ApiInfo
+     */
     public Cache<String, ApiInfo> getApiInfoCache() { return apiInfoCache; }
 
+    /**
+     * Takes the cache that fetches the serviceInfo using serviceId.
+     *
+     * @return EhCache Object about ServiceId-ServiceInfo
+     */
     public Cache<String, ServiceInfo> getServiceInfoCache() { return serviceInfoCache; }
 
+    /**
+     * Takes the cache that fetches the serviceRoutingInfo using serviceId.
+     * Using the cache, you can see whether the requested service needs to be analyzed or immediately routed.
+     *
+     * @return EhCache Object about ServiceId-ServiceRoutingInfo
+     */
     public Cache<String, ServiceRoutingInfo> getServiceTypeCache() { return serviceRoutngTypeCache; }
 
+    /**
+     * A method that takes a cache with path information that identifies which api the client requested.
+     * The path information is contained in a pattern for regex operations.
+     * The regex operation takes a lot of time, so keep it separate by http method.
+     *
+     * @param requestMethodType The http method type requested by the client.
+     * @return EhCache Object about apiId-routingPathPattern
+     */
     public Cache<String, Pattern> getRoutingPathCache(MethodType requestMethodType) {
         if (MethodType.GET == requestMethodType) {
             return apiMatchGet;

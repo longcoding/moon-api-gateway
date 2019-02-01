@@ -27,7 +27,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * Created by longcoding on 19. 1. 1..
+ * A class for loading all API specification information into the cache along with application loading.
+ * Regardless of cluster mode, it is loaded based on application-apis.yml by default.
+ * If an exception occurs, make sure that the configuration file is not corrupted.
+ * If you use the cluster mode, you do not need to load the configuration file every time.
+ *
+ * @author longcoding
  */
 
 @Slf4j
@@ -56,8 +61,11 @@ public class APIExposeSpecLoader implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
 
+        // Whether to use IP-ACLs.
+        // Set in application.yml.
         APIExposeSpecification.setIsEnabledIpAcl(enableIpAcl);
 
+        // In cluster mode, the API information stored in the persistence layer is fetched and stored in the cache.
         if (enableCluster) {
             try (Jedis jedisClient = jedisFactory.getInstance()) {
                 jedisClient.hgetAll(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO)
@@ -77,8 +85,11 @@ public class APIExposeSpecLoader implements InitializingBean {
             }
         }
 
+        // Whether to load the api specification information in the configuration file.
+        // There is no need to load each time.
         if ( !apiExposeSpecConfig.isInitEnable() ) return ;
 
+        // Loads the service information in the configuration file into the cache.
         try {
             //Enroll Service expose
             apiExposeSpecConfig.getServices().forEach(service -> {
@@ -103,6 +114,7 @@ public class APIExposeSpecLoader implements InitializingBean {
             throw new GeneralException(ExceptionType.E_1200_FAIL_SERVICE_INFO_CONFIGURATION_INIT, ex);
         }
 
+         // Loads the api specification information in the configuration file into the cache.
         try {
             //Enroll API expose
             apiExposeSpecConfig.getServices().forEach(service -> {
@@ -152,7 +164,11 @@ public class APIExposeSpecLoader implements InitializingBean {
                 });
             });
 
-            //Enroll API Routing URL
+            /*
+             * Enroll API Routing URL
+             * Loads the api path information in the configuration file into the cache.
+             * path is made to pattern for regex operations.
+             */
             apiExposeSpecConfig.getServices().forEach(service -> {
                 if (Objects.isNull(service.getApis())) return ;
                 service.getApis().forEach(apiSpec -> {

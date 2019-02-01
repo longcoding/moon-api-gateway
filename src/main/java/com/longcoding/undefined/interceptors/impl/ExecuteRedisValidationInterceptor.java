@@ -23,8 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutorService;
 
 /**
- * Created by longcoding on 16. 4. 7..
- * Updated by longcoding on 18. 12. 26..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
 
 @Slf4j

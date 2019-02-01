@@ -19,7 +19,11 @@ import redis.clients.jedis.Jedis;
 import java.util.stream.Collectors;
 
 /**
- * Created by longcoding on 19. 1. 4..
+ * A class that takes application information and loads it into the cache.
+ * It is executed for the first time at the application loading time.
+ * The application information also includes IP-ACL information.
+ *
+ * @author longcoding
  */
 
 
@@ -49,6 +53,7 @@ public class InitAppLoader implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
 
+        // In cluster mode, the Application information stored in the persistence layer is fetched and stored in the cache.
         if (enableCluster) {
             try(Jedis jedis = jedisFactory.getInstance()) {
                 jedis.hgetAll(Constant.REDIS_KEY_INTERNAL_APP_INFO)
@@ -61,6 +66,8 @@ public class InitAppLoader implements InitializingBean {
             }
         }
 
+        // Whether to load the application information in the configuration file.
+        // There is no need to load each time.
         if (initAppConfig.isInitEnable()) {
             try(Jedis jedis = jedisFactory.getInstance()) {
 

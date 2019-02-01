@@ -3,7 +3,9 @@ package com.longcoding.undefined.exceptions;
 import com.longcoding.undefined.models.CommonResponseEntity;
 
 /**
- * Created by longcoding on 16. 4. 9..
+ * Exception class for when client request exceeds allowed ratelimiting.
+ *
+ * @author longcoding
  */
 public class RatelimitFailException extends RuntimeException {
 

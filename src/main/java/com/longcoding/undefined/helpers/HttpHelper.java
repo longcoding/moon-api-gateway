@@ -1,15 +1,13 @@
 package com.longcoding.undefined.helpers;
 
-import org.apache.logging.log4j.util.Strings;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * Created by longcoding on 16. 4. 9..
- * Updated by longcoding on 19. 1. 29..
+ * Utility class.
+ *
+ * @author longcoding
  */
 public class HttpHelper {
 
@@ -26,6 +24,11 @@ public class HttpHelper {
         return protocol + DELIMITER_PROTOCOL + url;
     }
 
+    /**
+     * Get the host name of the node.
+     *
+     * @return hostName
+     */
     public static String getHostName() {
         String hostname;
 
@@ -38,6 +41,11 @@ public class HttpHelper {
         return hostname;
     }
 
+    /**
+     * Get the host ip of the node.
+     *
+     * @return hostIp
+     */
     public static String getHostIp() {
         String hostname;
 
@@ -50,6 +58,13 @@ public class HttpHelper {
         return hostname;
     }
 
+    /**
+     * Obtain the routing regex to match the api path.
+     * Split by '/' and make variable into regex form.
+     * The method reassembles these again.
+     *
+     * @return patterned routing path In String.
+     */
     public static String getRoutingRegex(String routingUrl) {
         StringBuilder routingPathInRegex = new StringBuilder();
         StringTokenizer st = new StringTokenizer(routingUrl, "/");

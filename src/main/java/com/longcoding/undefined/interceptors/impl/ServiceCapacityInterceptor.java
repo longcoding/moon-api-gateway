@@ -10,9 +10,11 @@ import redis.clients.jedis.exceptions.JedisDataException;
 import java.util.Map;
 
 /**
- * Created by longcoding on 16. 4. 7..
- * Updated by longcoding on 18. 12. 27..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
+
 public class ServiceCapacityInterceptor extends RedisBaseValidationInterceptor<Map<String, Response<Long>>> {
 
     @Override

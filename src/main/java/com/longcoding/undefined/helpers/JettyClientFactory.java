@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Created by longcoding on 16. 4. 6..
- * Updated by longcoding on 18. 12. 26..
+ * Class for managing connection pool of jetty client.
+ * The api-gateway uses the jetty client to send api requests to the outbound service.
+ *
+ * @author longcoding
  */
 @Component
 @EnableConfigurationProperties(JettyClientConfig.class)
@@ -26,11 +27,18 @@ public class JettyClientFactory implements InitializingBean {
     JettyClientConfig jettyClientConfig;
 
     private static HttpClient httpClient;
-    
+
+
+    /**
+     * Get one jetty client from the jetty client pool.
+     *
+     * @return Jetty client to send api call to outbound service.
+     */
     public HttpClient getJettyClient() {
         return httpClient;
     }
 
+    //Configuration information for jetty exists in application.yml.
     @Override
     public void afterPropertiesSet() throws Exception {
         ExecutorService executor = Executors.newFixedThreadPool(jettyClientConfig.getThreadCount());

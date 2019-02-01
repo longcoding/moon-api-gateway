@@ -17,8 +17,11 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Created by longcoding on 19. 1. 4..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
+
 public class TransformRequestInterceptor extends AbstractBaseInterceptor {
 
     @Autowired

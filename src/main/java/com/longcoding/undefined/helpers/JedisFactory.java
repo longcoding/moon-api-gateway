@@ -11,12 +11,12 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 /**
- * Created by longcoding on 16. 4. 7..
- * Updated by longcoding on 18. 12. 26..
+ * A class for managing the redis connection pool.
+ * Do not use spring-data-redis of spring for performance.
+ * Use the multi function of jedis to handle bulk inserts.
+ *
+ * @author longcoding
  */
 
 @Slf4j
@@ -29,6 +29,7 @@ public class JedisFactory implements InitializingBean, DisposableBean {
 
     private static JedisPool jedisPool;
 
+    //Configuration information for jedis exists in application.yml.
     @Override
     public void afterPropertiesSet() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
@@ -51,6 +52,11 @@ public class JedisFactory implements InitializingBean, DisposableBean {
         jedisPool = new JedisPool(jedisPoolConfig, jedisHost, jedisPort, jedisTimeout, null, jedisDatabase);
     }
 
+    /**
+     * Get one jedis client from the jedis connection pool.
+     *
+     * @return jedis client for redis connection.
+     */
     public Jedis getInstance() {
         return jedisPool.getResource();
     }

@@ -24,8 +24,11 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Created by longcoding on 16. 4. 9..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
+
 public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
 
     @Autowired

@@ -7,8 +7,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by longcoding on 16. 4. 9..
- * Updated by longcoding on 18. 12. 26..
+ * A class for parsing an actual message in an exceptional situation.
+ * Use messageSource to get the response message stored in yml.
+ *
+ * @see com.longcoding.undefined.exceptions.ExceptionType
+ *
+ * @author longcoding
  */
 @Component
 @PropertySource(value = {"classpath:message/error-message_en.yml"}, factory = YamlPropertySourceFactory.class)

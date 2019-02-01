@@ -3,8 +3,8 @@ package com.longcoding.undefined.interceptors.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.longcoding.undefined.exceptions.ExceptionType;
-import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.helpers.APIExposeSpecification;
+import com.longcoding.undefined.helpers.Constant;
 import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ehcache.ApiInfo;
@@ -18,8 +18,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by longcoding on 16. 4. 9..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
+
 public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor {
 
     @Autowired

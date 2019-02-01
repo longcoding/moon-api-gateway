@@ -3,6 +3,16 @@ package com.longcoding.undefined.exceptions;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * An enum class for error conditions.
+ * By default, we are sending a generic exception with a common exception.
+ * This enum class is for general exception situations.
+ *
+ * The actual error message is contained in error-message-*.yml.
+ *
+ * @author longcoding
+ */
+
 @Getter
 public enum ExceptionType {
 

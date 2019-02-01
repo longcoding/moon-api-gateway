@@ -3,7 +3,9 @@ package com.longcoding.undefined.exceptions;
 import com.longcoding.undefined.models.CommonResponseEntity;
 
 /**
- * Created by longcoding on 16. 4. 9..
+ * An exception class for validation failures in client requests.
+ *
+ * @author longcoding
  */
 public class ValidationFailException extends Exception {
 

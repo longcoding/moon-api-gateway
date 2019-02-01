@@ -1,6 +1,5 @@
 package com.longcoding.undefined.helpers;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -12,7 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by longcoding on 19. 1. 4..
+ * An utility object for creating Json-type objects.
+ * The project is currently doing json serialization / deserialization using jackson's objectMapper.
+ *
+ * @author longcoding
  */
 
 public class JsonUtil {

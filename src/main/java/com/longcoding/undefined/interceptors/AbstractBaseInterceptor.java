@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 /**
- * Created by longcoding on 16. 4. 7..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
 public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapter {
 

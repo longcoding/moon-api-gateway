@@ -21,8 +21,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * Created by longcoding on 16. 4. 8..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
+
 @Slf4j(topic = "ACCESS_LOGGER")
 public class InitializeInterceptor extends AbstractBaseInterceptor {
 

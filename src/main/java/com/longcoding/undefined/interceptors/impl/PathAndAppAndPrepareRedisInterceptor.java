@@ -19,9 +19,11 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
- * Created by longcoding on 16. 4. 7..
- * Updated by longcoding on 19. 1. 7..
+ * Coming soon to code comment.
+ *
+ * @author longcoding
  */
+
 public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseInterceptor {
 
     @Autowired
