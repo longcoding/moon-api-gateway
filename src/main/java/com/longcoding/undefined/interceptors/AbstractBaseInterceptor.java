@@ -13,7 +13,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 /**
- * Coming soon to code comment.
+ * All common interceptors must inherit from this class.
+ * The class has three functions.
+ *
+ * 1) Compute the elapsedTime of the interceptor that inherits this class.
+ * 2) By using DeferredResult, it just returns if dispatcherType is ASYNC.
+ * 3) Generate a generalException.
+ *
+ * When this class is inherited,
+ * the developer must implement preHandler instead of overriding the preHandle of the HandlerInterceptorAdapter.
  *
  * @author longcoding
  */
@@ -49,6 +57,15 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
         throw new GeneralException(exceptionType);
     }
 
+    /**
+     * When this class is inherited,
+     * the developer must implement preHandler instead of overriding the preHandle of the HandlerInterceptorAdapter.
+     * The role of this method is the same.
+     *
+     * @param request client request.
+     * @param response HttpServletResponse.
+     * @param handler handler for interceptor
+     */
     public abstract boolean preHandler(HttpServletRequest request,
                                                   HttpServletResponse response, Object handler) throws Exception;
 
