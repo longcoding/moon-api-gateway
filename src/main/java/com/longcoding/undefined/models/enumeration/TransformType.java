@@ -4,6 +4,20 @@ import lombok.Getter;
 
 import java.util.Arrays;
 
+/**
+ * This is an enum type for creating a new request to be sent to the outbound service.
+ * It is used to reassemble the data of the client request.
+ * Used primarily by the TransformRequestInterceptor.
+ * Change the variable location in the client request to the variable location of the new request.
+ *
+ * Currently supported locations are HEADER, PARAM_PATH, PARAM_QUERY, and BODY_JSON.
+ * Note that to change the data in the body, the content-type must be application/json.
+ *
+ * @see com.longcoding.undefined.interceptors.impl.TransformRequestInterceptor
+ *
+ * @author longcoding
+ */
+
 @Getter
 public enum TransformType {
     HEADER(1),

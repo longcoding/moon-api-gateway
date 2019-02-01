@@ -1,12 +1,20 @@
 package com.longcoding.undefined.models.apis;
 
 import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by longcoding on 19. 1. 1..
+ * Information about the API specification. It is an object based on application-apis.yml.
+ *
+ * It will be loaded into the cache in future APIExposeSpecLoader.
+ * If the type of application-apis.yml changes, you can change the object.
+ *
+ * @see com.longcoding.undefined.helpers.APIExposeSpecLoader
+ *
+ * @author longcoding
  */
 
 @Data

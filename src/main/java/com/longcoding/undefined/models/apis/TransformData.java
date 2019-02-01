@@ -9,7 +9,16 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * Created by longcoding on 19. 1. 1..
+ * The object for the case where the transform is required.
+ * It is an object based on application-apis.yml.
+ *
+ * It will be loaded into the cache in future APIExposeSpecLoader.
+ * If the type of application-apis.yml changes, you can change the object.
+ *
+ * Variable name, and position in the current request.
+ * It then contains the name of the new variable to be changed in the future and the new location.
+ *
+ * @author longcoding 
  */
 
 @Data

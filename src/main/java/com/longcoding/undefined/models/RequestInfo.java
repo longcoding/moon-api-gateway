@@ -2,14 +2,20 @@ package com.longcoding.undefined.models;
 
 import com.longcoding.undefined.models.enumeration.RoutingType;
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.http.HttpEntity;
 
 import java.util.Map;
 
 /**
- * Created by longcoding on 16. 4. 8..
- * Updated by longcoding on 18. 12. 26..
+ * RequestInfo is one of the most important objects of the api-gateway.
+ * When a client request is received, all the data is analyzed and stored in this object.
+ * Not only client request but also some response data from outbound service.
+ * It then completes the log data based on the requestInfo object.
+ *
+ * Basically InitializeInterceptor is created here and then it is completed by passing through several interceptors.
+ * @see com.longcoding.undefined.interceptors.impl.InitializeInterceptor
+ *
+ * @author longcoding
  */
 @Data
 public class RequestInfo {
@@ -41,7 +47,7 @@ public class RequestInfo {
     private long requestDataSize;
     private HttpEntity multipartTypeEntity;
 
-    //for access logging
+    // for Access Log
     private long responseDataSize;
     private int responseStatusCode;
     private String errorCode;

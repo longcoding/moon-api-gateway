@@ -7,7 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Created by longcoding on 19. 1. 17..
+ * An object for cluster synchronization.
+ * It contains a SyncType that determines the CRUD and an object with the information to be changed.
+ *
+ * @author longcoding
  */
 
 @Data

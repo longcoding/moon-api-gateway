@@ -9,8 +9,10 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by longcoding on 16. 4. 8..
- * Updated by longcoding on 18. 12. 26..
+ * It has the detail information of the application. All this information is loaded into ehcache.
+ * count information for ratelimiting, serviceContract, ip information for ip-acl.
+ *
+ * @author longcoding
  */
 @Data
 @Builder

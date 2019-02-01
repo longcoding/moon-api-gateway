@@ -5,7 +5,13 @@ import lombok.Getter;
 import java.util.Arrays;
 
 /**
- * Created by longcoding on 19. 1. 17..
+ * An enum class for cluster synchronization.
+ * Determine CRUD for new information.
+ * It is mainly used by SyncService.
+ *
+ * @see com.longcoding.undefined.services.sync.SyncService
+ *
+ * @author longcoding
  */
 
 @Getter

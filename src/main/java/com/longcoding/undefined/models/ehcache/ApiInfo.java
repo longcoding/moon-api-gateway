@@ -12,9 +12,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by longcoding on 16. 4. 8..
- * Updated by longcoding on 18. 12. 26..
+ * It has specification information for api. All this information is loaded into ehcache.
+ * api inbound (client request), outbound (for proxy), host, path, and protocol.
+ * There is also information about which service the api belongs to.
+ *
+ * @author longcoding
  */
+
 @Data
 @Builder
 @NoArgsConstructor

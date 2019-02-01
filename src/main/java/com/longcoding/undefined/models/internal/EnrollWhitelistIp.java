@@ -1,14 +1,15 @@
 package com.longcoding.undefined.models.internal;
 
-import com.longcoding.undefined.models.apis.TransformData;
 import lombok.Data;
-import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by longcoding on 19. 1. 18..
+ * object for updating whitelist of application.
+ * If you need to customize the client request, you can change this object.
+ *
+ * @author longcoding
  */
 
 @Data

@@ -5,7 +5,15 @@ import lombok.Getter;
 import java.util.Arrays;
 
 /**
- * Created by longcoding on 19. 1. 18..
+ * It is an enum class that determines how to route incoming requests.
+ *
+ * For SKIP_API_TRANSFORM, client requests are routed to the outbound service without any analysis.
+ * path, query, header, body Route as is, without touching anything.
+ *
+ * In the case of API_TRANSFER, when a client request comes in, it performs all analysis and routes according to the API specification.
+ * Analyze and change both header, body, path, and query.
+ *
+ * @author longcoding
  */
 
 @Getter

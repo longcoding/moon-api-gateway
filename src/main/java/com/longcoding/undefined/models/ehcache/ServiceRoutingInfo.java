@@ -9,8 +9,12 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * Created by longcoding on 19. 1. 18..
+ * An object that determines the routing type of the registered service.
+ * The object is put into the eh cache per service. It then decides whether to analyze the client request or not.
+ *
+ * @author longcoding
  */
+
 @Data
 @Builder
 @AllArgsConstructor

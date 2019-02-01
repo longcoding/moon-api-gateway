@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Created by longcoding on 19. 1. 18..
+ * An object for cluster synchronization.
+ * It contains a SyncType that determines the CRUD and an object with the information to be changed.
+ *
+ * @author longcoding
  */
 
 @Data

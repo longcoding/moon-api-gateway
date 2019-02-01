@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * Created by longcoding on 16. 4. 8..
- * Updated by longcoding on 18. 12. 26..
+ * service detail information. All this information is loaded into ehcache.
+ * It also contains information about the host, routing type, and capacity management for the outbound service.
+ *
+ * @author longcoding
  */
 @Data
 @Builder

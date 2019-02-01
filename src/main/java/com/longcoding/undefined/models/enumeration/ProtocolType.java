@@ -5,7 +5,9 @@ import lombok.Getter;
 import java.util.Arrays;
 
 /**
- * Created by longcoding on 19. 1. 24..
+ * An enum class to represent the protocol of the request.
+ *
+ * @author longcoding
  */
 
 @Getter

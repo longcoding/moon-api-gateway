@@ -6,7 +6,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by longcoding on 19. 1. 4..
+ * object for updating application.
+ * It is an object for client request and is internally changed by AppInfo object later.
+ * If you need to customize the client request, you can change this object.
+ *
+ * @see com.longcoding.undefined.models.ehcache.AppInfo
+ *
+ * @author longcoding
  */
 
 @Data
