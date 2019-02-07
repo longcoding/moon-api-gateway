@@ -115,7 +115,7 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         requestInfo.setResponseStatusCode(response.getStatus());
         requestInfo.setProxyElapsedTime(Objects.nonNull(responseInfo)? responseInfo.getProxyElapsedTime(): 0L);
         requestInfo.setResponseDataSize(response.getBufferSize());
-        requestInfo.setErrorCode(Objects.nonNull(responseInfo)? responseInfo.getResponseCode(): "");
+        if (Objects.nonNull(responseInfo)) requestInfo.setErrorCode("0000");
 
         log.info(ApplicationLogFormatter.generateGeneralLog(requestInfo));
     }
