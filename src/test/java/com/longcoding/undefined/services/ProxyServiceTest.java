@@ -128,7 +128,7 @@ public class ProxyServiceTest {
         Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
 
         //if redis is not existing
-        Assert.assertEquals(400, response.getStatusLine().getStatusCode());
+        Assert.assertEquals(401, response.getStatusLine().getStatusCode());
 
     }
 
@@ -166,7 +166,7 @@ public class ProxyServiceTest {
         Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
 
         //if redis is not existing
-        Assert.assertEquals(400, response.getStatusLine().getStatusCode());
+        Assert.assertEquals(401, response.getStatusLine().getStatusCode());
 
     }
 }
