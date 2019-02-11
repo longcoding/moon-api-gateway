@@ -11,6 +11,7 @@ public class Constant {
 
     public static final String REQUEST_INFO_DATA = "requestInfo";
     public static final String RESPONSE_INFO_DATA = "responseInfo";
+    public static final String REQUEST_ID = "Request-Id";
 
     public static final String OBJECT_GET_REDIS_VALIDATION = "redisValidation";
 

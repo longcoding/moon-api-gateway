@@ -10,6 +10,7 @@ import com.longcoding.undefined.interceptors.AbstractBaseInterceptor;
 import com.longcoding.undefined.models.RequestInfo;
 import com.longcoding.undefined.models.ResponseInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.util.MimeTypeUtils;
@@ -69,6 +70,7 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
             if (requestPathInArray.length > 0) requestInfo.setServicePath(requestPathInArray[0]);
         }
 
+        MDC.put(Constant.REQUEST_ID, requestInfo.getRequestId());
         request.setAttribute(Constant.REQUEST_INFO_DATA, requestInfo);
 
         return true;

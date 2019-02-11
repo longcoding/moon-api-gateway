@@ -1,5 +1,11 @@
 package com.longcoding.undefined.helpers;
 
+import com.longcoding.undefined.models.CommonResponseEntity;
+import org.slf4j.MDC;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
@@ -77,5 +83,12 @@ public class HttpHelper {
 
         return routingPathInRegex.toString();
     }
+
+    public static ResponseEntity newResponseEntityWithId(HttpStatus httpStatus, CommonResponseEntity response) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(Constant.REQUEST_ID, MDC.get(Constant.REQUEST_ID));
+        return new ResponseEntity<>(response, httpHeaders, httpStatus);
+    }
+
 
 }
