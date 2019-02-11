@@ -41,7 +41,6 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         RequestInfo requestInfo = new RequestInfo();
 
         requestInfo.setRequestId(UUID.randomUUID().toString());
-        requestInfo.setClientIp(request.getRemoteAddr());
         requestInfo.setAcceptHostIp(HttpHelper.getHostIp());
         requestInfo.setAcceptHostName(HttpHelper.getHostName());
         requestInfo.setRequestMethod(request.getMethod());
@@ -50,6 +49,9 @@ public class InitializeInterceptor extends AbstractBaseInterceptor {
         requestInfo.setHeaders(createHeaderMap(request));
         requestInfo.setRequestStartTime(System.currentTimeMillis());
         requestInfo.setRequestDataSize(request.getContentLength());
+
+        String clientIp = request.getHeader("X-FORWARDED-FOR");
+        requestInfo.setClientIp(Strings.isNullOrEmpty(clientIp)? request.getRemoteAddr():clientIp.split(",", 0)[0].trim());
 
         String requestPath = request.getServletPath();
         requestInfo.setRequestPath(requestPath.endsWith("/")? requestPath.substring(0, requestPath.length() - 1):requestPath);
