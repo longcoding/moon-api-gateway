@@ -85,11 +85,10 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
                 if (!interceptorResult){
                     generateException(ExceptionType.E_1009_SERVICE_RATELIMIT_OVER);
                     jedisMulti.exec();
-                    jedis.close();
                     return false;
                 }
             }
-
+            jedisMulti.exec();
         }
 
         return true;
