@@ -9,7 +9,7 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 springBoot {
-	mainClassName = 'com.longcoding.undefined.UndefinedApplication'
+	mainClassName = 'com.longcoding.moon.MoonApplication'
 }
 
 repositories {

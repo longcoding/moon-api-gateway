@@ -47,10 +47,10 @@ jetty-client:
   timeout: 5000
 
 ################################################################################
-# Undefined Service Config
+# Moon Service Config
 ################################################################################
 
-undefined:
+moon:
   service:
     recognize-subdomain: false
     ip-acl-enable: false
@@ -66,7 +66,7 @@ undefined:
 spring.profiles: local
 spring.profiles.include: 'apps-local, apis-local'
 
-undefined:
+moon:
   service:
     ip-acl-enable: false
     cluster:
@@ -77,7 +77,7 @@ undefined:
 spring.profiles: dev
 spring.profiles.include: 'apps-dev, apis-dev'
 
-undefined:
+moon:
   service:
     ip-acl-enable: true
     cluster:

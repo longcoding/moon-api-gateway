@@ -1,11 +1,11 @@
-# undefined-API-gateway
+# moon-API-gateway
 
-[![Build Status](https://travis-ci.org/longcoding/undefined-api-gateway.svg?branch=master&maxAge=2592000)](https://travis-ci.org/longcoding/undefined-api-gateway.svg?branch=master)
-[![codecov](https://codecov.io/gh/longcoding/undefined-api-gateway/branch/master/graph/badge.svg?maxAge=2592000)](https://codecov.io/gh/longcoding/undefined-api-gateway/branch/master/graph/badge.svg)
-[![Release](https://img.shields.io/github/release/longcoding/undefined-api-gateway.svg?maxAge=2592000)](https://img.shields.io/github/release/longcoding/undefined-api-gateway.svg)
-[![HitCount](http://hits.dwyl.io/longcoding@gmail.com/longcoding/undefined-api-gateway.svg)](http://hits.dwyl.io/longcoding@gmail.com/longcoding/undefined-api-gateway.svg)
-[![LastCommit](https://img.shields.io/github/last-commit/longcoding/undefined-api-gateway.svg)](https://img.shields.io/github/last-commit/longcoding/undefined-api-gateway.svg)
-[![TotalCommit](https://img.shields.io/github/commit-activity/y/longcoding/undefined-api-gateway.svg)](https://img.shields.io/github/commit-activity/y/longcoding/undefined-api-gateway.svg)
+[![Build Status](https://travis-ci.org/longcoding/moon-api-gateway.svg?branch=master&maxAge=2592000)](https://travis-ci.org/longcoding/moon-api-gateway.svg?branch=master)
+[![codecov](https://codecov.io/gh/longcoding/moon-api-gateway/branch/master/graph/badge.svg?maxAge=2592000)](https://codecov.io/gh/longcoding/moon-api-gateway/branch/master/graph/badge.svg)
+[![Release](https://img.shields.io/github/release/longcoding/moon-api-gateway.svg?maxAge=2592000)](https://img.shields.io/github/release/longcoding/moon-api-gateway.svg)
+[![HitCount](http://hits.dwyl.io/longcoding@gmail.com/longcoding/moon-api-gateway.svg)](http://hits.dwyl.io/longcoding@gmail.com/longcoding/moon-api-gateway.svg)
+[![LastCommit](https://img.shields.io/github/last-commit/longcoding/moon-api-gateway.svg)](https://img.shields.io/github/last-commit/longcoding/moon-api-gateway.svg)
+[![TotalCommit](https://img.shields.io/github/commit-activity/y/longcoding/moon-api-gateway.svg)](https://img.shields.io/github/commit-activity/y/longcoding/moon-api-gateway.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?maxAge=2592000)]()
 
 ![feature](https://user-images.githubusercontent.com/3271895/51427833-6d132780-1c3f-11e9-8f73-7112a7f0da0c.png)
@@ -23,7 +23,7 @@ The Gateway is a network gateway created to provide a single access point for re
 * Supported Server Cluster
 
 ## Features
-Undefined API Gateway offers a powerful, yet lightweight feature.
+Moon API Gateway offers a powerful, yet lightweight feature.
 
 * **Request Validation** - You can use various verification features in your request. It's also easy to add or remove new features.
     - Header, Query, Path Param
@@ -34,7 +34,7 @@ Undefined API Gateway offers a powerful, yet lightweight feature.
     - Service Daily Capacity
     - Service Minute Capacity
 * **Service Contract(agreement)** - (Optional) API, App Users can only call APIs that have agreed to the contract relationship or terms.
-* **Request Transform** - (Optional) It supports the change of Header, Query, Path Param as well as URI. This will change the user's request appropriately to the request of the service associated with the undefined api gateway.
+* **Request Transform** - (Optional) It supports the change of Header, Query, Path Param as well as URI. This will change the user's request appropriately to the request of the service associated with the moon api gateway.
 * **IP Whitelisting** - Block access to non-trusted IP addresses for more secure interactions on a per-key basis
 * **Management API** - Provides powerful Rest API to manage API Gateway.
     - API Add/Delete/Change
@@ -51,14 +51,14 @@ Undefined API Gateway offers a powerful, yet lightweight feature.
 * Jedis 3.0
 
 ## Configuration
-There are required settings to run undefined-api-gateway.
+There are required settings to run moon-api-gateway.
 You do not need to use initialization with the management API.
 
 A. First
  <br />
     - Please set the global application first in application.yaml <br />
     
-    undefined:
+    moon:
       service:       
         ip-acl-enable: false
         cluster:
@@ -76,7 +76,7 @@ A. First
 - cluster/enable: If you enable a server cluster, the daemon thread continues to fetch services, apps, and apis information.
 - cluster/sync-interval: This option allows you to set the interval for the cluster synchronization operation.
 - proxy-timeout: This option allows you to set the timeout for the Rotating service.
-- **jedis-client**: Redis is an essential infrastructure for undefined-api-gateway.
+- **jedis-client**: Redis is an essential infrastructure for moon-api-gateway.
 - jedis-client/host: Host information for Redis.
 - jedis-client/port: Port information for Redis. 
 
@@ -196,7 +196,7 @@ C. Third
 - only-pass-request-without-transform: All APIs are routed to services connected to the gateway without any analysis or transformation. 
 
 
-Undefined-api-gateway supports the following protocol and method.
+Moon-api-gateway supports the following protocol and method.
 
 * Protocol
     - http, https
@@ -204,7 +204,7 @@ Undefined-api-gateway supports the following protocol and method.
     - Get, Post, Put, Delete
     
 ## API Gateway Cluster
-Undefined API Gateway supports clusters. Each node synchronizes API, APP, IP Whitelist and App Key (= API Key) information in near real time.
+Moon API Gateway supports clusters. Each node synchronizes API, APP, IP Whitelist and App Key (= API Key) information in near real time.
 Cluster nodes also work together to calculate the correct API Ratelimiting, Service Capacity.
 
 - **Service, API, APP, IP Whitelist Interval Sync**
@@ -268,7 +268,7 @@ Service And API Expose Specification for stackoverflow
 - 6) When you call the API, the gateway will route the call to api.stackexchange.com set to outbound-service-host.
 - 7) When calling the API, the domain is api.stackexchange.com and the destination url path is '/2.2/questions' set to outbound-url.
   
-##### 1) Use Test Case - Run undefined-api-gateway by gradle
+##### 1) Use Test Case - Run moon-api-gateway by gradle
 
     ./gradlew test
 
@@ -310,4 +310,4 @@ Execute request and check response code and content.
 For any inquiries, you can reach me at longcoding@gmail.com 
 
 ## License
-undefined-api-gateway is released under the MIT license. See LICENSE for details.
+moon-api-gateway is released under the MIT license. See LICENSE for details.
