@@ -38,10 +38,10 @@ Moon API Gateway offers a powerful, yet lightweight feature.
 * **IP Whitelisting** - Block access to non-trusted IP addresses for more secure interactions on a per-key basis
 * **Management API** - Provides powerful Rest API to manage API Gateway.
     - API Add/Delete/Change
-    - APP Add/Delete/Change 
+    - APP Add/Delete/Change
     - IP Whitelist Add/Delete
     - Key Expiry/Regenerate
-* **Supported Server Cluster** - API Gateway Cluster can be configured. With the Management API, the changes take effect on all servers. Rate Limiting, and Service Capacity information are all shared. 
+* **Supported Server Cluster** - API Gateway Cluster can be configured. With the Management API, the changes take effect on all servers. Rate Limiting, and Service Capacity information are all shared.
 
 ## Dependency
 * Spring Boot 2.1
@@ -54,131 +54,131 @@ Moon API Gateway offers a powerful, yet lightweight feature.
 There are required settings to run moon-api-gateway.
 You do not need to use initialization with the management API.
 
-A. First
- <br />
-    - Please set the global application first in application.yaml <br />
-    
-    moon:
-      service:       
-        ip-acl-enable: false
-        cluster:
-          enable: false
-          sync-interval: 300000       
-        proxy-timeout: 20000
-        
-    jedis-client:      
-      host: '127.0.0.1'
-      port: 6379
-      timeout: 1000
-      database: 0
-      
+### Step 1
+```
+- Please set the global application first in application.yaml
+
+moon:
+  service:       
+    ip-acl-enable: false
+    cluster:
+      enable: false
+      sync-interval: 300000       
+    proxy-timeout: 20000
+
+jedis-client:      
+  host: '127.0.0.1'
+  port: 6379
+  timeout: 1000
+  database: 0
+```    
 - ip-acl-enable: Enable the ip whitelisting feature. It operates on APP basis.
 - cluster/enable: If you enable a server cluster, the daemon thread continues to fetch services, apps, and apis information.
 - cluster/sync-interval: This option allows you to set the interval for the cluster synchronization operation.
 - proxy-timeout: This option allows you to set the timeout for the Rotating service.
 - **jedis-client**: Redis is an essential infrastructure for moon-api-gateway.
 - jedis-client/host: Host information for Redis.
-- jedis-client/port: Port information for Redis. 
+- jedis-client/port: Port information for Redis.
 
-B. Second
- <br />
-    - Please set the initial application registration in application-apps.yaml <br />
-    - (These settings are optional)
+### Step 2
+```
+- Please set the initial application registration in application-apps.yaml
+- (These settings are optional)
 
-    init-apps:
-      init-enable: true
-      apps:
-        -
-          app-id: 0
-          app-name: TestApp
-          api-key: 1000-1000-1000-1000
-          app-minutely-ratelimit: 2000
-          app-daily-ratelimit: 10000
-          app-service-contract: [1, 2, 3]
-          app-ip-acl: ['192.168.0.1', '127.0.0.1']
-        -
-          app-id: 1
-          app-name: BestApp
-          api-key: e3938427-1e27-3a37-a854-0ac5a40d84a8
-          app-minutely-ratelimit: 1000
-          app-daily-ratelimit: 50000
-          app-service-contract: [1, 2]
-          app-ip-acl: ['127.0.0.1']
-
+init-apps:
+  init-enable: true
+  apps:
+    -
+      app-id: 0
+      app-name: TestApp
+      api-key: 1000-1000-1000-1000
+      app-minutely-ratelimit: 2000
+      app-daily-ratelimit: 10000
+      app-service-contract: [1, 2, 3]
+      app-ip-acl: ['192.168.0.1', '127.0.0.1']
+    -
+      app-id: 1
+      app-name: BestApp
+      api-key: e3938427-1e27-3a37-a854-0ac5a40d84a8
+      app-minutely-ratelimit: 1000
+      app-daily-ratelimit: 50000
+      app-service-contract: [1, 2]
+      app-ip-acl: ['127.0.0.1']
+```
 - init-enable: The initial registration setting is not used.
 - app-service-contract: A list of API services that app has permission to use.
 - app-ip-acl: The whitelist of ip that can use this API Key.
-- app minutely/daily ratelimit: The amount of APIs available to the app. 
+- app minutely/daily ratelimit: The amount of APIs available to the app.
 
-C. Third
- <br />
-    - Set up service and API specification configurations in application-apis.yml <br />
-    - The API Gateway obtains Service and API information through the APIExposeSpecLoader.
+### Step 3
+```
+- Set up service and API specification configurations in application-apis.yml
+- The API Gateway obtains Service and API information through the APIExposeSpecLoader.
 
-    api-spec:
-      init-enable: true
-      services:
+api-spec:
+  init-enable: true
+  services:
+    -
+      service-id: 1
+      service-name: stackoverflow
+      service-minutely-capacity: 10000
+      service-daily-capacity: 240000
+      service-path: /stackoverflow
+      outbound-service-host: api.stackexchange.com
+      apis:
         -
-          service-id: 1
-          service-name: stackoverflow
-          service-minutely-capacity: 10000
-          service-daily-capacity: 240000
-          service-path: /stackoverflow
-          outbound-service-host: api.stackexchange.com
-          apis:
-            -
-              api-id: 101
-              api-name: getInfo
-              protocol: http, https
-              method: get
-              inbound-url: /2.2/question/:first
-              outbound-url: /2.2/questions
-              header: page, votes
-              header-required: ""
-              query-param: version, site
-              query-param-required: site
-            -
-              api-id: 202
-              api-name: getQuestions
-              protocol: https
-              method: put
-              inbound-url: /2.2/question/:first
-              outbound-url: /2.2/questions
-              header: page, votes
-              header-required: ""
-              query-param: version, site
-              query-param-required: site
+          api-id: 101
+          api-name: getInfo
+          protocol: http, https
+          method: get
+          inbound-url: /2.2/question/:first
+          outbound-url: /2.2/questions
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
         -
-          service-id: 2
-          service-name: stackoverflow2
-          service-minutely-capacity: 5000
-          service-daily-capacity: 100000
-          service-path: /another
-          outbound-service-host: api.stackexchange.com
-          apis:
-            -
-              api-id: 201
-              api-name: transformTest
-              protocol: http, https
-              method: get
-              inbound-url: /2.2/haha/question/:site
-              outbound-url: /:page/:site
-              header: page, votes
-              header-required: ""
-              query-param: version, site
-              query-param-required: site
-              transform:
-                page: [header, param_path]
-                site: [param_path, header]
+          api-id: 202
+          api-name: getQuestions
+          protocol: https
+          method: put
+          inbound-url: /2.2/question/:first
+          outbound-url: /2.2/questions
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
+    -
+      service-id: 2
+      service-name: stackoverflow2
+      service-minutely-capacity: 5000
+      service-daily-capacity: 100000
+      service-path: /another
+      outbound-service-host: api.stackexchange.com
+      apis:
         -
-          service-id: '03'
-          service-name: service3
-          service-minutely-capacity: 5000
-          service-daily-capacity: 100000
-          service-path: /service3
-          outbound-service-host: api.stackexchange.com
-          only-pass-request-without-transform: true
-
+          api-id: 201
+          api-name: transformTest
+          protocol: http, https
+          method: get
+          inbound-url: /2.2/haha/question/:site
+          outbound-url: /:page/:site
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
+          transform:
+            page: [header, param_path]
+            site: [param_path, header]
+    -
+      service-id: '03'
+      service-name: service3
+      service-minutely-capacity: 5000
+      service-daily-capacity: 100000
+      service-path: /service3
+      outbound-service-host: api.stackexchange.com
+      only-pass-request-without-transform: true
+```
 - init-enable: The initial registration setting is not used.
 - service-path: URL The first parameter in the Path. The API is routed to the service registered in that parameter.
 - service minutely/daily capacity: The total amount of APIs that the service can route.
@@ -193,7 +193,7 @@ C. Third
     - Possible options: **header**, **param_path**, **param_query**, **body_json**
     - usage: [source, destination] like [header, param_path]
     - To use the body_json type, the content-type must be the application/json.
-- only-pass-request-without-transform: All APIs are routed to services connected to the gateway without any analysis or transformation. 
+- only-pass-request-without-transform: All APIs are routed to services connected to the gateway without any analysis or transformation.
 
 
 Moon-api-gateway supports the following protocol and method.
@@ -202,7 +202,7 @@ Moon-api-gateway supports the following protocol and method.
     - http, https
 * Method
     - Get, Post, Put, Delete
-    
+
 ## API Gateway Cluster
 Moon API Gateway supports clusters. Each node synchronizes API, APP, IP Whitelist and App Key (= API Key) information in near real time.
 Cluster nodes also work together to calculate the correct API Ratelimiting, Service Capacity.
@@ -223,7 +223,7 @@ The Management API helps manage a single gateway or cluster group.
   - **API Key Regenerate** - [PUT] /internal/apps/{appId}
   - **Add NEW IP Whitelist** - [POST] /internal/apps/{appId}/whitelist
   - **Remove IP Whitelist** - [DELETE] /internal/apps/{appId}/whitelist
-  
+
 **API Management**
   - **New API Register** - [POST] /internal/apis
   - **API UnRegister** - [DELETE] /internal/apis/{apiId}
@@ -231,7 +231,7 @@ The Management API helps manage a single gateway or cluster group.
 
 **Service Group API Will be updated**
 
-    
+
 
 ## Usage/Test
 
@@ -258,8 +258,8 @@ Service And API Expose Specification for stackoverflow
               header-required: ""
               query-param: version, site
               query-param-required: site
-    
-              
+
+
 - 1) The api service path we want to call is '/stackoverflow'
 - 2) The inbound url path following the service path is '/2.2/question/:first'
 - 3) ': first' is the path parameter and we declare it 'test'.
@@ -267,15 +267,15 @@ Service And API Expose Specification for stackoverflow
 - 5) Set the header and url query parameters.
 - 6) When you call the API, the gateway will route the call to api.stackexchange.com set to outbound-service-host.
 - 7) When calling the API, the domain is api.stackexchange.com and the destination url path is '/2.2/questions' set to outbound-url.
-  
+
 ##### 1) Use Test Case - Run moon-api-gateway by gradle
 
     ./gradlew test
 
-##### 2) Use rest-client like Postman. 
+##### 2) Use rest-client like Postman.
 To set method and scheme.
 
-    GET, http 
+    GET, http
 
 Input URL.
 
@@ -307,7 +307,7 @@ Execute request and check response code and content.
     - Easy To Run
 
 ## Contact
-For any inquiries, you can reach me at longcoding@gmail.com 
+For any inquiries, you can reach me at longcoding@gmail.com
 
 ## License
 moon-api-gateway is released under the MIT license. See LICENSE for details.
