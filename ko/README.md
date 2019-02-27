@@ -29,20 +29,20 @@ Moon API 게이트웨이는 강력하지만, 가볍고 빠른 기능을 제공�
 * **Request Validation** - Request 요청에 대한 여러가지 유효성 검증 기능을 사용할 수 있습니다. 또한 새로운 기능에 쉽게 적용하고 제거할 수 있습니다.
     - Header, Query, Path Param
 * **Rate Limiting** - API 사용자들에 대한 강력한 사용빈도 제한이 가능합니다. Redis-based 클러스터 서버들은 키 기반으로 사용빈도 제한 정보를 공유할 수 있습니다.
-    - App 일 단위 사용빈도 제한
-    - App 분 단위 사용빈도 제한
-* **Service Capacity** - Manages the capacity of the service linked to the API gateway to ensure stable operation.
-    - Service Daily Capacity
-    - Service Minute Capacity
-* **Service Contract(agreement)** - (Optional) API, App Users can only call APIs that have agreed to the contract relationship or terms.
-* **Request Transform** - (Optional) It supports the change of Header, Query, Path Param as well as URI. This will change the user's request appropriately to the request of the service associated with the undefined api gateway.
-* **IP Whitelisting** - Block access to non-trusted IP addresses for more secure interactions on a per-key basis
-* **Management API** - Provides powerful Rest API to manage API Gateway.
+    - App 일단위 사용빈도 제한
+    - App 분단위 사용빈도 제한
+* **Service Capacity** - 서비스의 안정적인 동작을 위해 API 게이트웨이에 연결된 서비스 수용량(Capacity)을 관리합니다.
+    - Service 일단위 수용량
+    - Service 분단위 수용량
+* **Service Contract(agreement)** - (Optional) API, App 사용자들은 계약 관계나 계약 기간에 부합하는 API만 호출할 수 있습니다.
+* **Request Transform** - (Optional) Header, Query, Path Param, URI 변경을 지원합니다. 이는 Moon-API-gateway에 관련된 서비스의 사용자 request를 적절하게 변경합니다.
+* **IP Whitelisting** - 보다 안전한 상호작용을 위해 키 단위로 신뢰할 수 없는 IP 주소의 접근을 차단합니다.
+* **Management API** - API 게이트웨이 관리를 위한 강력한 Rest API를 제공합니다.
     - API Add/Delete/Change
     - APP Add/Delete/Change
     - IP Whitelist Add/Delete
     - Key Expiry/Regenerate
-* **Supported Server Cluster** - API Gateway Cluster can be configured. With the Management API, the changes take effect on all servers. Rate Limiting, and Service Capacity information are all shared.
+* **Supported Server Cluster** - API 게이트웨이 클러스터를 관리할 수 있습니다. 관리(Management) API를 이용해서 변경사항을 모든 서버에 적용할 수 있습니다. 즉, 사용빈도, 서비스 수용량 정보를 모든 서버가 공유할 수 있습니다.
 
 ## Dependency
 * Spring Boot 2.1
