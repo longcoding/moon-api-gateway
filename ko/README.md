@@ -31,9 +31,9 @@ Moon-API-Gateway는 강력하지만, 가볍고 빠른 기능을 제공합니다.
 * **Rate Limiting** - API 사용자들에 대한 강력한 사용빈도 제한이 가능합니다. Redis-based 클러스터 서버들은 키 기반으로 사용빈도 제한 정보를 공유할 수 있습니다.
     - App 일단위 사용빈도 제한
     - App 분단위 사용빈도 제한
-* **Service Capacity** - 서비스의 안정적인 동작을 위해 API 게이트웨이에 연결된 서비스 수용량(Capacity)을 관리합니다.
-    - Service 일단위 수용량
-    - Service 분단위 수용량
+* **Service Capacity** - 서비스의 안정적인 동작을 위해 API 게이트웨이에 연결된 서비스 가용량(Capacity)을 관리합니다.
+    - Service 일단위 가용량
+    - Service 분단위 가용량
 * **Service Contract(agreement)** - (Optional) API, App 사용자들은 계약 관계나 계약 기간에 부합하는 API만 호출할 수 있습니다.
 * **Request Transform** - (Optional) Header, Query, Path Param, URI 변경을 지원합니다. 이는 Moon-API-Gateway에 관련된 서비스의 사용자 request를 적절하게 변경합니다.
 * **IP Whitelisting** - 보다 안전한 상호작용을 위해 키 단위로 신뢰할 수 없는 IP 주소의 접근을 차단합니다.
@@ -42,7 +42,7 @@ Moon-API-Gateway는 강력하지만, 가볍고 빠른 기능을 제공합니다.
     - APP Add/Delete/Change
     - IP Whitelist Add/Delete
     - Key Expiry/Regenerate
-* **Supported Server Cluster** - API 게이트웨이 클러스터를 관리할 수 있습니다. 관리(Management) API를 이용해서 변경사항을 모든 서버에 적용할 수 있습니다. 즉, 사용빈도, 서비스 수용량 정보를 모든 서버가 공유할 수 있습니다.
+* **Supported Server Cluster** - API 게이트웨이 클러스터를 관리할 수 있습니다. 관리(Management) API를 이용해서 변경사항을 모든 서버에 적용할 수 있습니다. 즉, 사용빈도, 서비스 가용량 정보를 모든 서버가 공유할 수 있습니다.
 
 ## Dependency
 * Spring Boot 2.1
@@ -183,7 +183,7 @@ api-spec:
 ```
 - init-enable: api-spec 사용 여부를 설정합니다.
 - service-path: URL 경로의 첫번째 파라미터를 설정합니다. API는 해당 경로로 등록된 서비스로 라우팅됩니다.
-- service minutely/daily capacity: 서비스의 분/일 단위 수용량을 설정합니다.
+- service minutely/daily capacity: 서비스의 분/일 단위 가용량을 설정합니다.
 - outbound-service-host: 서비스 API의 응답이 라우팅되는 외부 도메인을 설정합니다.
 - apis/inbound-url: 외부로 노출할 API URL 경로를 명세합니다. `:?`에 설정합니다.
 - apis/outbound-url: The actual url path of the service connected to the api-gateway.
@@ -206,8 +206,7 @@ Moon-api-gateway 는 아래의 프로토콜과 메소드를 지원합니다.
     - GET, POST, PUT, DELETE
 
 ## API Gateway Cluster
-Moon API Gateway supports clusters. Each node synchronizes API, APP, IP Whitelist and App Key (= API Key) information in near real time.
-Cluster nodes also work together to calculate the correct API Ratelimiting, Service Capacity.
+Moon API Gateway는 클러스터를 지원합니다. 각 노드는 실시간으로 API, APP, IP 허용 목록 및 앱 키 (= API 키) 정보를 동기화합니다. 또한 클러스터 노드들이 함께 올바른 API 사용빈도 제한, 서비스 가용용량을 계산합니다.
 
 - **Service, API, APP, IP Whitelist Interval Sync**
 
@@ -215,23 +214,23 @@ Cluster nodes also work together to calculate the correct API Ratelimiting, Serv
 
 
 ## Management REST API
-The Management API helps manage a single gateway or cluster group.
+관리 API는 단일 게이트웨이 혹은 클러스터 그룹 관리에 유용합니다.
 
 **APP Management**
-  - **APP Register** - [POST] /internal/apps
-  - **APP UnRegister** - [DELETE] /internal/apps/{appId}
-  - **APP Update** - [Future Feature]
-  - **API Key Expiry** - [DELETE] /internal/apps/{appId}/apikey
-  - **API Key Regenerate** - [PUT] /internal/apps/{appId}
-  - **Add NEW IP Whitelist** - [POST] /internal/apps/{appId}/whitelist
-  - **Remove IP Whitelist** - [DELETE] /internal/apps/{appId}/whitelist
+  - **APP 등록** - [POST] /internal/apps
+  - **APP 삭제** - [DELETE] /internal/apps/{appId}
+  - **APP 업데이트** - [Future Feature]
+  - **API Key 만료처리** - [DELETE] /internal/apps/{appId}/apikey
+  - **API Key 갱신처리** - [PUT] /internal/apps/{appId}
+  - **IP 허용목록 추가** - [POST] /internal/apps/{appId}/whitelist
+  - **IP 허용목록 삭제** - [DELETE] /internal/apps/{appId}/whitelist
 
 **API Management**
-  - **New API Register** - [POST] /internal/apis
-  - **API UnRegister** - [DELETE] /internal/apis/{apiId}
-  - **API Update** - [PUT] /internal/apis/{apiId}
+  - **API 추가** - [POST] /internal/apis
+  - **API 삭제** - [DELETE] /internal/apis/{apiId}
+  - **API 수정** - [PUT] /internal/apis/{apiId}
 
-**Service Group API Will be updated**
+**Service Group API는 곧 업데이트 예정입니다.**
 
 
 
