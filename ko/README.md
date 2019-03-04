@@ -35,7 +35,7 @@ Moon-API-Gateway는 강력하지만, 가볍고 빠른 기능을 제공합니다.
     - Service 일단위 가용량
     - Service 분단위 가용량
 * **Service Contract(agreement)** - (Optional) API, App 사용자들은 계약 관계나 계약 기간에 부합하는 API만 호출할 수 있습니다.
-* **Request Transform** - (Optional) Header, Query, Path Param, URI 변경을 지원합니다. 이는 Moon-API-Gateway에 관련된 서비스의 사용자 request를 적절하게 변경합니다.
+* **Request Transform** - (Optional) Header, Query, Path Param, URI 변경을 지원합니다. 사용자 request를 Moon-API-Gateway와 연결된 서비스의 request로 적절하게 변경합니다.
 * **IP Whitelisting** - 보다 안전한 상호작용을 위해 키 단위로 신뢰할 수 없는 IP 주소의 접근을 차단합니다.
 * **Management API** - API 게이트웨이 관리를 위한 강력한 Rest API를 제공합니다.
     - API Add/Delete/Change
@@ -53,7 +53,7 @@ Moon-API-Gateway는 강력하지만, 가볍고 빠른 기능을 제공합니다.
 
 ## Configuration
 Moon-API-Gateway 실행을 위한 필요한 설정있습니다.
-이를통해 관리(management) API를 사용해서 초기화를 할 필요가 없습니다.  
+관리(management) API를 이용하면 초기화를 진행할 필요가 없습니다.
 
 ### Step 1
 ```
@@ -76,7 +76,7 @@ jedis-client:
 - ip-acl-enable: IP 화이트리스트 기능을 설정합니다. 이는 APP 기반으로 동작합니다.
 - cluster/enable: 서버 클러스터 설정을 사용한다면 데몬 스레드가 Service, App, API 정보들을 가져옵니다.
 - cluster/sync-interval: 클러스터의 동기화 시간을 설정할 수 있습니다.
-- proxy-timeout: 서비스 로테이션 타임아웃 시간을 설정할 수 있습니다.  
+- proxy-timeout: request proxy 타임아웃 시간을 설정할 수 있습니다.  
 - **jedis-client**: Moon-API-Gateway에서 Redis 설정은 반드시 필요합니다.
 - jedis-client/host: Redis 호스트 정보를 설정합니다.
 - jedis-client/port: Redis 포트 정보를 설정합니다.
@@ -184,7 +184,7 @@ api-spec:
 - init-enable: api-spec 사용 여부를 설정합니다.
 - service-path: URL 경로의 첫번째 파라미터를 설정합니다. API는 해당 경로로 등록된 서비스로 라우팅됩니다.
 - service minutely/daily capacity: 서비스의 분/일 단위 가용량을 설정합니다.
-- outbound-service-host: 서비스 API의 응답이 라우팅되는 외부 도메인을 설정합니다.
+- outbound-service-host: 서비스 API의 응답이 라우팅되는 Outbound 도메인을 설정합니다.
 - apis/inbound-url: 외부로 노출할 API URL 경로를 명세합니다. `:?`에 설정합니다.
 - apis/outbound-url: API 게이트웨이에 접속할 실제 URL을 설정합니다.
 - apis/header: API를 호출할 때 받을 수 있는 헤더를 설정합니다.
