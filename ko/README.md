@@ -24,25 +24,25 @@
 * 서버 클러스터 지원
 
 ## Features
-Moon API 게이트웨이는 강력하지만, 가볍고 빠른 기능을 제공합니다.
+Moon-API-Gateway는 강력하지만, 가볍고 빠른 기능을 제공합니다.
 
 * **Request Validation** - Request 요청에 대한 여러가지 유효성 검증 기능을 사용할 수 있습니다. 또한 새로운 기능에 쉽게 적용하고 제거할 수 있습니다.
     - Header, Query, Path Param
 * **Rate Limiting** - API 사용자들에 대한 강력한 사용빈도 제한이 가능합니다. Redis-based 클러스터 서버들은 키 기반으로 사용빈도 제한 정보를 공유할 수 있습니다.
-    - App 일 단위 사용빈도 제한
-    - App 분 단위 사용빈도 제한
-* **Service Capacity** - Manages the capacity of the service linked to the API gateway to ensure stable operation.
-    - Service Daily Capacity
-    - Service Minute Capacity
-* **Service Contract(agreement)** - (Optional) API, App Users can only call APIs that have agreed to the contract relationship or terms.
-* **Request Transform** - (Optional) It supports the change of Header, Query, Path Param as well as URI. This will change the user's request appropriately to the request of the service associated with the undefined api gateway.
-* **IP Whitelisting** - Block access to non-trusted IP addresses for more secure interactions on a per-key basis
-* **Management API** - Provides powerful Rest API to manage API Gateway.
+    - App 일단위 사용빈도 제한
+    - App 분단위 사용빈도 제한
+* **Service Capacity** - 서비스의 안정적인 동작을 위해 API 게이트웨이에 연결된 서비스 가용량(Capacity)을 관리합니다.
+    - Service 일단위 가용량
+    - Service 분단위 가용량
+* **Service Contract(agreement)** - (Optional) API, App 사용자들은 계약 관계나 계약 기간에 부합하는 API만 호출할 수 있습니다.
+* **Request Transform** - (Optional) Header, Query, Path Param, URI 변경을 지원합니다. 사용자 request를 Moon-API-Gateway와 연결된 서비스의 request로 적절하게 변경합니다.
+* **IP Whitelisting** - 보다 안전한 상호작용을 위해 키 단위로 신뢰할 수 없는 IP 주소의 접근을 차단합니다.
+* **Management API** - API 게이트웨이 관리를 위한 강력한 Rest API를 제공합니다.
     - API Add/Delete/Change
     - APP Add/Delete/Change
     - IP Whitelist Add/Delete
     - Key Expiry/Regenerate
-* **Supported Server Cluster** - API Gateway Cluster can be configured. With the Management API, the changes take effect on all servers. Rate Limiting, and Service Capacity information are all shared.
+* **Supported Server Cluster** - API 게이트웨이 클러스터를 관리할 수 있습니다. 관리(Management) API를 이용해서 변경사항을 모든 서버에 적용할 수 있습니다. 즉, 사용빈도, 서비스 가용량 정보를 모든 서버가 공유할 수 있습니다.
 
 ## Dependency
 * Spring Boot 2.1
@@ -52,161 +52,161 @@ Moon API 게이트웨이는 강력하지만, 가볍고 빠른 기능을 제공�
 * Jedis 3.0
 
 ## Configuration
-There are required settings to run undefined-api-gateway.
-You do not need to use initialization with the management API.
+Moon-API-Gateway 실행을 위한 필요한 설정있습니다.
+관리(management) API를 이용하면 초기화를 진행할 필요가 없습니다.
 
-A. First
- <br />
-    - Please set the global application first in application.yaml <br />
+### Step 1
+```
+- Please set the global application first in application.yaml
 
-    undefined:
-      service:       
-        ip-acl-enable: false
-        cluster:
-          enable: false
-          sync-interval: 300000       
-        proxy-timeout: 20000
+moon:
+  service:       
+    ip-acl-enable: false
+    cluster:
+      enable: false
+      sync-interval: 300000       
+    proxy-timeout: 20000
 
-    jedis-client:      
-      host: '127.0.0.1'
-      port: 6379
-      timeout: 1000
-      database: 0
+jedis-client:      
+  host: '127.0.0.1'
+  port: 6379
+  timeout: 1000
+  database: 0
+```
+- ip-acl-enable: IP 화이트리스트 기능을 설정합니다. 이는 APP 기반으로 동작합니다.
+- cluster/enable: 서버 클러스터 설정을 사용한다면 데몬 스레드가 Service, App, API 정보들을 가져옵니다.
+- cluster/sync-interval: 클러스터의 동기화 시간을 설정할 수 있습니다.
+- proxy-timeout: request proxy 타임아웃 시간을 설정할 수 있습니다.  
+- **jedis-client**: Moon-API-Gateway에서 Redis 설정은 반드시 필요합니다.
+- jedis-client/host: Redis 호스트 정보를 설정합니다.
+- jedis-client/port: Redis 포트 정보를 설정합니다.
 
-- ip-acl-enable: Enable the ip whitelisting feature. It operates on APP basis.
-- cluster/enable: If you enable a server cluster, the daemon thread continues to fetch services, apps, and apis information.
-- cluster/sync-interval: This option allows you to set the interval for the cluster synchronization operation.
-- proxy-timeout: This option allows you to set the timeout for the Rotating service.
-- **jedis-client**: Redis is an essential infrastructure for undefined-api-gateway.
-- jedis-client/host: Host information for Redis.
-- jedis-client/port: Port information for Redis.
+### B. Step 2
+```
+- Please set the initial application registration in application-apps.yaml
+- (These settings are optional)
 
-B. Second
- <br />
-    - Please set the initial application registration in application-apps.yaml <br />
-    - (These settings are optional)
+init-apps:
+  init-enable: true
+  apps:
+    -
+      app-id: 0
+      app-name: TestApp
+      api-key: 1000-1000-1000-1000
+      app-minutely-ratelimit: 2000
+      app-daily-ratelimit: 10000
+      app-service-contract: [1, 2, 3]
+      app-ip-acl: ['192.168.0.1', '127.0.0.1']
+    -
+      app-id: 1
+      app-name: BestApp
+      api-key: e3938427-1e27-3a37-a854-0ac5a40d84a8
+      app-minutely-ratelimit: 1000
+      app-daily-ratelimit: 50000
+      app-service-contract: [1, 2]
+      app-ip-acl: ['127.0.0.1']
+```
 
-    init-apps:
-      init-enable: true
-      apps:
+- init-enable: init-apps 설정 사용 여부를 설정합니다.
+- app-service-contract: 사용권한이 있는 app API 서비스 목록을 설정합니다.
+- app-ip-acl: API 키를 사용할 수 있는 IP 화이트리스트 목록을 설정합니다.
+- app minutely/daily ratelimit: app에서 호출 가능한 API 호출빈도를 설정합니다.
+
+### Step 3
+```
+- Set up service and API specification configurations in application-apis.yml
+- The API Gateway obtains Service and API information through the APIExposeSpecLoader.
+
+api-spec:
+  init-enable: true
+  services:
+    -
+      service-id: 1
+      service-name: stackoverflow
+      service-minutely-capacity: 10000
+      service-daily-capacity: 240000
+      service-path: /stackoverflow
+      outbound-service-host: api.stackexchange.com
+      apis:
         -
-          app-id: 0
-          app-name: TestApp
-          api-key: 1000-1000-1000-1000
-          app-minutely-ratelimit: 2000
-          app-daily-ratelimit: 10000
-          app-service-contract: [1, 2, 3]
-          app-ip-acl: ['192.168.0.1', '127.0.0.1']
+          api-id: 101
+          api-name: getInfo
+          protocol: http, https
+          method: get
+          inbound-url: /2.2/question/:first
+          outbound-url: /2.2/questions
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
         -
-          app-id: 1
-          app-name: BestApp
-          api-key: e3938427-1e27-3a37-a854-0ac5a40d84a8
-          app-minutely-ratelimit: 1000
-          app-daily-ratelimit: 50000
-          app-service-contract: [1, 2]
-          app-ip-acl: ['127.0.0.1']
-
-- init-enable: The initial registration setting is not used.
-- app-service-contract: A list of API services that app has permission to use.
-- app-ip-acl: The whitelist of ip that can use this API Key.
-- app minutely/daily ratelimit: The amount of APIs available to the app.
-
-C. Third
- <br />
-    - Set up service and API specification configurations in application-apis.yml <br />
-    - The API Gateway obtains Service and API information through the APIExposeSpecLoader.
-
-    api-spec:
-      init-enable: true
-      services:
+          api-id: 202
+          api-name: getQuestions
+          protocol: https
+          method: put
+          inbound-url: /2.2/question/:first
+          outbound-url: /2.2/questions
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
+    -
+      service-id: 2
+      service-name: stackoverflow2
+      service-minutely-capacity: 5000
+      service-daily-capacity: 100000
+      service-path: /another
+      outbound-service-host: api.stackexchange.com
+      apis:
         -
-          service-id: 1
-          service-name: stackoverflow
-          service-minutely-capacity: 10000
-          service-daily-capacity: 240000
-          service-path: /stackoverflow
-          outbound-service-host: api.stackexchange.com
-          apis:
-            -
-              api-id: 101
-              api-name: getInfo
-              protocol: http, https
-              method: get
-              inbound-url: /2.2/question/:first
-              outbound-url: /2.2/questions
-              header: page, votes
-              header-required: ""
-              query-param: version, site
-              query-param-required: site
-            -
-              api-id: 202
-              api-name: getQuestions
-              protocol: https
-              method: put
-              inbound-url: /2.2/question/:first
-              outbound-url: /2.2/questions
-              header: page, votes
-              header-required: ""
-              query-param: version, site
-              query-param-required: site
-        -
-          service-id: 2
-          service-name: stackoverflow2
-          service-minutely-capacity: 5000
-          service-daily-capacity: 100000
-          service-path: /another
-          outbound-service-host: api.stackexchange.com
-          apis:
-            -
-              api-id: 201
-              api-name: transformTest
-              protocol: http, https
-              method: get
-              inbound-url: /2.2/haha/question/:site
-              outbound-url: /:page/:site
-              header: page, votes
-              header-required: ""
-              query-param: version, site
-              query-param-required: site
-              transform:
-                page: [header, param_path]
-                site: [param_path, header]
-        -
-          service-id: '03'
-          service-name: service3
-          service-minutely-capacity: 5000
-          service-daily-capacity: 100000
-          service-path: /service3
-          outbound-service-host: api.stackexchange.com
-          only-pass-request-without-transform: true
-
-- init-enable: The initial registration setting is not used.
-- service-path: URL The first parameter in the Path. The API is routed to the service registered in that parameter.
-- service minutely/daily capacity: The total amount of APIs that the service can route.
-- outbound-service-host: The APIs of the service are routed to that domain.
-- apis/inbound-url: Externally exposed API URL Path specification. ':?' Is a variable.
-- apis/outbound-url: The actual url path of the service connected to the api-gateway.
-- apis/header: This is the header that can be received when requesting API.
-- apis/header-required: This header is mandatory for API requests.
-- apis/query-param: This is the url query parameter that can be received when requesting API.
-- apis/query-param-required: This url query parameter is mandatory for API requests.
-- transform: The param that is received at the time of request is transformed into another variable area at the time of routing.
-    - Possible options: **header**, **param_path**, **param_query**, **body_json**
-    - usage: [source, destination] like [header, param_path]
-    - To use the body_json type, the content-type must be the application/json.
-- only-pass-request-without-transform: All APIs are routed to services connected to the gateway without any analysis or transformation.
+          api-id: 201
+          api-name: transformTest
+          protocol: http, https
+          method: get
+          inbound-url: /2.2/haha/question/:site
+          outbound-url: /:page/:site
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
+          transform:
+            page: [header, param_path]
+            site: [param_path, header]
+    -
+      service-id: '03'
+      service-name: service3
+      service-minutely-capacity: 5000
+      service-daily-capacity: 100000
+      service-path: /service3
+      outbound-service-host: api.stackexchange.com
+      only-pass-request-without-transform: true
+```
+- init-enable: api-spec 사용 여부를 설정합니다.
+- service-path: URL 경로의 첫번째 파라미터를 설정합니다. API는 해당 경로로 등록된 서비스로 라우팅됩니다.
+- service minutely/daily capacity: 서비스의 분/일 단위 가용량을 설정합니다.
+- outbound-service-host: 서비스 API의 응답이 라우팅되는 Outbound 도메인을 설정합니다.
+- apis/inbound-url: 외부로 노출할 API URL 경로를 명세합니다. `:?`는 변수이며 이곳에 설정합니다.
+- apis/outbound-url: API 게이트웨이에 접속할 실제 URL을 설정합니다.
+- apis/header: API를 호출할 때 받을 수 있는 헤더를 설정합니다.
+- apis/header-required: API 요청의 필수 헤더를 설정합니다.
+- apis/query-param: URL 쿼리 파라미터를 설정합니다.
+- apis/query-param-required: 필수 URL 쿼리 파라미터를 설정합니다.
+- transform: 수신한 요청의 파라미터를 라우팅과 동시에 다른 파라미터로 변환되도록 설정합니다.
+    - 사용 가능한 옵션: **header**, **param_path**, **param_query**, **body_json**
+    - 사용 방법: [source, destination] 형태로 설정합니다. 예: [header, param_path]
+    - body_json 타입을 사용하는 경우, `content-type`은 `application/json`을 사용해야합니다.
+- only-pass-request-without-transform: 게이트웨이에 접속하는 모든 API가 어떤 분석이나 변환이 없이 서비스로 라우팅되도록 설정합니다.
 
 
-Undefined-api-gateway supports the following protocol and method.
+Moon-api-gateway 는 아래의 프로토콜과 메소드를 지원합니다.
 
-* Protocol
-    - http, https
-* Method
-    - Get, Post, Put, Delete
+* 프로토콜
+    - HTTP, HTTPS
+* 메소드
+    - GET, POST, PUT, DELETE
 
 ## API Gateway Cluster
-Undefined API Gateway supports clusters. Each node synchronizes API, APP, IP Whitelist and App Key (= API Key) information in near real time.
-Cluster nodes also work together to calculate the correct API Ratelimiting, Service Capacity.
+Moon API Gateway는 클러스터를 지원합니다. 각 노드는 실시간으로 API, APP, IP 허용 목록 및 앱 키 (= API 키) 정보를 동기화합니다. 또한 클러스터 노드들이 함께 올바른 API 사용빈도 제한, 서비스 가용용량을 계산합니다.
 
 - **Service, API, APP, IP Whitelist Interval Sync**
 
@@ -214,101 +214,99 @@ Cluster nodes also work together to calculate the correct API Ratelimiting, Serv
 
 
 ## Management REST API
-The Management API helps manage a single gateway or cluster group.
+관리 API는 단일 게이트웨이 혹은 클러스터 그룹 관리에 유용합니다.
 
 **APP Management**
-  - **APP Register** - [POST] /internal/apps
-  - **APP UnRegister** - [DELETE] /internal/apps/{appId}
-  - **APP Update** - [Future Feature]
-  - **API Key Expiry** - [DELETE] /internal/apps/{appId}/apikey
-  - **API Key Regenerate** - [PUT] /internal/apps/{appId}
-  - **Add NEW IP Whitelist** - [POST] /internal/apps/{appId}/whitelist
-  - **Remove IP Whitelist** - [DELETE] /internal/apps/{appId}/whitelist
+  - **APP 등록** - [POST] /internal/apps
+  - **APP 삭제** - [DELETE] /internal/apps/{appId}
+  - **APP 업데이트** - [Future Feature]
+  - **API Key 만료처리** - [DELETE] /internal/apps/{appId}/apikey
+  - **API Key 갱신처리** - [PUT] /internal/apps/{appId}
+  - **IP 허용목록 추가** - [POST] /internal/apps/{appId}/whitelist
+  - **IP 허용목록 삭제** - [DELETE] /internal/apps/{appId}/whitelist
 
 **API Management**
-  - **New API Register** - [POST] /internal/apis
-  - **API UnRegister** - [DELETE] /internal/apis/{apiId}
-  - **API Update** - [PUT] /internal/apis/{apiId}
+  - **API 추가** - [POST] /internal/apis
+  - **API 삭제** - [DELETE] /internal/apis/{apiId}
+  - **API 수정** - [PUT] /internal/apis/{apiId}
 
-**Service Group API Will be updated**
+**Service Group API는 곧 업데이트 예정입니다.**
 
 
 
 ## Usage/Test
 
-##### API - stackoverflow API.
+##### API - Stack Overflow API.
 
-Service And API Expose Specification for stackoverflow
+스택오버플로우(Stack Overflow) 명세를 활용한 예시입니다.
+```
+service-id: '01'
+      service-name: stackoverflow
+      service-minutely-capacity: 10000
+      service-daily-capacity: 240000
+      service-path: /stackoverflow
+      outbound-service-host: api.stackexchange.com
+      apis:
+        -
+          api-id: '0101'
+          api-name: getInfo
+          protocol: http, https
+          method: get
+          inbound-url: /2.2/question/:first
+          outbound-url: /2.2/questions
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
+```
+- 1) 호출하려는 API 서비스 경로는 `/stackoverflow`입니다.
+- 2) 게이트웨이 인입 URL은 `/2.2/question/:first` 경로로 설정됩니다.
+- 3) ':first' 부분에 경로 파라미터를 추가로 설정합니다.
+- 4) 호출 프로토콜은 http와 https를 지원하고, http로 호출합니다.
+- 5) 헤더와 URL 쿼리 파라미터를 설정합니다.
+- 6) 호출된 API는 `outbound-service-host`로 설정된 `api.stackexchange.com` 도메인으로 라우트됩니다.
+- 7) 호출된 API는 `api.stackexchange.com` 도메인의 목적지 URL인 `outbound-url` 설정값인 `/2.2/questions` 경로로 호출됩니다.
 
-
-    service-id: '01'
-          service-name: stackoverflow
-          service-minutely-capacity: 10000
-          service-daily-capacity: 240000
-          service-path: /stackoverflow
-          outbound-service-host: api.stackexchange.com
-          apis:
-            -
-              api-id: '0101'
-              api-name: getInfo
-              protocol: http, https
-              method: get
-              inbound-url: /2.2/question/:first
-              outbound-url: /2.2/questions
-              header: page, votes
-              header-required: ""
-              query-param: version, site
-              query-param-required: site
-
-
-- 1) The api service path we want to call is '/stackoverflow'
-- 2) The inbound url path following the service path is '/2.2/question/:first'
-- 3) ': first' is the path parameter and we declare it 'test'.
-- 4) The calling protocol supports http and https, and we will call http.
-- 5) Set the header and url query parameters.
-- 6) When you call the API, the gateway will route the call to api.stackexchange.com set to outbound-service-host.
-- 7) When calling the API, the domain is api.stackexchange.com and the destination url path is '/2.2/questions' set to outbound-url.
-
-##### 1) Use Test Case - Run undefined-api-gateway by gradle
+##### 1) 테스트 사용법 - Run moon-api-gateway by gradle
 
     ./gradlew test
 
-##### 2) Use rest-client like Postman.
-To set method and scheme.
+##### 2) Postman 같은 클라이언트 사용
+메소드와 스킴을 설정합니다.
 
     GET, http
 
-Input URL.
+URL을 입력하세요.
 
     http://localhost:8080/stackoverflow/2.2/question/test
 
-Input URL parameter. ( site is mandatory query parameter )
+URL 파라미터를 입력합니다.(site는 필수 파라미터입니다.)
 
     site = stackoverflow
 
-OR you can input URL like below.
+또는 아래처럼 URL을 입력할 수 있습니다.
 
     http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
-and then input header fields. ( apikey is mandatory header.(or Query Parameter) )
+헤더 필드를 입력합니다.(apikey는 필수 헤더값 혹은 쿼리 파라미터입니다)
 
     apikey, 1000-1000-1000-1000
     page, 5
     votes, 1
 
-Execute request and check response code and content.
+요청을 실행하고, 응답 코드와 내용을 확인합니다.
 
-##### 3) Use cUrl.
+##### 3) Curl 사용하기.
 
     curl -X GET -H "Content-type: application/json" -H "apikey: 1000-1000-1000-1000" -H "page: 5" -H "votes: 1" http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
 ## Future update
-* Authentication for Private API
+* 비공개 API를 위한 인증
 * Docker-Compose
-    - Easy To Run
+    - 쉽게 시작하기
 
 ## Contact
-For any inquiries, you can reach me at longcoding@gmail.com
+문의사항은 `longcoding@gmail.com`으로 연락주세요.
 
 ## License
-undefined-api-gateway is released under the MIT license. See LICENSE for details.
+`Moon-API-Gateway`는 MIT 라이센스 권리를 갖습니다. LICENSE 세부사항을 확인하세요.
