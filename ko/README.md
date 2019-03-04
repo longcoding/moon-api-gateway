@@ -186,8 +186,8 @@ api-spec:
 - service minutely/daily capacity: 서비스의 분/일 단위 가용량을 설정합니다.
 - outbound-service-host: 서비스 API의 응답이 라우팅되는 외부 도메인을 설정합니다.
 - apis/inbound-url: 외부로 노출할 API URL 경로를 명세합니다. `:?`에 설정합니다.
-- apis/outbound-url: The actual url path of the service connected to the api-gateway.
-- apis/header: This is the header that can be received when requesting API.
+- apis/outbound-url: API 게이트웨이에 접속할 실제 URL을 설정합니다.
+- apis/header: API를 호출할 때 받을 수 있는 헤더를 설정합니다.
 - apis/header-required: API 요청의 필수 헤더를 설정합니다.
 - apis/query-param: URL 쿼리 파라미터를 설정합니다.
 - apis/query-param-required: 필수 URL 쿼리 파라미터를 설정합니다.
@@ -236,79 +236,77 @@ Moon API Gateway는 클러스터를 지원합니다. 각 노드는 실시간으�
 
 ## Usage/Test
 
-##### API - stackoverflow API.
+##### API - Stack Overflow API.
 
-Service And API Expose Specification for stackoverflow
+스택오버플로우(Stack Overflow) 명세를 활용한 예시입니다.
+```
+service-id: '01'
+      service-name: stackoverflow
+      service-minutely-capacity: 10000
+      service-daily-capacity: 240000
+      service-path: /stackoverflow
+      outbound-service-host: api.stackexchange.com
+      apis:
+        -
+          api-id: '0101'
+          api-name: getInfo
+          protocol: http, https
+          method: get
+          inbound-url: /2.2/question/:first
+          outbound-url: /2.2/questions
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
+```
+- 1) 호출하려는 API 서비스 경로는 `/stackoverflow`입니다.
+- 2) 게이트웨이 인입 URL은 `/2.2/question/:first` 경로로 설정됩니다.
+- 3) ':first' 부분에 경로 파라미터를 추가로 설정합니다.
+- 4) 호출 프로토콜은 http와 https를 지원하고, http로 호출합니다.
+- 5) 헤더와 URL 쿼리 파라미터를 설정합니다.
+- 6) 호출된 API는 `outbound-service-host`로 설정된 `api.stackexchange.com` 도메인으로 라우트됩니다.
+- 7) 호출된 API는 `api.stackexchange.com` 도메인의 목적지 URL인 `outbound-url` 설정값인 `/2.2/questions` 경로로 호출됩니다.
 
-
-    service-id: '01'
-          service-name: stackoverflow
-          service-minutely-capacity: 10000
-          service-daily-capacity: 240000
-          service-path: /stackoverflow
-          outbound-service-host: api.stackexchange.com
-          apis:
-            -
-              api-id: '0101'
-              api-name: getInfo
-              protocol: http, https
-              method: get
-              inbound-url: /2.2/question/:first
-              outbound-url: /2.2/questions
-              header: page, votes
-              header-required: ""
-              query-param: version, site
-              query-param-required: site
-
-
-- 1) The api service path we want to call is '/stackoverflow'
-- 2) The inbound url path following the service path is '/2.2/question/:first'
-- 3) ': first' is the path parameter and we declare it 'test'.
-- 4) The calling protocol supports http and https, and we will call http.
-- 5) Set the header and url query parameters.
-- 6) When you call the API, the gateway will route the call to api.stackexchange.com set to outbound-service-host.
-- 7) When calling the API, the domain is api.stackexchange.com and the destination url path is '/2.2/questions' set to outbound-url.
-
-##### 1) Use Test Case - Run moon-api-gateway by gradle
+##### 1) 테스트 사용법 - Run moon-api-gateway by gradle
 
     ./gradlew test
 
-##### 2) Use rest-client like Postman.
-To set method and scheme.
+##### 2) Postman 같은 클라이언트 사용
+메소드와 스킴을 설정합니다.
 
     GET, http
 
-Input URL.
+URL을 입력하세요.
 
     http://localhost:8080/stackoverflow/2.2/question/test
 
-Input URL parameter. ( site is mandatory query parameter )
+URL 파라미터를 입력합니다.(site는 필수 파라미터입니다.)
 
     site = stackoverflow
 
-OR you can input URL like below.
+또는 아래처럼 URL을 입력할 수 있습니다.
 
     http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
-and then input header fields. ( apikey is mandatory header.(or Query Parameter) )
+헤더 필드를 입력합니다.(apikey는 필수 헤더값 혹은 쿼리 파라미터입니다)
 
     apikey, 1000-1000-1000-1000
     page, 5
     votes, 1
 
-Execute request and check response code and content.
+요청을 실행하고, 응답 코드와 내용을 확인합니다.
 
-##### 3) Use cUrl.
+##### 3) Curl 사용하기.
 
     curl -X GET -H "Content-type: application/json" -H "apikey: 1000-1000-1000-1000" -H "page: 5" -H "votes: 1" http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
 ## Future update
-* Authentication for Private API
+* 비공개 API를 위한 인증
 * Docker-Compose
-    - Easy To Run
+    - 쉽게 시작하기
 
 ## Contact
-For any inquiries, you can reach me at longcoding@gmail.com
+문의사항은 `longcoding@gmail.com`으로 연락주세요.
 
 ## License
-moon-api-gateway is released under the MIT license. See LICENSE for details.
+`Moon-API-Gateway`는 MIT 라이센스 권리를 갖습니다. LICENSE 세부사항을 확인하세요.
