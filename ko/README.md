@@ -185,7 +185,7 @@ api-spec:
 - service-path: URL 경로의 첫번째 파라미터를 설정합니다. API는 해당 경로로 등록된 서비스로 라우팅됩니다.
 - service minutely/daily capacity: 서비스의 분/일 단위 가용량을 설정합니다.
 - outbound-service-host: 서비스 API의 응답이 라우팅되는 Outbound 도메인을 설정합니다.
-- apis/inbound-url: 외부로 노출할 API URL 경로를 명세합니다. `:?`에 설정합니다.
+- apis/inbound-url: 외부로 노출할 API URL 경로를 명세합니다. `:?`는 변수이며 이곳에 설정합니다.
 - apis/outbound-url: API 게이트웨이에 접속할 실제 URL을 설정합니다.
 - apis/header: API를 호출할 때 받을 수 있는 헤더를 설정합니다.
 - apis/header-required: API 요청의 필수 헤더를 설정합니다.
