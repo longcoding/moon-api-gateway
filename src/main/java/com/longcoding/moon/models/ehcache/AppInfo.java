@@ -5,6 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,10 +22,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "apps")
 public class AppInfo implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1532927748257139491L;
 
+    @Id @GeneratedValue
     private String appId;
     private String apiKey;
     private String appName;

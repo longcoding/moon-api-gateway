@@ -1,9 +1,9 @@
 package com.longcoding.moon.services.internal;
 
-import com.longcoding.moon.helpers.ClusterSyncUtil;
 import com.longcoding.moon.helpers.Constant;
-import com.longcoding.moon.helpers.JedisFactory;
 import com.longcoding.moon.helpers.JsonUtil;
+import com.longcoding.moon.helpers.cluster.ClusterSyncUtil;
+import com.longcoding.moon.helpers.cluster.IClusterRepository;
 import com.longcoding.moon.models.cluster.ApiSync;
 import com.longcoding.moon.models.ehcache.ApiInfo;
 import com.longcoding.moon.models.enumeration.ProtocolType;
@@ -12,7 +12,6 @@ import com.longcoding.moon.models.internal.EnrollApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import java.util.stream.Collectors;
 
@@ -27,10 +26,10 @@ import java.util.stream.Collectors;
 public class ApiService {
 
     @Autowired
-    JedisFactory jedisFactory;
+    ClusterSyncUtil clusterSyncUtil;
 
     @Autowired
-    ClusterSyncUtil clusterSyncUtil;
+    IClusterRepository clusterRepository;
 
     /**
      * Create new api specification information and reflect it in redis.
@@ -41,16 +40,11 @@ public class ApiService {
      * @return Reflected api specification information model.
      */
     public ApiInfo createOrModifyApi(SyncType syncType, EnrollApi enrollApi) {
-        ApiInfo apiInfo;
-        try (Jedis jedis = jedisFactory.getInstance()) {
-            //TODO: validation
+        ApiInfo apiInfo = convertedEnrollApiToApiInfo(enrollApi);
+        ApiSync apiSync = new ApiSync(syncType, apiInfo);
 
-            apiInfo = convertedEnrollApiToApiInfo(enrollApi);
-            ApiSync apiSync = new ApiSync(syncType, apiInfo);
-
-            jedis.hset(Constant.REDIS_KEY_INTERNAL_API_INFO, apiInfo.getApiId(), JsonUtil.fromJson(apiInfo));
-            clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_API_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(apiSync));
-        }
+        clusterRepository.setApiInfo(apiInfo);
+        clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_API_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(apiSync));
 
         return apiInfo;
     }
@@ -63,14 +57,11 @@ public class ApiService {
      * @return Returns success or failure.
      */
     public boolean deleteApi(String apiId) {
-        try (Jedis jedis = jedisFactory.getInstance()) {
+        ApiInfo apiInfo = new ApiInfo();
+        apiInfo.setApiId(apiId);
 
-            ApiInfo apiInfo = new ApiInfo();
-            apiInfo.setApiId(apiId);
-
-            clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_API_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(new ApiSync(SyncType.DELETE, apiInfo)));
-            return jedis.hdel(Constant.REDIS_KEY_INTERNAL_API_INFO, apiId) == 1;
-        }
+        clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_API_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(new ApiSync(SyncType.DELETE, apiInfo)));
+        return clusterRepository.removeApiInfo(apiId);
     }
 
     /**
@@ -105,11 +96,7 @@ public class ApiService {
      * @return It is the api information model that is inquired.
      */
     public ApiInfo selectApi(String apiId) {
-        try (Jedis jedis = jedisFactory.getInstance()) {
-            String apiInfoInString = jedis.hget(Constant.REDIS_KEY_INTERNAL_API_INFO, apiId);
-
-            return JsonUtil.fromJson(apiInfoInString, ApiInfo.class);
-        }
+        return clusterRepository.getApiInfo(apiId);
     }
 
 }

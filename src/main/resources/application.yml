@@ -57,6 +57,7 @@ moon:
     cluster:
       enable: false
       sync-interval: 300000
+      repository-type: redis
     interceptor:
       isasync: true
       async.thread.count: 100
@@ -72,6 +73,7 @@ moon:
     cluster:
       enable: false
       sync-interval: 300000
+      repository-type: redis
 
 ---
 spring.profiles: dev
@@ -83,6 +85,17 @@ moon:
     cluster:
       enable: true
       sync-interval: 300000
+      repository-type: redis
+
+################################################################################
+# Datasource Config ( if you need )
+################################################################################
+
+spring.datasource:
+  driver-class-name: com.mysql.jdbc.Driver
+  url:
+  username:
+  password:
 
 ################################################################################
 # Jedis Config

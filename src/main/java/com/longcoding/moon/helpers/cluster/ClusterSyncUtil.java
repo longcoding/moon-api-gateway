@@ -1,5 +1,7 @@
-package com.longcoding.moon.helpers;
+package com.longcoding.moon.helpers.cluster;
 
+import com.longcoding.moon.helpers.Constant;
+import com.longcoding.moon.helpers.JedisFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,6 +1,8 @@
 package com.longcoding.moon;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -20,7 +22,7 @@ import java.util.TimeZone;
  */
 
 @EnableScheduling
-@SpringBootApplication
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class MoonApplication {
 
     public static void main(String[] args) {

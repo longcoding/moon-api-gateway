@@ -1,11 +1,10 @@
 package com.longcoding.moon.services.internal;
 
-import com.longcoding.moon.exceptions.ExceptionType;
 import com.longcoding.moon.exceptions.GeneralException;
-import com.longcoding.moon.helpers.ClusterSyncUtil;
+import com.longcoding.moon.helpers.cluster.ClusterSyncUtil;
 import com.longcoding.moon.helpers.Constant;
-import com.longcoding.moon.helpers.JedisFactory;
 import com.longcoding.moon.helpers.JsonUtil;
+import com.longcoding.moon.helpers.cluster.IClusterRepository;
 import com.longcoding.moon.models.cluster.AppSync;
 import com.longcoding.moon.models.cluster.WhitelistIpSync;
 import com.longcoding.moon.models.ehcache.AppInfo;
@@ -17,7 +16,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import redis.clients.jedis.Jedis;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
@@ -34,7 +32,7 @@ import java.util.UUID;
 public class AppService {
 
     @Autowired
-    JedisFactory jedisFactory;
+    IClusterRepository clusterRepository;
 
     @Autowired
     ClusterSyncUtil clusterSyncUtil;
@@ -48,21 +46,14 @@ public class AppService {
      * @return Reflected Application information model.
      */
     public AppInfo createApp(EnrollApp enrollApp) {
-        AppInfo appInfo;
-        try (Jedis jedis = jedisFactory.getInstance()) {
-            Long totalApps = jedis.hlen(Constant.REDIS_KEY_INTERNAL_APP_INFO);
+        AppInfo appInfo = convertedEnrollAppToAppInfo(enrollApp);
+        appInfo.setValid(true);
+        appInfo.setApiKey(createUniqueApiKey().toString());
 
-            appInfo = convertedEnrollAppToAppInfo(enrollApp);
-            appInfo.setAppId(totalApps.toString());
-            appInfo.setValid(true);
-            appInfo.setApiKey(createUniqueApiKey().toString());
+        AppInfo storedAppInfo = clusterRepository.setAppInfo(appInfo);
 
-            AppSync appSync = new AppSync(SyncType.CREATE, appInfo);
-            jedis.hset(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(totalApps), JsonUtil.fromJson(appInfo));
-
-            clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(appSync));
-        }
-
+        AppSync appSync = new AppSync(SyncType.CREATE, storedAppInfo);
+        clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(appSync));
         return appInfo;
     }
 
@@ -74,11 +65,7 @@ public class AppService {
      * @throws GeneralException (RESOURCE_NOT_FOUND) When there is no application information corresponding to app id
      */
     public AppInfo getAppInfo(@PathVariable String appId) {
-        try (Jedis jedis = jedisFactory.getInstance()) {
-            String appInfo = jedis.hget(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
-            if (Strings.isNotEmpty(appInfo)) return JsonUtil.fromJson(appInfo, AppInfo.class);
-            else throw new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND);
-        }
+        return clusterRepository.getAppInfo(appId);
     }
 
     /**
@@ -88,14 +75,11 @@ public class AppService {
      * @return Returns success or failure.
      */
     public boolean deleteApp(@PathVariable String appId) {
-        try (Jedis jedis = jedisFactory.getInstance()) {
             AppInfo appInfo = new AppInfo();
             appInfo.setAppId(appId);
 
             clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.DELETE, appInfo)));
-            Long id = jedis.hdel(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
-            return id == 1;
-        }
+            return clusterRepository.removeAppInfo(appId);
     }
 
     /**
@@ -106,16 +90,11 @@ public class AppService {
      * @throws GeneralException (RESOURCE_NOT_FOUND) When there is no application information corresponding to app id
      */
     public boolean expireApiKey(@PathVariable String appId) {
-        try (Jedis jedis = jedisFactory.getInstance()) {
-            String appInfoInString = jedis.hget(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
-            if (Strings.isNotEmpty(appInfoInString)) {
-                AppInfo appInfo = JsonUtil.fromJson(appInfoInString, AppInfo.class);
-                appInfo.setApiKey(Strings.EMPTY);
+        AppInfo appInfo = clusterRepository.getAppInfo(appId);
+        appInfo.setApiKey(Strings.EMPTY);
 
-                clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.UPDATE, appInfo)));
-                return jedis.hset(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(appInfo.getAppId()), JsonUtil.fromJson(appInfo)) == 1;
-            } throw new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND);
-        }
+        clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.UPDATE, appInfo)));
+        return clusterRepository.modifyAppInfo(appInfo);
     }
 
     /**
@@ -126,16 +105,12 @@ public class AppService {
      * @throws GeneralException (RESOURCE_NOT_FOUND) When there is no application information corresponding to app id
      */
     public AppInfo refreshApiKey(@PathVariable String appId) {
-        try (Jedis jedis = jedisFactory.getInstance()) {
-            String appInfoInString = jedis.hget(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
-            if (Strings.isNotEmpty(appInfoInString)) {
-                AppInfo appInfo = JsonUtil.fromJson(appInfoInString, AppInfo.class);
-                appInfo.setApiKey(createUniqueApiKey().toString());
-                jedis.hset(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(appInfo.getAppId()), JsonUtil.fromJson(appInfo));
-                clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.UPDATE, appInfo)));
-                return appInfo;
-            } throw new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND);
-        }
+        AppInfo appInfo = clusterRepository.getAppInfo(appId);
+        appInfo.setApiKey(createUniqueApiKey().toString());
+
+        clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(new AppSync(SyncType.UPDATE, appInfo)));
+        clusterRepository.modifyAppInfo(appInfo);
+        return appInfo;
     }
     //TODO
     public boolean removeWhiteIps(EnrollWhitelistIp enrollWhitelistIp) {

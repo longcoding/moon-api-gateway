@@ -3,6 +3,7 @@ package com.longcoding.moon.helpers;
 import com.longcoding.moon.configs.InitAppConfig;
 import com.longcoding.moon.exceptions.ExceptionType;
 import com.longcoding.moon.exceptions.GeneralException;
+import com.longcoding.moon.helpers.cluster.IClusterRepository;
 import com.longcoding.moon.models.cluster.AppSync;
 import com.longcoding.moon.models.ehcache.AppInfo;
 import com.longcoding.moon.models.enumeration.SyncType;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
 
 import java.util.stream.Collectors;
 
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class InitAppLoader implements InitializingBean {
 
     @Autowired
-    JedisFactory jedisFactory;
+    IClusterRepository clusterRepository;
 
     @Autowired
     InitAppConfig initAppConfig;
@@ -55,10 +55,9 @@ public class InitAppLoader implements InitializingBean {
 
         // In cluster mode, the Application information stored in the persistence layer is fetched and stored in the cache.
         if (enableCluster) {
-            try(Jedis jedis = jedisFactory.getInstance()) {
-                jedis.hgetAll(Constant.REDIS_KEY_INTERNAL_APP_INFO)
-                        .forEach((key, appInString) -> {
-                            AppInfo appInfo = JsonUtil.fromJson(appInString, AppInfo.class);
+            try {
+                clusterRepository.getAllAppInfo()
+                        .forEach(appInfo -> {
                             syncService.syncAppInfoToCache(new AppSync(SyncType.CREATE, appInfo));
                         });
             } catch (Exception ex) {
@@ -69,7 +68,7 @@ public class InitAppLoader implements InitializingBean {
         // Whether to load the application information in the configuration file.
         // There is no need to load each time.
         if (initAppConfig.isInitEnable()) {
-            try(Jedis jedis = jedisFactory.getInstance()) {
+            try {
 
                 Cache<String, String> appDistinction = apiExposeSpecification.getAppDistinctionCache();
                 initAppConfig.getApps().forEach(app -> appDistinction.put(app.getApiKey(), String.valueOf(app.getAppId())));
@@ -89,7 +88,7 @@ public class InitAppLoader implements InitializingBean {
 
                     appInfoCaches.put(String.valueOf(app.getAppId()), appInfo);
 
-                    jedis.hsetnx(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(app.getAppId()), JsonUtil.fromJson(appInfo));
+                    clusterRepository.setAppInfo(appInfo);
                     aclIpChecker.enrolledInitAclIp(String.valueOf(app.getAppId()), app.getAppIpAcl());
                 });
 

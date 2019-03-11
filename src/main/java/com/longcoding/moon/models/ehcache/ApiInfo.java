@@ -8,6 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 
@@ -23,10 +27,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "apis")
 public class ApiInfo implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -5075020879095721346L;
 
+    @Id @GeneratedValue
     private String apiId;
     private String apiName;
 

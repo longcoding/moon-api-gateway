@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.longcoding.moon.configs.APIExposeSpecConfig;
 import com.longcoding.moon.exceptions.ExceptionType;
 import com.longcoding.moon.exceptions.GeneralException;
+import com.longcoding.moon.helpers.cluster.IClusterRepository;
 import com.longcoding.moon.models.apis.TransformData;
 import com.longcoding.moon.models.cluster.ApiSync;
 import com.longcoding.moon.models.ehcache.ApiInfo;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
 
 import java.util.List;
 import java.util.Map;
@@ -56,7 +56,7 @@ public class APIExposeSpecLoader implements InitializingBean {
     Boolean enableCluster;
 
     @Autowired
-    JedisFactory jedisFactory;
+    IClusterRepository clusterRepository;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -67,19 +67,12 @@ public class APIExposeSpecLoader implements InitializingBean {
 
         // In cluster mode, the API information stored in the persistence layer is fetched and stored in the cache.
         if (enableCluster) {
-            try (Jedis jedisClient = jedisFactory.getInstance()) {
-                jedisClient.hgetAll(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO)
-                        .forEach((key, serviceInString) -> {
-                            ServiceInfo serviceInfo = JsonUtil.fromJson(serviceInString, ServiceInfo.class);
-                            apiExposeSpecification.getServiceInfoCache().put(String.valueOf(serviceInfo.getServiceId()), serviceInfo);
-                        });
+            try {
+                clusterRepository.getAllServiceInfo()
+                        .forEach(serviceInfo -> apiExposeSpecification.getServiceInfoCache().put(String.valueOf(serviceInfo.getServiceId()), serviceInfo));
 
-
-                jedisClient.hgetAll(Constant.REDIS_KEY_INTERNAL_API_INFO)
-                        .forEach((key, apiInString) -> {
-                            ApiInfo apiInfo = JsonUtil.fromJson(apiInString, ApiInfo.class);
-                            syncService.syncApiInfoToCache(new ApiSync(SyncType.CREATE, apiInfo));
-                        });
+                clusterRepository.getAllApiInfo()
+                        .forEach(apiInfo -> syncService.syncApiInfoToCache(new ApiSync(SyncType.CREATE, apiInfo)));
             } catch (Exception ex) {
                 throw new GeneralException(ExceptionType.E_1203_FAIL_CLUSTER_SYNC, ex);
             }
@@ -108,7 +101,7 @@ public class APIExposeSpecLoader implements InitializingBean {
                         .routingType(serviceRoutingType)
                         .build();
                 apiExposeSpecification.getServiceInfoCache().put(String.valueOf(service.getServiceId()), serviceInfo);
-                jedisFactory.getInstance().hsetnx(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO, service.getServiceId(), JsonUtil.fromJson(serviceInfo));
+                clusterRepository.setServiceInfo(serviceInfo);
             });
         } catch (Exception ex) {
             throw new GeneralException(ExceptionType.E_1200_FAIL_SERVICE_INFO_CONFIGURATION_INIT, ex);
@@ -158,7 +151,7 @@ public class APIExposeSpecLoader implements InitializingBean {
                             .transformData(transformRequests)
                             .build();
 
-                    jedisFactory.getInstance().hsetnx(Constant.REDIS_KEY_INTERNAL_API_INFO, String.valueOf(apiInfo.getApiId()), JsonUtil.fromJson(apiInfo));
+                    clusterRepository.setApiInfo(apiInfo);
                     apiExposeSpecification.getApiInfoCache().put(apiSpec.getApiId(), apiInfo);
 
                 });
