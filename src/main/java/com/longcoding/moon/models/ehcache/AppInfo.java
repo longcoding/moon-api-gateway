@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -28,15 +26,18 @@ public class AppInfo implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1532927748257139491L;
 
-    @Id @GeneratedValue
-    private String appId;
+    @Id @GeneratedValue(generator="IdOrGenerated")
+    @GenericGenerator(name="IdOrGenerated", strategy="com.longcoding.moon.helpers.UseIdOrGenerate")
+    private int appId;
     private String apiKey;
     private String appName;
 
     private String dailyRateLimit;
     private String minutelyRateLimit;
 
-    private List<String> serviceContract;
+    @ElementCollection
+    private List<Integer> serviceContract;
+    @ElementCollection
     private List<String> appIpAcl;
 
     private boolean valid;

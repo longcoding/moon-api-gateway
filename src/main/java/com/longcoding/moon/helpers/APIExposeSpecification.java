@@ -49,7 +49,7 @@ public class APIExposeSpecification implements DisposableBean {
     /**
      * With this cache, you can find the apiId via the apiKey.
      */
-    private static Cache<String, String> appDistinctionCache;
+    private static Cache<String, Integer> appDistinctionCache;
 
     /**
      * Using the cache, you can see whether the requested service needs to be analyzed or immediately routed.
@@ -59,26 +59,26 @@ public class APIExposeSpecification implements DisposableBean {
     /**
      * Using the cache, you can get all the information of the application with the appId.
      */
-    private static Cache<String, AppInfo> appInfoCache;
+    private static Cache<Integer, AppInfo> appInfoCache;
 
     /**
      * Using the cache, you can get all the specification information of api with apiId.
      */
-    private static Cache<String, ApiInfo> apiInfoCache;
+    private static Cache<Integer, ApiInfo> apiInfoCache;
 
     /**
      * Using the cache, service specification information can be retrieved.
      */
-    private static Cache<String, ServiceInfo> serviceInfoCache;
+    private static Cache<Integer, ServiceInfo> serviceInfoCache;
 
     /**
      * Each of the four caches has regex pattern information for api path.
      * For the performance of the regex operation, we separated api path by http method.
      */
-    private static Cache<String, Pattern> apiMatchGet;
-    private static Cache<String, Pattern> apiMatchPost;
-    private static Cache<String, Pattern> apiMatchPut;
-    private static Cache<String, Pattern> apiMatchDelete;
+    private static Cache<Integer, Pattern> apiMatchGet;
+    private static Cache<Integer, Pattern> apiMatchPost;
+    private static Cache<Integer, Pattern> apiMatchPut;
+    private static Cache<Integer, Pattern> apiMatchDelete;
 
     private static String EHCACHE_PERSISTENCE_SPACE = System.getProperty("java.io.tmpdir");
 
@@ -92,17 +92,17 @@ public class APIExposeSpecification implements DisposableBean {
                 .heap(20000, EntryUnit.ENTRIES)
                 .disk(1000000, MemoryUnit.MB, false);
 
-        appDistinctionCache = cacheManager.createCache(CACHE_APP_DISTINCTION, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, resourcePoolsBuilder).build());
+        appDistinctionCache = cacheManager.createCache(CACHE_APP_DISTINCTION, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Integer.class, resourcePoolsBuilder).build());
         serviceRoutngTypeCache = cacheManager.createCache(CACHE_SERVICE_ROUTING_TYPE, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceRoutingInfo.class, resourcePoolsBuilder).build());
 
-        appInfoCache = cacheManager.createCache(CACHE_APP_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, AppInfo.class, resourcePoolsBuilder).build());
-        apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ApiInfo.class, resourcePoolsBuilder).build());
-        serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceInfo.class, resourcePoolsBuilder).build());
+        appInfoCache = cacheManager.createCache(CACHE_APP_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, AppInfo.class, resourcePoolsBuilder).build());
+        apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, ApiInfo.class, resourcePoolsBuilder).build());
+        serviceInfoCache = cacheManager.createCache(CACHE_SERVICE_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, ServiceInfo.class, resourcePoolsBuilder).build());
 
-        apiMatchGet = cacheManager.createCache(Constant.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchPost = cacheManager.createCache(Constant.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchPut = cacheManager.createCache(Constant.API_MATCH_HTTP_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
-        apiMatchDelete = cacheManager.createCache(Constant.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchGet = cacheManager.createCache(Constant.API_MATCH_HTTP_GET_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchPost = cacheManager.createCache(Constant.API_MATCH_HTTP_POST_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchPut = cacheManager.createCache(Constant.API_MATCH_HTTP_PUT_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, Pattern.class, resourcePoolsBuilder).build());
+        apiMatchDelete = cacheManager.createCache(Constant.API_MATCH_HTTP_DELETE_MAP, CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, Pattern.class, resourcePoolsBuilder).build());
     }
 
 
@@ -129,28 +129,28 @@ public class APIExposeSpecification implements DisposableBean {
      *
      * @return EhCache Object about ApiKey-AppId
      */
-    public Cache<String, String> getAppDistinctionCache() { return appDistinctionCache; }
+    public Cache<String, Integer> getAppDistinctionCache() { return appDistinctionCache; }
 
     /**
      * Takes the cache that fetches the appInfo using appId.
      *
      * @return EhCache Object about AppId-AppInfo
      */
-    public Cache<String, AppInfo> getAppInfoCache() { return appInfoCache; }
+    public Cache<Integer, AppInfo> getAppInfoCache() { return appInfoCache; }
 
     /**
      * Takes the cache that fetches the apiInfo using apiId.
      *
      * @return EhCache Object about ApiId-ApiInfo
      */
-    public Cache<String, ApiInfo> getApiInfoCache() { return apiInfoCache; }
+    public Cache<Integer, ApiInfo> getApiInfoCache() { return apiInfoCache; }
 
     /**
      * Takes the cache that fetches the serviceInfo using serviceId.
      *
      * @return EhCache Object about ServiceId-ServiceInfo
      */
-    public Cache<String, ServiceInfo> getServiceInfoCache() { return serviceInfoCache; }
+    public Cache<Integer, ServiceInfo> getServiceInfoCache() { return serviceInfoCache; }
 
     /**
      * Takes the cache that fetches the serviceRoutingInfo using serviceId.
@@ -168,7 +168,7 @@ public class APIExposeSpecification implements DisposableBean {
      * @param requestMethodType The http method type requested by the client.
      * @return EhCache Object about apiId-routingPathPattern
      */
-    public Cache<String, Pattern> getRoutingPathCache(MethodType requestMethodType) {
+    public Cache<Integer, Pattern> getRoutingPathCache(MethodType requestMethodType) {
         if (MethodType.GET == requestMethodType) {
             return apiMatchGet;
         } else if (MethodType.POST == requestMethodType) {

@@ -47,7 +47,7 @@ public class AclIpChecker implements InitializingBean {
      * @param appId The application Id of the client.
      * @param remoteIp The client's IP.
      */
-    public boolean isAllowedPartnerAndIp(String appId, String remoteIp) {
+    public boolean isAllowedPartnerAndIp(int appId, String remoteIp) {
         String aclKey = getAclKey(appId, remoteIp);
         return ACL_IP_CACHE.containsKey(aclKey);
     }
@@ -61,7 +61,7 @@ public class AclIpChecker implements InitializingBean {
      * @param appId The application Id of the client.
      * @param remoteIp The client's IPs.
      */
-    protected void enrolledInitAclIp(String appId, List<String> remoteIp) {
+    protected void enrolledInitAclIp(int appId, List<String> remoteIp) {
         remoteIp.forEach(ip -> enrolledInitAclIp(appId, ip));
     }
 
@@ -71,7 +71,7 @@ public class AclIpChecker implements InitializingBean {
      * @param appId The application Id of the client.
      * @param remoteIp The client's IP.
      */
-    protected void enrolledInitAclIp(String appId, String remoteIp) {
+    protected void enrolledInitAclIp(int appId, String remoteIp) {
         ACL_IP_CACHE.putIfAbsent(getAclKey(appId, remoteIp), "");
     }
 
@@ -82,8 +82,8 @@ public class AclIpChecker implements InitializingBean {
      * @param appId The application Id of the client.
      * @param remoteIp The client's IP.
      */
-    private String getAclKey(String appId, String remoteIp) {
-        return String.join("-", appId, remoteIp);
+    private String getAclKey(int appId, String remoteIp) {
+        return String.join("-", String.valueOf(appId), remoteIp);
     }
 
 }

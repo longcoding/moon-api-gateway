@@ -56,7 +56,7 @@ public class ApiService {
      * @param apiId Api Id.
      * @return Returns success or failure.
      */
-    public boolean deleteApi(String apiId) {
+    public boolean deleteApi(int apiId) {
         ApiInfo apiInfo = new ApiInfo();
         apiInfo.setApiId(apiId);
 
@@ -74,7 +74,7 @@ public class ApiService {
      */
     private ApiInfo convertedEnrollApiToApiInfo(EnrollApi enrollApi) {
         return ApiInfo.builder()
-                .apiId(String.valueOf(enrollApi.getApiId()))
+                .apiId(enrollApi.getApiId())
                 .apiName(enrollApi.getApiName())
                 .serviceId(enrollApi.getServiceId())
                 .headers(enrollApi.getHeaders())
@@ -95,7 +95,7 @@ public class ApiService {
      * @param apiId Api Id.
      * @return It is the api information model that is inquired.
      */
-    public ApiInfo selectApi(String apiId) {
+    public ApiInfo selectApi(int apiId) {
         return clusterRepository.getApiInfo(apiId);
     }
 

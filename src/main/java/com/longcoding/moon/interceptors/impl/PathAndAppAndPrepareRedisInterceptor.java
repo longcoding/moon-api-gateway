@@ -43,38 +43,39 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         ServiceRoutingInfo routingInfo = apiExposeSpec.getServiceTypeCache().get(requestInfo.getServicePath());
         if (Objects.isNull(routingInfo)) generateException(ExceptionType.E_1006_INVALID_API_PATH);
 
-        String apiId = Strings.EMPTY;
+        int apiId = -1;
         if (RoutingType.API_TRANSFER == routingInfo.getRoutingType()) {
             // for future update.
 //        String categoryValue = classifyCategory(requestInfo.getRequestURL(),
 //                messageManager.getBooleanProperty("moon.service.recognize.subdomain"));
-            Cache<String, Pattern> apiRoutingPaths = apiExposeSpec.getRoutingPathCache(MethodType.of(requestInfo.getRequestMethod()));
+            Cache<Integer, Pattern> apiRoutingPaths = apiExposeSpec.getRoutingPathCache(MethodType.of(requestInfo.getRequestMethod()));
             if ( Objects.isNull(apiRoutingPaths) ) {
                 generateException(ExceptionType.E_1003_METHOD_OR_PROTOCOL_IS_NOT_NOT_ALLOWED);
             }
 
-            for (Cache.Entry<String, Pattern> pathObj : apiRoutingPaths) {
+            for (Cache.Entry<Integer, Pattern> pathObj : apiRoutingPaths) {
                 if (pathObj.getValue().matcher(requestInfo.getRequestPath()).matches()) {
                     apiId = pathObj.getKey();
                     break;
                 }
             }
 
-            if (Strings.isEmpty(apiId)) {
+            if (apiId < 0) {
                 generateException(ExceptionType.E_1006_INVALID_API_PATH);
             }
         }
 
         ApiInfo apiInfo = apiExposeSpec.getApiInfoCache().get(apiId);
 
-        String outboundUrl, serviceId;
+        int serviceId;
+        String outboundUrl;
         if (RoutingType.API_TRANSFER == routingInfo.getRoutingType()) {
             serviceId = apiInfo.getServiceId();
             outboundUrl = apiInfo.getOutboundURL();
         } else {
             ServiceInfo serviceInfo = apiExposeSpec.getServiceInfoCache().get(routingInfo.getServiceId());
             serviceId = routingInfo.getServiceId();
-            apiId = Strings.EMPTY;
+            apiId = -1;
             outboundUrl = serviceInfo.getOutboundServiceHost() + requestInfo.getRequestPath().substring(requestInfo.getServicePath().length() + 1);
         }
 

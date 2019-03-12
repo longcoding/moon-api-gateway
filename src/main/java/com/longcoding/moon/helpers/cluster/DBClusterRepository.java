@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Configuration
-@ConditionalOnProperty(prefix = "moon.service.cluster", name = "repository-type", havingValue = "database")
+@ConditionalOnProperty(prefix = "moon.service.cluster", name = "repository-type", havingValue = "rdb")
 @Import({DataSourceAutoConfiguration.class})
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "com.longcoding.moon.models.repository", entityManagerFactoryRef = "entityManager")
+@EnableJpaRepositories(basePackages = "com.longcoding.moon.models.repository")
 public class DBClusterRepository implements IClusterRepository {
 
     @Autowired
@@ -43,7 +43,7 @@ public class DBClusterRepository implements IClusterRepository {
     }
 
     @Override
-    public ApiInfo getApiInfo(String apiId) {
+    public ApiInfo getApiInfo(int apiId) {
         Optional<ApiInfo> apiInfoOpt = apiInfoRepository.findById(apiId);
         return apiInfoOpt.orElseThrow(() -> new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND));
     }
@@ -54,7 +54,7 @@ public class DBClusterRepository implements IClusterRepository {
     }
 
     @Override
-    public boolean removeApiInfo(String apiId) {
+    public boolean removeApiInfo(int apiId) {
         apiInfoRepository.deleteById(apiId);
         return true;
     }
@@ -67,7 +67,7 @@ public class DBClusterRepository implements IClusterRepository {
     }
 
     @Override
-    public AppInfo getAppInfo(String appId) {
+    public AppInfo getAppInfo(int appId) {
         Optional<AppInfo> appInfoOpt = appInfoRepository.findById(appId);
         return appInfoOpt.orElseThrow(() -> new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND));
     }
@@ -78,7 +78,7 @@ public class DBClusterRepository implements IClusterRepository {
     }
 
     @Override
-    public boolean removeAppInfo(String appId) {
+    public boolean removeAppInfo(int appId) {
         appInfoRepository.deleteById(appId);
         return true;
     }
@@ -97,7 +97,7 @@ public class DBClusterRepository implements IClusterRepository {
     }
 
     @Override
-    public ServiceInfo getServiceInfo(String serviceId) {
+    public ServiceInfo getServiceInfo(int serviceId) {
         Optional<ServiceInfo> serviceInfoOpt = serviceInfoRepository.findById(serviceId);
         return serviceInfoOpt.orElseThrow(() -> new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND));
     }

@@ -24,7 +24,7 @@ public class EnrollApi implements Serializable, Cloneable {
     private int apiId;
     private String apiName;
 
-    private String serviceId;
+    private int serviceId;
 
     //true is mandatory
     private ConcurrentHashMap<String, Boolean> headers;

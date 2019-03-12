@@ -57,13 +57,13 @@ public class RedisClusterRepository implements IClusterRepository {
 
     @Override
     public boolean setApiInfo(ApiInfo apiInfo) {
-        hsetnx(Constant.REDIS_KEY_INTERNAL_API_INFO, apiInfo.getApiId(), JsonUtil.fromJson(apiInfo));
+        hsetnx(Constant.REDIS_KEY_INTERNAL_API_INFO, String.valueOf(apiInfo.getApiId()), JsonUtil.fromJson(apiInfo));
         return true;
     }
 
     @Override
-    public ApiInfo getApiInfo(String apiId) {
-        String apiInfoInString = hget(Constant.REDIS_KEY_INTERNAL_API_INFO, apiId);
+    public ApiInfo getApiInfo(int apiId) {
+        String apiInfoInString = hget(Constant.REDIS_KEY_INTERNAL_API_INFO, String.valueOf(apiId));
         return JsonUtil.fromJson(apiInfoInString, ApiInfo.class);
     }
 
@@ -75,23 +75,23 @@ public class RedisClusterRepository implements IClusterRepository {
     }
 
     @Override
-    public boolean removeApiInfo(String apiId) {
-        return hdel(Constant.REDIS_KEY_INTERNAL_API_INFO, apiId) == 1;
+    public boolean removeApiInfo(int apiId) {
+        return hdel(Constant.REDIS_KEY_INTERNAL_API_INFO, String.valueOf(apiId)) == 1;
     }
 
     @Override
     public AppInfo setAppInfo(AppInfo appInfo) {
         try (Jedis jedis = jedisFactory.getInstance()) {
             String totalApps = jedis.hlen(Constant.REDIS_KEY_INTERNAL_APP_INFO).toString();
-            appInfo.setAppId(totalApps);
+            appInfo.setAppId(Integer.valueOf(totalApps));
             jedis.hsetnx(Constant.REDIS_KEY_INTERNAL_APP_INFO, totalApps, JsonUtil.fromJson(appInfo));
         }
         return appInfo;
     }
 
     @Override
-    public AppInfo getAppInfo(String appId) {
-        String appInfoInString = hget(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId);
+    public AppInfo getAppInfo(int appId) {
+        String appInfoInString = hget(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(appId));
         if (Strings.isNotEmpty(appInfoInString)) return JsonUtil.fromJson(appInfoInString, AppInfo.class);
         else throw new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND);
     }
@@ -104,25 +104,25 @@ public class RedisClusterRepository implements IClusterRepository {
     }
 
     @Override
-    public boolean removeAppInfo(String appId) {
-        return hdel(Constant.REDIS_KEY_INTERNAL_APP_INFO, appId) == 1;
+    public boolean removeAppInfo(int appId) {
+        return hdel(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(appId)) == 1;
     }
 
     @Override
     public boolean modifyAppInfo(AppInfo appInfo) {
-        return hset(Constant.REDIS_KEY_INTERNAL_APP_INFO, appInfo.getAppId(), JsonUtil.fromJson(appInfo)) == 1;
+        return hset(Constant.REDIS_KEY_INTERNAL_APP_INFO, String.valueOf(appInfo.getAppId()), JsonUtil.fromJson(appInfo)) == 1;
     }
 
     @Override
     public boolean setServiceInfo(ServiceInfo serviceInfo) {
         try (Jedis jedis = jedisFactory.getInstance()) {
-            return jedis.hsetnx(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO, serviceInfo.getServiceId(), JsonUtil.fromJson(serviceInfo)) == 1;
+            return jedis.hsetnx(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO, String.valueOf(serviceInfo.getServiceId()), JsonUtil.fromJson(serviceInfo)) == 1;
         }
     }
 
     @Override
-    public ServiceInfo getServiceInfo(String serviceId) {
-        String serviceInfoInString = hget(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO, serviceId);
+    public ServiceInfo getServiceInfo(int serviceId) {
+        String serviceInfoInString = hget(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO, String.valueOf(serviceId));
         if (Strings.isNotEmpty(serviceInfoInString)) return JsonUtil.fromJson(serviceInfoInString, ServiceInfo.class);
         else throw new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND);
     }

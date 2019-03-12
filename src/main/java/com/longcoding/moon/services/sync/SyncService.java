@@ -84,10 +84,10 @@ public class SyncService {
      * @return Whether the operation was successful. Not yet applied.
      */
     private boolean createApp(AppInfo appInfo) {
-        Cache<String, String> appDistinction = apiExposeSpec.getAppDistinctionCache();
+        Cache<String, Integer> appDistinction = apiExposeSpec.getAppDistinctionCache();
         appDistinction.putIfAbsent(appInfo.getApiKey(), appInfo.getAppId());
 
-        Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
+        Cache<Integer, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
         appInfoCaches.putIfAbsent(appInfo.getAppId(), appInfo);
 
         return true;
@@ -100,7 +100,7 @@ public class SyncService {
      * @return Whether the operation was successful. Not yet applied.
      */
     private boolean updateApp(AppInfo appInfo) {
-        Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
+        Cache<Integer, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
         appInfoCaches.replace(appInfo.getAppId(), appInfo);
 
         return true;
@@ -113,8 +113,8 @@ public class SyncService {
      * @param requestIps These are the allowed ips for the application. You only need to add ip.
      * @return Whether the operation was successful. Not yet applied.
      */
-    private boolean updateWhitelistIp(String appId, List<String> requestIps) {
-        Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
+    private boolean updateWhitelistIp(int appId, List<String> requestIps) {
+        Cache<Integer, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
         AppInfo appInfo = appInfoCaches.get(appId);
         appInfo.getAppIpAcl().addAll(requestIps);
         appInfoCaches.replace(appInfo.getAppId(), appInfo);
@@ -129,10 +129,10 @@ public class SyncService {
      * @return Whether the operation was successful. Not yet applied.
      */
     private boolean deleteApp(AppInfo appInfo) {
-        Cache<String, String> appDistinction = apiExposeSpec.getAppDistinctionCache();
+        Cache<String, Integer> appDistinction = apiExposeSpec.getAppDistinctionCache();
         appDistinction.remove(appInfo.getApiKey());
 
-        Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
+        Cache<Integer, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
         appInfoCaches.remove(appInfo.getAppId());
 
         return true;
@@ -145,8 +145,8 @@ public class SyncService {
      * @param requestIps The ip list to delete.
      * @return Whether the operation was successful. Not yet applied.
      */
-    private boolean deleteWhitelistIp(String appId, List<String> requestIps) {
-        Cache<String, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
+    private boolean deleteWhitelistIp(int appId, List<String> requestIps) {
+        Cache<Integer, AppInfo> appInfoCaches = apiExposeSpec.getAppInfoCache();
         AppInfo appInfo = appInfoCaches.get(appId);
         requestIps.forEach(ip -> appInfo.getAppIpAcl().remove(ip));
         appInfoCaches.replace(appInfo.getAppId(), appInfo);
@@ -194,10 +194,10 @@ public class SyncService {
             String servicePath = serviceInfo.getServicePath().startsWith("/")? serviceInfo.getServicePath() : "/" + serviceInfo.getServicePath();
             Pattern routingUrlInRegex = Pattern.compile(servicePath + routingPathInRegex);
 
-            Cache<String, ApiInfo> apiInfoCache = apiExposeSpec.getApiInfoCache();
+            Cache<Integer, ApiInfo> apiInfoCache = apiExposeSpec.getApiInfoCache();
             apiInfo.getProtocol().forEach(protocol -> {
 
-                Cache<String, Pattern> apiRoutingCache = apiExposeSpec.getRoutingPathCache(MethodType.of(apiInfo.getInboundMethod()));
+                Cache<Integer, Pattern> apiRoutingCache = apiExposeSpec.getRoutingPathCache(MethodType.of(apiInfo.getInboundMethod()));
                 if (SyncType.CREATE == syncType) {
                     apiInfoCache.put(apiInfo.getApiId(), apiInfo);
                     apiRoutingCache.put(apiInfo.getApiId(), routingUrlInRegex);
@@ -220,7 +220,7 @@ public class SyncService {
      * @return Whether the operation was successful. Not yet applied.
      */
     private boolean deleteApi(ApiInfo apiInfo) {
-        Cache<String, ApiInfo> apiInfoCache = apiExposeSpec.getApiInfoCache();
+        Cache<Integer, ApiInfo> apiInfoCache = apiExposeSpec.getApiInfoCache();
         apiInfoCache.remove(apiInfo.getApiId());
 
         apiExposeSpec.getRoutingPathCache(MethodType.of(apiInfo.getInboundMethod())).remove(apiInfo.getApiId());

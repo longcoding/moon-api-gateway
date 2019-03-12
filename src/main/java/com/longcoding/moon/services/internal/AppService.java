@@ -64,7 +64,7 @@ public class AppService {
      * @return Application information model.
      * @throws GeneralException (RESOURCE_NOT_FOUND) When there is no application information corresponding to app id
      */
-    public AppInfo getAppInfo(@PathVariable String appId) {
+    public AppInfo getAppInfo(@PathVariable int appId) {
         return clusterRepository.getAppInfo(appId);
     }
 
@@ -74,7 +74,7 @@ public class AppService {
      * @param appId Application Id.
      * @return Returns success or failure.
      */
-    public boolean deleteApp(@PathVariable String appId) {
+    public boolean deleteApp(@PathVariable int appId) {
             AppInfo appInfo = new AppInfo();
             appInfo.setAppId(appId);
 
@@ -89,7 +89,7 @@ public class AppService {
      * @return Returns success or failure.
      * @throws GeneralException (RESOURCE_NOT_FOUND) When there is no application information corresponding to app id
      */
-    public boolean expireApiKey(@PathVariable String appId) {
+    public boolean expireApiKey(@PathVariable int appId) {
         AppInfo appInfo = clusterRepository.getAppInfo(appId);
         appInfo.setApiKey(Strings.EMPTY);
 
@@ -104,7 +104,7 @@ public class AppService {
      * @return Application information model.
      * @throws GeneralException (RESOURCE_NOT_FOUND) When there is no application information corresponding to app id
      */
-    public AppInfo refreshApiKey(@PathVariable String appId) {
+    public AppInfo refreshApiKey(@PathVariable int appId) {
         AppInfo appInfo = clusterRepository.getAppInfo(appId);
         appInfo.setApiKey(createUniqueApiKey().toString());
 
@@ -114,14 +114,14 @@ public class AppService {
     }
     //TODO
     public boolean removeWhiteIps(EnrollWhitelistIp enrollWhitelistIp) {
-        WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.DELETE, String.valueOf(enrollWhitelistIp.getAppId()), enrollWhitelistIp.getRequestIps());
+        WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.DELETE, enrollWhitelistIp.getAppId(), enrollWhitelistIp.getRequestIps());
         clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_WHITELIST_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(ipSync));
         return true;
     }
 
     //TODO
     public boolean addWhiteIps(EnrollWhitelistIp enrollWhitelistIp) {
-        WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.UPDATE, String.valueOf(enrollWhitelistIp.getAppId()), enrollWhitelistIp.getRequestIps());
+        WhitelistIpSync ipSync = new WhitelistIpSync(SyncType.UPDATE, enrollWhitelistIp.getAppId(), enrollWhitelistIp.getRequestIps());
         clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_APP_WHITELIST_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(ipSync));
         return true;
     }
@@ -147,7 +147,7 @@ public class AppService {
      */
     private AppInfo convertedEnrollAppToAppInfo(EnrollApp enrollApp) {
         return AppInfo.builder()
-                .appId(String.valueOf(enrollApp.getAppId()))
+                .appId(enrollApp.getAppId())
                 .appName(enrollApp.getAppName())
                 .appIpAcl(enrollApp.getAppIpAcl())
                 .apiKey(enrollApp.getApiKey())

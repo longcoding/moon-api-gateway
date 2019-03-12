@@ -34,14 +34,16 @@ public class AuthenticationInterceptor extends AbstractBaseInterceptor {
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
 
-        String appId = Strings.EMPTY;
+        int appId = -1;
         String apiKey = apiKeyValidation(requestInfo.getQueryStringMap(), requestInfo.getHeaders());
         if (Strings.isNotEmpty(apiKey)) {
-            appId = apiExposeSpec.getAppDistinctionCache().get(apiKey);
-            if (Strings.isNotEmpty(appId)) requestInfo.setAppId(appId);
+            if (apiExposeSpec.getAppDistinctionCache().containsKey(apiKey)) {
+                appId = apiExposeSpec.getAppDistinctionCache().get(apiKey);
+                requestInfo.setAppId(appId);
+            }
         }
 
-        if ( Strings.isEmpty(apiKey)  || Strings.isEmpty(appId) ) {
+        if ( Strings.isEmpty(apiKey)  || appId < 0 ) {
             generateException(ExceptionType.E_1005_APIKEY_IS_INVALID);
             return false;
         }

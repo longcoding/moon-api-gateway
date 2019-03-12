@@ -24,8 +24,8 @@ public class ServiceCapacityInterceptor extends RedisBaseValidationInterceptor<M
 
     @Override
     public Map<String, Response<Long>> setJedisMultiCommand(Transaction jedisMulti) {
-        String dailyRedisKey = String.join(":", Constant.REDIS_SERVICE_CAPACITY_DAILY, requestInfo.getServiceId());
-        String minutelyRedisKey = String.join(":", Constant.REDIS_SERVICE_CAPACITY_MINUTELY, requestInfo.getServiceId());
+        String dailyRedisKey = String.join(":", Constant.REDIS_SERVICE_CAPACITY_DAILY, String.valueOf(requestInfo.getServiceId()));
+        String minutelyRedisKey = String.join(":", Constant.REDIS_SERVICE_CAPACITY_MINUTELY, String.valueOf(requestInfo.getServiceId()));
 
         Response<Long> serviceDailyRatelimit = jedisMulti.decr(dailyRedisKey);
         Response<Long> serviceMinutelyRatelimit = jedisMulti.decr(minutelyRedisKey);
@@ -45,14 +45,14 @@ public class ServiceCapacityInterceptor extends RedisBaseValidationInterceptor<M
     protected boolean onFailure(Map<String, Response<Long>> storedValue, Transaction jedisMulti) {
 
         if (storedValue.get(Constant.REDIS_SERVICE_CAPACITY_MINUTELY_TTL).get() < 0 && storedValue.get(Constant.REDIS_SERVICE_CAPACITY_DAILY).get() >= 0) {
-            String minutelyRedisKey = String.join(":", Constant.REDIS_SERVICE_CAPACITY_MINUTELY, requestInfo.getServiceId());
+            String minutelyRedisKey = String.join(":", Constant.REDIS_SERVICE_CAPACITY_MINUTELY, String.valueOf(requestInfo.getServiceId()));
             String serviceQuota = apiExposeSpec.getServiceInfoCache().get(requestInfo.getServiceId()).getMinutelyCapacity();
             jedisMulti.setex(minutelyRedisKey, Constant.SECOND_OF_MINUTE, serviceQuota);
             return true;
         }
 
         if (storedValue.get(Constant.REDIS_SERVICE_CAPACITY_DAILY_TTL).get() < 0) {
-            String dailyRedisKey = String.join(":", Constant.REDIS_SERVICE_CAPACITY_DAILY, requestInfo.getServiceId());
+            String dailyRedisKey = String.join(":", Constant.REDIS_SERVICE_CAPACITY_DAILY, String.valueOf(requestInfo.getServiceId()));
             String serviceQuota = apiExposeSpec.getServiceInfoCache().get(requestInfo.getServiceId()).getDailyCapacity();
             jedisMulti.setex(dailyRedisKey, Constant.SECOND_OF_DAY, serviceQuota);
             return true;

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 /**
@@ -70,26 +71,26 @@ public class InitAppLoader implements InitializingBean {
         if (initAppConfig.isInitEnable()) {
             try {
 
-                Cache<String, String> appDistinction = apiExposeSpecification.getAppDistinctionCache();
-                initAppConfig.getApps().forEach(app -> appDistinction.put(app.getApiKey(), String.valueOf(app.getAppId())));
+                Cache<String, Integer> appDistinction = apiExposeSpecification.getAppDistinctionCache();
+                initAppConfig.getApps().forEach(app -> appDistinction.put(app.getApiKey(), app.getAppId()));
 
-                Cache<String, AppInfo> appInfoCaches = apiExposeSpecification.getAppInfoCache();
+                Cache<Integer, AppInfo> appInfoCaches = apiExposeSpecification.getAppInfoCache();
                 initAppConfig.getApps().forEach(app -> {
                     AppInfo appInfo = AppInfo.builder()
-                            .appId(String.valueOf(app.getAppId()))
+                            .appId(app.getAppId())
                             .apiKey(app.getApiKey())
                             .appName(app.getAppName())
                             .dailyRateLimit(String.valueOf(app.getAppDailyRateLimit()))
                             .minutelyRateLimit(String.valueOf(app.getAppMinutelyRateLimit()))
-                            .serviceContract(app.getAppServiceContract().stream().map(String::valueOf).collect(Collectors.toList()))
+                            .serviceContract(new ArrayList<>(app.getAppServiceContract()))
                             .appIpAcl(app.getAppIpAcl())
                             .valid(true)
                             .build();
 
-                    appInfoCaches.put(String.valueOf(app.getAppId()), appInfo);
+                    appInfoCaches.put(app.getAppId(), appInfo);
 
                     clusterRepository.setAppInfo(appInfo);
-                    aclIpChecker.enrolledInitAclIp(String.valueOf(app.getAppId()), app.getAppIpAcl());
+                    aclIpChecker.enrolledInitAclIp(app.getAppId(), app.getAppIpAcl());
                 });
 
             } catch (Exception ex) {

@@ -69,7 +69,7 @@ public class APIExposeSpecLoader implements InitializingBean {
         if (enableCluster) {
             try {
                 clusterRepository.getAllServiceInfo()
-                        .forEach(serviceInfo -> apiExposeSpecification.getServiceInfoCache().put(String.valueOf(serviceInfo.getServiceId()), serviceInfo));
+                        .forEach(serviceInfo -> apiExposeSpecification.getServiceInfoCache().put(serviceInfo.getServiceId(), serviceInfo));
 
                 clusterRepository.getAllApiInfo()
                         .forEach(apiInfo -> syncService.syncApiInfoToCache(new ApiSync(SyncType.CREATE, apiInfo)));
@@ -100,7 +100,7 @@ public class APIExposeSpecLoader implements InitializingBean {
                         .outboundServiceHost(service.getOutboundServiceHost())
                         .routingType(serviceRoutingType)
                         .build();
-                apiExposeSpecification.getServiceInfoCache().put(String.valueOf(service.getServiceId()), serviceInfo);
+                apiExposeSpecification.getServiceInfoCache().put(service.getServiceId(), serviceInfo);
                 clusterRepository.setServiceInfo(serviceInfo);
             });
         } catch (Exception ex) {

@@ -44,7 +44,7 @@ public class AppController {
      * @return Returns success or failure.
      */
     @RequestMapping(value = "{appId}", method = RequestMethod.DELETE)
-    public boolean deleteApp(@PathVariable String appId) {
+    public boolean deleteApp(@PathVariable int appId) {
         return appService.deleteApp(appId);
     }
 
@@ -55,7 +55,7 @@ public class AppController {
      * @return An application information model for internal processing.
      */
     @RequestMapping(value = "{appId}", method = RequestMethod.GET)
-    public AppInfo getAppInfo(@PathVariable String appId) { return appService.getAppInfo(appId); }
+    public AppInfo getAppInfo(@PathVariable int appId) { return appService.getAppInfo(appId); }
 
     /**
      * Destroys the api key of the corresponding application.
@@ -65,7 +65,7 @@ public class AppController {
      * @return Returns success or failure.
      */
     @RequestMapping(value = "{appId}/apiKey", method = RequestMethod.DELETE)
-    public boolean expireApiKey(@PathVariable String appId) {
+    public boolean expireApiKey(@PathVariable int appId) {
         return appService.expireApiKey(appId);
     }
 
@@ -78,7 +78,7 @@ public class AppController {
      * @return An application information model for internal processing.
      */
     @RequestMapping(value = "{appId}/apiKey", method = RequestMethod.PUT)
-    public AppInfo refreshApiKey(@PathVariable String appId) { return appService.refreshApiKey(appId); }
+    public AppInfo refreshApiKey(@PathVariable int appId) { return appService.refreshApiKey(appId); }
 
     /**
      * Add a new whitelist ip to the application.

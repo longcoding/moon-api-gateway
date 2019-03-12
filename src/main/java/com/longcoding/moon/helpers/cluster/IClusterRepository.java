@@ -10,25 +10,25 @@ public interface IClusterRepository {
 
     boolean setApiInfo(ApiInfo apiInfo);
 
-    ApiInfo getApiInfo(String apiId);
+    ApiInfo getApiInfo(int apiId);
 
     List<ApiInfo> getAllApiInfo();
 
-    boolean removeApiInfo(String apiId);
+    boolean removeApiInfo(int apiId);
 
     AppInfo setAppInfo(AppInfo appInfo);
 
-    AppInfo getAppInfo(String appId);
+    AppInfo getAppInfo(int appId);
 
     List<AppInfo> getAllAppInfo();
 
-    boolean removeAppInfo(String appId);
+    boolean removeAppInfo(int appId);
 
     boolean modifyAppInfo(AppInfo appInfo);
 
     boolean setServiceInfo(ServiceInfo serviceInfo);
 
-    ServiceInfo getServiceInfo(String serviceId);
+    ServiceInfo getServiceInfo(int serviceId);
 
     List<ServiceInfo> getAllServiceInfo();
 

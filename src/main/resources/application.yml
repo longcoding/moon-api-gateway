@@ -3,7 +3,7 @@ server:
 
 # spring
 spring:
-  profiles.include: 'apis-local, apps-local'
+  profiles.include: 'local, apis-local, apps-local'
 
   http:
     encoding:
@@ -17,111 +17,9 @@ error:
   whitelabel:
     enabled: false
 
-################################################################################
-# Jedis Config
-################################################################################
-
-jedis-client:
-  max-total: 500
-  max-wait-millis: 5000
-  max-idle: 30
-  min-idle: 20
-  num-tests-pereviction-run: 5000
-  time-between-eviction-runs-millis: 60000
-  block-when-exhausted: true
-  test-on-borrow: true
-  test-on-return: true
-  test-while-idle: true
-  host: '127.0.0.1'
-  port: 6379
-  timeout: 1000
-  database: 0
-
-################################################################################
-# Jetty Config
-################################################################################
-
-jetty-client:
-  thread-count: 100
-  max-connection: 500
-  timeout: 5000
-
-################################################################################
-# Moon Service Config
-################################################################################
-
 moon:
-  service:
-    recognize-subdomain: false
-    ip-acl-enable: false
-    cluster:
-      enable: false
-      sync-interval: 300000
-      repository-type: redis
-    interceptor:
-      isasync: true
-      async.thread.count: 100
-    proxy-timeout: 20000
-
----
-spring.profiles: local
-spring.profiles.include: 'apps-local, apis-local'
-
-moon:
-  service:
-    ip-acl-enable: false
-    cluster:
-      enable: false
-      sync-interval: 300000
-      repository-type: redis
+  service.proxy-timeout: 20000
 
 ---
 spring.profiles: dev
-spring.profiles.include: 'apps-dev, apis-dev'
-
-moon:
-  service:
-    ip-acl-enable: true
-    cluster:
-      enable: true
-      sync-interval: 300000
-      repository-type: redis
-
-################################################################################
-# Datasource Config ( if you need )
-################################################################################
-
-spring.datasource:
-  driver-class-name: com.mysql.jdbc.Driver
-  url:
-  username:
-  password:
-
-################################################################################
-# Jedis Config
-################################################################################
-
-jedis-client:
-  max-total: 500
-  max-wait-millis: 5000
-  max-idle: 30
-  min-idle: 20
-  num-tests-pereviction-run: 5000
-  time-between-eviction-runs-millis: 60000
-  block-when-exhausted: true
-  test-on-borrow: true
-  test-on-return: true
-  test-while-idle: true
-  host: '127.0.0.1'
-  port: 6379
-  timeout: 1000
-  database: 0
-
-################################################################################
-# Jetty Config
-################################################################################
-
-jetty-client:
-  thread-count: 100
-  max-connection: 500
-  timeout: 5000
+spring.profiles.include: 'dev, apps-dev, apis-dev'

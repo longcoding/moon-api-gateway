@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,7 +30,8 @@ public class ServiceInfo implements Serializable, Cloneable {
     private static final long serialVersionUID = -6812605258146764111L;
 
     @Id @GeneratedValue
-    private String serviceId;
+    @GenericGenerator(name="IdOrGenerated", strategy="com.longcoding.moon.helpers.UseIdOrGenerate")
+    private int serviceId;
     private String serviceName;
     private String servicePath;
     private String outboundServiceHost;

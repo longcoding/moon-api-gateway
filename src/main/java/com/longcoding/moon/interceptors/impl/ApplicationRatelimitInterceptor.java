@@ -24,8 +24,8 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
     @Override
     public Map<String, Response<Long>> setJedisMultiCommand(Transaction jedisMulti) {
 
-        String dailyRedisKey = String.join(":", Constant.REDIS_APP_RATELIMIT_DAILY, requestInfo.getServiceId(), requestInfo.getAppId());
-        String minutelyRedisKey = String.join(":", Constant.REDIS_APP_RATELIMIT_MINUTELY, requestInfo.getServiceId(), requestInfo.getAppId());
+        String dailyRedisKey = String.join(":", Constant.REDIS_APP_RATELIMIT_DAILY, String.valueOf(requestInfo.getServiceId()), String.valueOf(requestInfo.getAppId()));
+        String minutelyRedisKey = String.join(":", Constant.REDIS_APP_RATELIMIT_MINUTELY, String.valueOf(requestInfo.getServiceId()), String.valueOf(requestInfo.getAppId()));
 
         Response<Long> applicationDailyRateLimit = jedisMulti.decr(dailyRedisKey);
         Response<Long> applicationMinutelyRateLimit = jedisMulti.decr(minutelyRedisKey);
@@ -44,8 +44,8 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
 
     @Override
     protected boolean onFailure(Map<String, Response<Long>> storedValue, Transaction jedisMulti) {
-        String dailyRedisKey = String.join(":", Constant.REDIS_APP_RATELIMIT_DAILY, requestInfo.getServiceId(), requestInfo.getAppId());
-        String minutelyRedisKey = String.join(":", Constant.REDIS_APP_RATELIMIT_MINUTELY, requestInfo.getServiceId(), requestInfo.getAppId());
+        String dailyRedisKey = String.join(":", Constant.REDIS_APP_RATELIMIT_DAILY, String.valueOf(requestInfo.getServiceId()), String.valueOf(requestInfo.getAppId()));
+        String minutelyRedisKey = String.join(":", Constant.REDIS_APP_RATELIMIT_MINUTELY, String.valueOf(requestInfo.getServiceId()), String.valueOf(requestInfo.getAppId()));
 
         if (storedValue.get(Constant.REDIS_APP_RATELIMIT_MINUTELY_TTL).get() < 0 && storedValue.get(Constant.REDIS_APP_RATELIMIT_DAILY).get() >= 0){
             String appQuota = apiExposeSpec.getAppInfoCache().get(requestInfo.getAppId()).getMinutelyRateLimit();
@@ -59,7 +59,7 @@ public class ApplicationRatelimitInterceptor extends RedisBaseValidationIntercep
             return true;
         }
 
-        jedisMulti.incr(String.join(":", Constant.REDIS_SERVICE_CAPACITY_DAILY, requestInfo.getServiceId()));
+        jedisMulti.incr(String.join(":", Constant.REDIS_SERVICE_CAPACITY_DAILY, String.valueOf(requestInfo.getServiceId())));
         jedisMulti.incr(dailyRedisKey);
         jedisMulti.incr(minutelyRedisKey);
         return false;

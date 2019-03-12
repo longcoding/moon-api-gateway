@@ -23,7 +23,7 @@ public class ServiceRoutingInfo implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -6812605258146764111L;
 
-    private String serviceId;
+    private int serviceId;
     private RoutingType routingType;
 
 }

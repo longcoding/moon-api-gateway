@@ -27,12 +27,12 @@ public class ServiceContractValidationInterceptor extends AbstractBaseIntercepto
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
 
-        String appId = requestInfo.getAppId();
-        String requestServceId = requestInfo.getServiceId();
+        int appId = requestInfo.getAppId();
+        int requestServiceId = requestInfo.getServiceId();
 
-        AppInfo appInfos = apiExposeSpec.getAppInfoCache().get(appId);
+        AppInfo appInfo = apiExposeSpec.getAppInfoCache().get(appId);
 
-        if (!appInfos.getServiceContract().contains(requestServceId)) {
+        if (!appInfo.getServiceContract().contains(requestServiceId)) {
             generateException(ExceptionType.E_1008_INVALID_SERVICE_CONTRACT);
         }
 

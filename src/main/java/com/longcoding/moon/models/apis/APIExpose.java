@@ -23,7 +23,7 @@ public class APIExpose implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -3037135041336335171L;
 
-    String apiId;
+    int apiId;
     String apiName;
     List<String> protocol;
     String method;

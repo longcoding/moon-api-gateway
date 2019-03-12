@@ -102,7 +102,7 @@ public class PrepareProxyInterceptor extends AbstractBaseInterceptor {
 
         outboundRequestHeaders.put(Constant.HEADER_CUSTOMIZE_REMOTE_IP, requestInfo.getClientIp());
         outboundRequestHeaders.put(Constant.HEADER_CUSTOMIZE_REMOTE_AGENT, requestInfo.getUserAgent());
-        outboundRequestHeaders.put(Constant.HEADER_CUSTOMIZE_APP_ID, requestInfo.getAppId());
+        outboundRequestHeaders.put(Constant.HEADER_CUSTOMIZE_APP_ID, String.valueOf(requestInfo.getAppId()));
 
         return outboundRequestHeaders;
     }

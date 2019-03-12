@@ -44,7 +44,7 @@ public class ApiController {
      * @return Returns success or failure.
      */
     @RequestMapping(value = "{apiId}", method = RequestMethod.DELETE)
-    public boolean deleteApi(@PathVariable String apiId) { return apiService.deleteApi(apiId); }
+    public boolean deleteApi(@PathVariable int apiId) { return apiService.deleteApi(apiId); }
 
     /**
      * Update existing api specifications. This action does not directly apply to the cache.
@@ -55,7 +55,7 @@ public class ApiController {
      * @return API specification model for internal processing.
      */
     @RequestMapping(value = "{apiId}", method = RequestMethod.PUT)
-    public ApiInfo updateApi(@PathVariable String apiId, @RequestBody EnrollApi enrollApi) { return apiService.createOrModifyApi(SyncType.UPDATE, enrollApi); }
+    public ApiInfo updateApi(@PathVariable int apiId, @RequestBody EnrollApi enrollApi) { return apiService.createOrModifyApi(SyncType.UPDATE, enrollApi); }
 
     /**
      * Query the corresponding api specification.
@@ -64,6 +64,6 @@ public class ApiController {
      * @return API specification model for internal processing.
      */
     @RequestMapping(value = "{apiId}", method = RequestMethod.GET)
-    public ApiInfo getApi(@PathVariable String apiId) { return apiService.selectApi(apiId); }
+    public ApiInfo getApi(@PathVariable int apiId) { return apiService.selectApi(apiId); }
 
 }

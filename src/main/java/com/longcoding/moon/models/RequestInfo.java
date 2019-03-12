@@ -21,8 +21,8 @@ import java.util.Map;
 @Data
 public class RequestInfo {
 
-    private String requestId, appId, apiKey;
-    private String serviceId, apiId, apiVersion;
+    private int serviceId, appId, apiId;
+    private String requestId, apiKey, apiVersion;
     private String clientIp, userAgent;
     private String requestURI, requestURL, requestPath, requestMethod, requestProtocol;
     private String outboundURL;

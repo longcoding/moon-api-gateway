@@ -7,13 +7,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
+import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * It has specification information for api. All this information is loaded into ehcache.
@@ -33,15 +32,18 @@ public class ApiInfo implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -5075020879095721346L;
 
-    @Id @GeneratedValue
-    private String apiId;
+    @Id @GeneratedValue(generator="IdOrGenerated")
+    @GenericGenerator(name="IdOrGenerated", strategy="com.longcoding.moon.helpers.UseIdOrGenerate")
+    private int apiId;
     private String apiName;
 
-    private String serviceId;
+    private int serviceId;
 
     //true is mandatory
-    private ConcurrentHashMap<String, Boolean> headers;
-    private ConcurrentHashMap<String, Boolean> queryParams;
+    @ElementCollection
+    private Map<String, Boolean> headers;
+    @ElementCollection
+    private Map<String, Boolean> queryParams;
 
     private String inboundURL;
     private String outboundURL;
@@ -49,7 +51,11 @@ public class ApiInfo implements Serializable, Cloneable {
     private String inboundMethod;
     private String outboundMethod;
 
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<ProtocolType> protocol;
+
+    @OneToMany(cascade=CascadeType.ALL, targetEntity = TransformData.class)
     private List<TransformData> transformData;
 
     private boolean isOpenApi;

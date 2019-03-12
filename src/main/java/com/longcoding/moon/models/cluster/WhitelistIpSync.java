@@ -20,7 +20,7 @@ import java.util.List;
 public class WhitelistIpSync {
 
     SyncType type;
-    String appId;
+    int appId;
     List<String> requestIps;
 
 }
