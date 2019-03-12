@@ -38,6 +38,10 @@ Moon-API-Gateway는 강력하지만, 가볍고 빠른 기능을 제공합니다.
 * **Request Transform** - (Optional) Header, Query, Path Param, URI 변경을 지원합니다. 사용자 request를 Moon-API-Gateway와 연결된 서비스의 request로 적절하게 변경합니다.
 * **IP Whitelisting** - 보다 안전한 상호작용을 위해 키 단위로 신뢰할 수 없는 IP 주소의 접근을 차단합니다.
 * **Management API** - API 게이트웨이 관리를 위한 강력한 Rest API를 제공합니다.
+    - API Add/Delete/Change
+    - APP Add/Delete/Change
+    - IP Whitelist Add/Delete
+    - Key Expiry/Regenerate
 * **Supported Server Cluster** - API 게이트웨이 클러스터를 관리할 수 있습니다. 관리(Management) API를 이용해서 변경사항을 모든 서버에 적용할 수 있습니다. 즉, 사용빈도, 서비스 가용량 정보를 모든 서버가 공유할 수 있습니다.
 
 ## Dependency
@@ -227,6 +231,10 @@ Moon API Gateway는 클러스터를 지원합니다. 각 노드는 실시간으�
   - **API 수정** - [PUT] /internal/apis/{apiId}
 
 **Service Group API는 곧 업데이트 예정입니다.**
+
+
+
+## Usage/Test
 
 ##### API - Stack Overflow API.
 
