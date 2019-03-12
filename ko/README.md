@@ -210,7 +210,6 @@ Moon API Gateway는 클러스터를 지원합니다. 각 노드는 실시간으�
 
 
 ## Management REST API
-<<<<<<< HEAD
 관리 API는 단일 게이트웨이 혹은 클러스터 그룹 관리에 유용합니다.
 
 **APP Management**
@@ -294,7 +293,6 @@ URL 파라미터를 입력합니다.(site는 필수 파라미터입니다.)
     curl -X GET -H "Content-type: application/json" -H "apikey: 1000-1000-1000-1000" -H "page: 5" -H "votes: 1" http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
 ## Future update
-<<<<<<< HEAD
 * 비공개 API를 위한 인증
 * Docker-Compose
     - 쉽게 시작하기
