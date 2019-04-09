@@ -1,6 +1,7 @@
 package com.longcoding.moon.interceptors.impl;
 
 import com.google.common.collect.Maps;
+import com.google.gson.JsonIOException;
 import com.longcoding.moon.exceptions.ExceptionType;
 import com.longcoding.moon.helpers.*;
 import com.longcoding.moon.interceptors.AbstractBaseInterceptor;
@@ -61,6 +62,8 @@ public class ExtractRequestPathInterceptor extends AbstractBaseInterceptor {
                         requestInfo.setRequestBodyMap(extractedBodyMap);
                     } else requestInfo.setRequestBodyMap(Maps.newHashMap());
                 } else requestInfo.setRequestBody(StreamUtils.copyToByteArray(request.getInputStream()));
+            } catch (JsonIOException ex) {
+                generateException(ExceptionType.E_1013_MALFORMED_JSON_EXCEPTION);
             } catch (Exception ex) {
                 generateException(ExceptionType.E_1011_NOT_SUPPORTED_CONTENT_TYPE);
             }

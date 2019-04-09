@@ -189,7 +189,7 @@ public class SyncService {
         ServiceInfo serviceInfo = apiExposeSpec.getServiceInfoCache().get(apiInfo.getServiceId());
 
         if (Objects.nonNull(serviceInfo)) {
-            
+
             String servicePath = serviceInfo.getServicePath().startsWith("/")? serviceInfo.getServicePath() : "/" + serviceInfo.getServicePath();
             Pattern routingUrlInRegex = Pattern.compile(servicePath + routingPathInRegex);
 
