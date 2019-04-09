@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -35,9 +37,11 @@ public class AppInfo implements Serializable, Cloneable {
     private String dailyRateLimit;
     private String minutelyRateLimit;
 
-    @ElementCollection
+    @Fetch(FetchMode.SELECT)
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Integer> serviceContract;
-    @ElementCollection
+
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> appIpAcl;
 
     private boolean valid;

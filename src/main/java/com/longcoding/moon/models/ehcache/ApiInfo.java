@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -40,9 +42,10 @@ public class ApiInfo implements Serializable, Cloneable {
     private int serviceId;
 
     //true is mandatory
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, Boolean> headers;
-    @ElementCollection
+
+    @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, Boolean> queryParams;
 
     private String inboundURL;
@@ -55,7 +58,8 @@ public class ApiInfo implements Serializable, Cloneable {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<ProtocolType> protocol;
 
-    @OneToMany(cascade=CascadeType.ALL, targetEntity = TransformData.class)
+    @Fetch(FetchMode.SELECT)
+    @OneToMany(cascade=CascadeType.ALL, targetEntity = TransformData.class, fetch = FetchType.EAGER)
     private List<TransformData> transformData;
 
     private boolean isOpenApi;
