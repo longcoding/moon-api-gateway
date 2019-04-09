@@ -67,14 +67,12 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
 
         ApiInfo apiInfo = apiExposeSpec.getApiInfoCache().get(apiId);
 
-        int serviceId;
+        ServiceInfo serviceInfo = apiExposeSpec.getServiceInfoCache().get(routingInfo.getServiceId());
+        int serviceId = routingInfo.getServiceId();
         String outboundUrl;
         if (RoutingType.API_TRANSFER == routingInfo.getRoutingType()) {
-            serviceId = apiInfo.getServiceId();
-            outboundUrl = apiInfo.getOutboundURL();
+            outboundUrl = serviceInfo.getOutboundServiceHost() + apiInfo.getOutboundURL();
         } else {
-            ServiceInfo serviceInfo = apiExposeSpec.getServiceInfoCache().get(routingInfo.getServiceId());
-            serviceId = routingInfo.getServiceId();
             apiId = -1;
             outboundUrl = serviceInfo.getOutboundServiceHost() + requestInfo.getRequestPath().substring(requestInfo.getServicePath().length() + 1);
         }
