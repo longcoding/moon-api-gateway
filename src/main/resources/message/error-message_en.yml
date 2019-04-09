@@ -11,6 +11,7 @@
 1010: IP Address is not permitted. Please check the IP address.
 1011: Unsupported content type or invalid body
 1012: Not Supported Content-Type. To use the transform's body_json option, the request body must be applicaiton/json unconditionally.
+1013: Body is not a json format.
 
 1100: Internal Server Error. There is no remaining quota.
 1101: Internal Server Error. Proxy server is exhausted.
