@@ -68,9 +68,16 @@ public class APIExposeSpecLoader implements InitializingBean {
         // In cluster mode, the API information stored in the persistence layer is fetched and stored in the cache.
         if (enableCluster) {
             try {
+                log.info("Loading Service Information");
                 clusterRepository.getAllServiceInfo()
-                        .forEach(serviceInfo -> apiExposeSpecification.getServiceInfoCache().put(serviceInfo.getServiceId(), serviceInfo));
+                        .forEach(serviceInfo -> {
+                            apiExposeSpecification.getServiceInfoCache().put(serviceInfo.getServiceId(), serviceInfo);
 
+                            String servicePath = serviceInfo.getServicePath().startsWith("/")? serviceInfo.getServicePath().substring(1) : serviceInfo.getServicePath();
+                            apiExposeSpecification.getServiceTypeCache().put(servicePath, new ServiceRoutingInfo(serviceInfo.getServiceId(), serviceInfo.getRoutingType()));
+                        });
+
+                log.info("Loading API Spec Information");
                 clusterRepository.getAllApiInfo()
                         .forEach(apiInfo -> syncService.syncApiInfoToCache(new ApiSync(SyncType.CREATE, apiInfo)));
             } catch (Exception ex) {
