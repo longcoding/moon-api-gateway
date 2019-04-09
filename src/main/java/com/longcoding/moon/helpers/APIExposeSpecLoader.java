@@ -150,7 +150,7 @@ public class APIExposeSpecLoader implements InitializingBean {
                             .headers(headers)
                             .queryParams(queryParams)
                             .inboundURL(apiSpec.getInboundUrl().toLowerCase())
-                            .outboundURL(service.getOutboundServiceHost() + apiSpec.getOutboundUrl().toLowerCase())
+                            .outboundURL(apiSpec.getOutboundUrl().toLowerCase())
                             .inboundMethod(apiSpec.getMethod())
                             .outboundMethod(apiSpec.getMethod())
                             .protocol(apiSpec.getProtocol().stream().map(ProtocolType::of).collect(Collectors.toList()))
