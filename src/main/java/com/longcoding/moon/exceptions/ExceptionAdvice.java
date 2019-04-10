@@ -68,7 +68,7 @@ public class ExceptionAdvice {
         log.error("{}", getStackTrace(e));
         ExceptionType exceptionType = ExceptionType.E_1102_OUTBOUND_SERVICE_IS_NOT_UNSTABLE;
         setHttpResponseErrorCode(request, ExceptionType.E_1102_OUTBOUND_SERVICE_IS_NOT_UNSTABLE.getCode());
-        String message = messageManager.getProperty(exceptionType.getCode()) + e.getMessage();
+        String message = messageManager.getProperty(exceptionType.getCode());
         CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), message);
         return HttpHelper.newResponseEntityWithId(exceptionType.getHttpStatus(), response);
     }
