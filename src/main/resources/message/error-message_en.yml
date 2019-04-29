@@ -17,6 +17,7 @@
 1101: Internal Server Error. Proxy server is exhausted.
 1102: Internal Server Error. Outbound Service is unstable.
 1103: Went over service Capacity.
+1104: Request Timeout.
 
 1200: Failed Configuration Init. Please check the service info configuration.
 1201: Failed Configuration Init. Please check the API info configuration.
