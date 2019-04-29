@@ -8,8 +8,9 @@
 [![TotalCommit](https://img.shields.io/github/commit-activity/y/longcoding/moon-api-gateway.svg)](https://img.shields.io/github/commit-activity/y/longcoding/moon-api-gateway.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?maxAge=2592000)]()
 
-#### Other Language Guide
-* [Korean](README_ko.md)
+### Other Language Guide
+|Korean|[README_ko](README_ko.md)|
+|:---:|---|
 
 ![feature](https://user-images.githubusercontent.com/3271895/51427833-6d132780-1c3f-11e9-8f73-7112a7f0da0c.png)
 
