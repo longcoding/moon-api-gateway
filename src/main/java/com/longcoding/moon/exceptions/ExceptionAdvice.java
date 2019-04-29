@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
@@ -43,6 +44,15 @@ public class ExceptionAdvice {
         setHttpResponseErrorCode(request, ExceptionType.E_9999_INTERNAL_SERVER_ERROR.getCode());
         CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), messageManager.getProperty(exceptionType.getCode()));
         return HttpHelper.newResponseEntityWithId(HttpStatus.INTERNAL_SERVER_ERROR, response);
+    }
+
+    @ExceptionHandler(AsyncRequestTimeoutException.class)
+    public ResponseEntity asyncRequestTimeoutException(Exception e, HttpServletRequest request) {
+        log.error("{}", getStackTrace(e));
+        ExceptionType exceptionType = ExceptionType.E_7104_OUTBOUND_SERVICE_REQUEST_TIME_OUT;
+        setHttpResponseErrorCode(request, ExceptionType.E_7104_OUTBOUND_SERVICE_REQUEST_TIME_OUT.getCode());
+        CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), messageManager.getProperty(exceptionType.getCode()));
+        return HttpHelper.newResponseEntityWithId(HttpStatus.REQUEST_TIMEOUT, response);
     }
 
     @ExceptionHandler(RatelimitFailException.class)
