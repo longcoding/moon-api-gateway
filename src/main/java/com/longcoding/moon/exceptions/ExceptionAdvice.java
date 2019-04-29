@@ -49,8 +49,8 @@ public class ExceptionAdvice {
     @ExceptionHandler(AsyncRequestTimeoutException.class)
     public ResponseEntity asyncRequestTimeoutException(Exception e, HttpServletRequest request) {
         log.error("{}", getStackTrace(e));
-        ExceptionType exceptionType = ExceptionType.E_7104_OUTBOUND_SERVICE_REQUEST_TIME_OUT;
-        setHttpResponseErrorCode(request, ExceptionType.E_7104_OUTBOUND_SERVICE_REQUEST_TIME_OUT.getCode());
+        ExceptionType exceptionType = ExceptionType.E_1104_OUTBOUND_SERVICE_REQUEST_TIME_OUT;
+        setHttpResponseErrorCode(request, ExceptionType.E_1104_OUTBOUND_SERVICE_REQUEST_TIME_OUT.getCode());
         CommonResponseEntity response = CommonResponseEntity.generateException(exceptionType.getCode(), messageManager.getProperty(exceptionType.getCode()));
         return HttpHelper.newResponseEntityWithId(HttpStatus.REQUEST_TIMEOUT, response);
     }
