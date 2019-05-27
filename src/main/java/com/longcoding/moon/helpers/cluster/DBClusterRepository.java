@@ -43,6 +43,12 @@ public class DBClusterRepository implements IClusterRepository {
     }
 
     @Override
+    public boolean modifyApiInfo(ApiInfo apiInfo) {
+        apiInfoRepository.saveAndFlush(apiInfo);
+        return true;
+    }
+
+    @Override
     public ApiInfo getApiInfo(int apiId) {
         Optional<ApiInfo> apiInfoOpt = apiInfoRepository.findById(apiId);
         return apiInfoOpt.orElseThrow(() -> new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND));

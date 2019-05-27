@@ -43,7 +43,8 @@ public class ApiService {
         ApiInfo apiInfo = convertedEnrollApiToApiInfo(enrollApi);
         ApiSync apiSync = new ApiSync(syncType, apiInfo);
 
-        clusterRepository.setApiInfo(apiInfo);
+        if (SyncType.CREATE == syncType) clusterRepository.setApiInfo(apiInfo);
+        else if (SyncType.UPDATE == syncType) clusterRepository.modifyApiInfo(apiInfo);
         clusterSyncUtil.setexInfoToHealthyNode(Constant.REDIS_KEY_API_UPDATE, Constant.SECOND_OF_HOUR, JsonUtil.fromJson(apiSync));
 
         return apiInfo;

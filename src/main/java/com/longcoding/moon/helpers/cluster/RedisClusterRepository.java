@@ -62,6 +62,11 @@ public class RedisClusterRepository implements IClusterRepository {
     }
 
     @Override
+    public boolean modifyApiInfo(ApiInfo apiInfo) {
+        return hset(Constant.REDIS_KEY_INTERNAL_API_INFO, String.valueOf(apiInfo.getApiId()), JsonUtil.fromJson(apiInfo)) == 0;
+    }
+
+    @Override
     public ApiInfo getApiInfo(int apiId) {
         String apiInfoInString = hget(Constant.REDIS_KEY_INTERNAL_API_INFO, String.valueOf(apiId));
         return JsonUtil.fromJson(apiInfoInString, ApiInfo.class);
