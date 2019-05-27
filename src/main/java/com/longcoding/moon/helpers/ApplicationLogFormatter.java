@@ -32,8 +32,8 @@ public final class ApplicationLogFormatter {
         accessLog.put("clinetIp", requestInfo.getClientIp());
         accessLog.put("statusCode", requestInfo.getResponseStatusCode());
         accessLog.put("errorCode", requestInfo.getErrorCode());
-        accessLog.put("getServicePath", requestInfo.getServicePath());
-        accessLog.put("getRequestPath", requestInfo.getRequestPath());
+        accessLog.put("servicePath", requestInfo.getServicePath());
+        accessLog.put("requestPath", requestInfo.getRequestPath());
         accessLog.put("elapseTime", System.currentTimeMillis() - requestInfo.getRequestStartTime());
         accessLog.put("requestDataSize", String.valueOf(requestInfo.getRequestDataSize()));
         accessLog.put("acceptHostIp", requestInfo.getAcceptHostIp());
