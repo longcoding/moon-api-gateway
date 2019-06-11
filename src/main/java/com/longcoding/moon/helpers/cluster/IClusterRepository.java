@@ -28,7 +28,9 @@ public interface IClusterRepository {
 
     boolean modifyAppInfo(AppInfo appInfo);
 
-    boolean setServiceInfo(ServiceInfo serviceInfo);
+    ServiceInfo setServiceInfo(ServiceInfo serviceInfo);
+
+    boolean modifyServiceInfo(ServiceInfo serviceInfo);
 
     ServiceInfo getServiceInfo(int serviceId);
 

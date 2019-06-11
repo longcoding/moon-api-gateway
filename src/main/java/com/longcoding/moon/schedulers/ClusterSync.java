@@ -2,6 +2,7 @@ package com.longcoding.moon.schedulers;
 
 import com.longcoding.moon.helpers.*;
 import com.longcoding.moon.helpers.cluster.ClusterSyncUtil;
+import com.longcoding.moon.models.cluster.ServiceSync;
 import com.longcoding.moon.models.cluster.WhitelistIpSync;
 import com.longcoding.moon.models.cluster.ApiSync;
 import com.longcoding.moon.models.cluster.AppSync;
@@ -60,6 +61,9 @@ public class ClusterSync {
 
         //Application Whitelist Sync
         appWhitelistSync();
+
+        //Service Information Sync
+        serviceInfoSync();
     }
 
     /**
@@ -121,6 +125,19 @@ public class ClusterSync {
                 ApiSync apiSync = JsonUtil.fromJson(apiSyncInString, ApiSync.class);
                 log.info("Found New Update API Information - method: {}, appId: {}", apiSync.getType().getDescription(), apiSync.getApiInfo().getApiId());
                 boolean result = syncService.syncApiInfoToCache(apiSync);
+                if (result) jedisClient.del(redisKey);
+            });
+        }
+    }
+
+    private void serviceInfoSync() {
+        try(Jedis jedisClient = jedisFactory.getInstance()) {
+            Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_SERVICE_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
+            targetKeys.forEach(redisKey -> {
+                String serviceSyncInString = jedisClient.get(redisKey);
+                ServiceSync serviceSync = JsonUtil.fromJson(serviceSyncInString, ServiceSync.class);
+                log.info("Found New Update Service Information - method: {}, serviceId: {}", serviceSync.getType().getDescription(), serviceSync.getServiceInfo().getServiceId());
+                boolean result = syncService.syncServiceInfoToCache(serviceSync);
                 if (result) jedisClient.del(redisKey);
             });
         }
