@@ -59,7 +59,7 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
                 if (requestHeaders.containsKey(header) || optionHeaders.contains(header)) {
                     proxyRequestHeaders.put(header, requestHeaders.get(header));
                 } else if (headers.get(header).equals(true)) {
-                    generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, "required header is missing.");
+                    generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, String.format("- %s", header));
                 }
             }
 
@@ -67,7 +67,7 @@ public class HeaderAndQueryValidationInterceptor extends AbstractBaseInterceptor
                 if (requestQueryParams.containsKey(queryParam)) {
                     proxyRequestQueryParams.put(queryParam, requestQueryParams.get(queryParam));
                 } else if (queryParams.get(queryParam).equals(true)) {
-                    generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, "required query parameter is missing.");
+                    generateException(ExceptionType.E_1007_INVALID_OR_MISSING_ARGUMENT, String.format("- %s", queryParam));
                 }
             }
         } else if (RoutingType.SKIP_API_TRANSFORM == requestInfo.getRoutingType()) {

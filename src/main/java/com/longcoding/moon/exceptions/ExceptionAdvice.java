@@ -89,7 +89,7 @@ public class ExceptionAdvice {
         ExceptionType exceptionType = e.getExceptionType();
         setHttpResponseErrorCode(request, exceptionType.getCode());
         String message = messageManager.getProperty(exceptionType.getCode());
-        if (Strings.isNotEmpty(e.getMessage())) message += e.getMessage();
+        if (Strings.isNotEmpty(e.getMessage())) message = String.format("%s %s", message, e.getMessage());
         CommonResponseEntity response = CommonResponseEntity.generateException(e.getExceptionType().getCode(), message);
         return HttpHelper.newResponseEntityWithId(e.getExceptionType().getHttpStatus(), response);
     }
