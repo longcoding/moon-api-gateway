@@ -21,9 +21,11 @@ The Gateway is a network gateway created to provide a single access point for re
 * Lightweight API Gateway
 * High Performance/Scalability
 
-## New Feature(January-2019)
+## New Feature(June-2019)
 * Management API
+    - Service, Service Contract API
 * Supported Server Cluster
+    - Improved cluster synchronization
 
 ## Features
 Moon API Gateway offers a powerful, yet lightweight feature.
