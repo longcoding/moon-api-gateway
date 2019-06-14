@@ -89,9 +89,11 @@ public class ProxyServiceImpl implements ProxyService {
                                     new ResponseEntity<>(responseInJsonNode, HttpStatus.valueOf(result.getResponse().getStatus()));
 
                             deferredResult.setResult(responseEntity);
+                            return ;
                         }
                     }
 
+                    log.error(getContentAsString());
                     deferredResult.setErrorResult(new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE));
                 }
             }
