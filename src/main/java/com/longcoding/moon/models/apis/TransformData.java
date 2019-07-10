@@ -30,7 +30,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "trasform_data")
+@Table(name = "transform_data")
 public class TransformData implements Serializable, Cloneable {
 
     @Id @GeneratedValue

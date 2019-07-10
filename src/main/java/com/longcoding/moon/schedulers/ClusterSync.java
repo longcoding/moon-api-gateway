@@ -53,17 +53,21 @@ public class ClusterSync {
      */
     @Scheduled(fixedDelayString = "${moon.service.cluster.sync-interval}")
     private void clusterSync() {
-        //Application Information Sync
-        appInfoSync();
 
-        //API Information Sync
-        apiInfoSync();
+        try (Jedis jedisClient = jedisFactory.getInstance()) {
+            //Application Information Sync
+            appInfoSync(jedisClient);
 
-        //Application Whitelist Sync
-        appWhitelistSync();
+            //API Information Sync
+            apiInfoSync(jedisClient);
 
-        //Service Information Sync
-        serviceInfoSync();
+            //Application Whitelist Sync
+            appWhitelistSync(jedisClient);
+
+            //Service Information Sync
+            serviceInfoSync(jedisClient);
+        }
+
     }
 
     /**
@@ -83,64 +87,64 @@ public class ClusterSync {
      * Check whether there is new application whiltelist information issued to the node.
      * Apply that information to the node's cache and remove it from redis.
      */
-    private void appWhitelistSync() {
-        try (Jedis jedisClient = jedisFactory.getInstance()) {
-            Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_APP_WHITELIST_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
-            targetKeys.forEach(redisKey -> {
-                String whitelistSyncInString = jedisClient.get(redisKey);
-                WhitelistIpSync whitelistIpSync = JsonUtil.fromJson(whitelistSyncInString, WhitelistIpSync.class);
-                log.info("Found New Update APP Whitelist Information - method: {}, appId: {}", whitelistIpSync.getType().getDescription(), whitelistIpSync.getAppId());
-                boolean result = syncService.syncAppWhitelistToCache(whitelistIpSync);
-                if (result) jedisClient.del(redisKey);
-            });
-        }
+    private void appWhitelistSync(Jedis jedisClient) {
+
+        Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_APP_WHITELIST_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
+        targetKeys.forEach(redisKey -> {
+            String whitelistSyncInString = jedisClient.get(redisKey);
+            WhitelistIpSync whitelistIpSync = JsonUtil.fromJson(whitelistSyncInString, WhitelistIpSync.class);
+            log.info("Found New Update APP Whitelist Information - method: {}, appId: {}", whitelistIpSync.getType().getDescription(), whitelistIpSync.getAppId());
+            boolean result = syncService.syncAppWhitelistToCache(whitelistIpSync);
+            if (result) jedisClient.del(redisKey);
+        });
+
     }
 
     /**
      * Check whether there is new application information issued to the node.
      * Apply that information to the node's cache and remove it from redis.
      */
-    private void appInfoSync() {
-        try (Jedis jedisClient = jedisFactory.getInstance()) {
-            Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_APP_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
-            targetKeys.forEach(redisKey -> {
-                String appSyncInString = jedisClient.get(redisKey);
-                AppSync appSync = JsonUtil.fromJson(appSyncInString, AppSync.class);
-                log.info("Found New Update APP Information - method: {}, appId: {}", appSync.getType().getDescription(), appSync.getAppInfo().getAppId());
-                boolean result = syncService.syncAppInfoToCache(appSync);
-                if (result) jedisClient.del(redisKey);
-            });
-        }
+    private void appInfoSync(Jedis jedisClient) {
+
+        Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_APP_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
+        targetKeys.forEach(redisKey -> {
+            String appSyncInString = jedisClient.get(redisKey);
+            AppSync appSync = JsonUtil.fromJson(appSyncInString, AppSync.class);
+            log.info("Found New Update APP Information - method: {}, appId: {}", appSync.getType().getDescription(), appSync.getAppInfo().getAppId());
+            boolean result = syncService.syncAppInfoToCache(appSync);
+            if (result) jedisClient.del(redisKey);
+        });
+
     }
 
     /**
      * Check whether there is new api specification information issued to the node.
      * Apply that information to the node's cache and remove it from redis.
      */
-    private void apiInfoSync() {
-        try(Jedis jedisClient = jedisFactory.getInstance()) {
-            Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_API_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
-            targetKeys.forEach(redisKey -> {
-                String apiSyncInString = jedisClient.get(redisKey);
-                ApiSync apiSync = JsonUtil.fromJson(apiSyncInString, ApiSync.class);
-                log.info("Found New Update API Information - method: {}, appId: {}", apiSync.getType().getDescription(), apiSync.getApiInfo().getApiId());
-                boolean result = syncService.syncApiInfoToCache(apiSync);
-                if (result) jedisClient.del(redisKey);
-            });
-        }
+    private void apiInfoSync(Jedis jedisClient) {
+
+        Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_API_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
+        targetKeys.forEach(redisKey -> {
+            String apiSyncInString = jedisClient.get(redisKey);
+            ApiSync apiSync = JsonUtil.fromJson(apiSyncInString, ApiSync.class);
+            log.info("Found New Update API Information - method: {}, appId: {}", apiSync.getType().getDescription(), apiSync.getApiInfo().getApiId());
+            boolean result = syncService.syncApiInfoToCache(apiSync);
+            if (result) jedisClient.del(redisKey);
+        });
+
     }
 
-    private void serviceInfoSync() {
-        try(Jedis jedisClient = jedisFactory.getInstance()) {
-            Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_SERVICE_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
-            targetKeys.forEach(redisKey -> {
-                String serviceSyncInString = jedisClient.get(redisKey);
-                ServiceSync serviceSync = JsonUtil.fromJson(serviceSyncInString, ServiceSync.class);
-                log.info("Found New Update Service Information - method: {}, serviceId: {}", serviceSync.getType().getDescription(), serviceSync.getServiceInfo().getServiceId());
-                boolean result = syncService.syncServiceInfoToCache(serviceSync);
-                if (result) jedisClient.del(redisKey);
-            });
-        }
+    private void serviceInfoSync(Jedis jedisClient) {
+
+        Set<String> targetKeys = jedisClient.keys(String.join("-", Constant.REDIS_KEY_SERVICE_UPDATE, HttpHelper.getHostName() + serverPort + "*"));
+        targetKeys.forEach(redisKey -> {
+            String serviceSyncInString = jedisClient.get(redisKey);
+            ServiceSync serviceSync = JsonUtil.fromJson(serviceSyncInString, ServiceSync.class);
+            log.info("Found New Update Service Information - method: {}, serviceId: {}", serviceSync.getType().getDescription(), serviceSync.getServiceInfo().getServiceId());
+            boolean result = syncService.syncServiceInfoToCache(serviceSync);
+            if (result) jedisClient.del(redisKey);
+        });
+
     }
 
 }
