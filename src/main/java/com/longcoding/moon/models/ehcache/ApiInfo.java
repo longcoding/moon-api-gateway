@@ -59,7 +59,7 @@ public class ApiInfo implements Serializable, Cloneable {
     private List<ProtocolType> protocol;
 
     @Fetch(FetchMode.SELECT)
-    @OneToMany(cascade=CascadeType.ALL, targetEntity = TransformData.class, fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<TransformData> transformData;
 
     private boolean isOpenApi;
