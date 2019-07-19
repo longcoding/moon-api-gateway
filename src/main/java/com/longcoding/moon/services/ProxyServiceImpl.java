@@ -70,31 +70,36 @@ public class ProxyServiceImpl implements ProxyService {
             @Override
             public void onComplete(Result result) {
                 if (result.isSucceeded()) {
-                    ResponseEntity<JsonNode> responseEntity;
 
-                    responseInfo.setProxyElapsedTime(System.currentTimeMillis() - proxyStartTime);
+                    try {
+                        ResponseEntity<JsonNode> responseEntity;
 
-                    if (log.isDebugEnabled()){
-                        log.debug("Http Proxy ElapsedTime " + responseInfo.getProxyElapsedTime());
-                    }
+                        responseInfo.setProxyElapsedTime(System.currentTimeMillis() - proxyStartTime);
 
-                    HttpFields responseHeaders = result.getResponse().getHeaders();
-                    if (responseHeaders.contains(HttpHeader.CONTENT_TYPE)) {
-                        String contentTypeValue = responseHeaders.get(HttpHeader.CONTENT_TYPE);
-                        if ( contentTypeValue.split(Constant.CONTENT_TYPE_EXTRACT_DELIMITER)[0]
-                                .equals(responseInfo.getRequestAccept().split(Constant.CONTENT_TYPE_EXTRACT_DELIMITER)[0])){
+                        if (log.isDebugEnabled()){
+                            log.debug("Http Proxy ElapsedTime " + responseInfo.getProxyElapsedTime());
+                        }
+
+                        HttpFields responseHeaders = result.getResponse().getHeaders();
+                        if (checkContentType(responseHeaders)) {
 
                             JsonNode responseInJsonNode = InputStreamToJsonObj(getContentAsInputStream());
                             responseEntity =
                                     new ResponseEntity<>(responseInJsonNode, HttpStatus.valueOf(result.getResponse().getStatus()));
 
                             deferredResult.setResult(responseEntity);
-                            return ;
+
+                        } else {
+                            log.error(getContentAsString());
+                            deferredResult.setErrorResult(new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE));
                         }
+
+                    } catch (IOException ex) {
+
+                        log.error(getContentAsString());
+                        deferredResult.setErrorResult(new ProxyServiceFailException(HttpStatus.BAD_GATEWAY.getReasonPhrase()));
                     }
 
-                    log.error(getContentAsString());
-                    deferredResult.setErrorResult(new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE));
                 }
             }
 
@@ -103,6 +108,16 @@ public class ProxyServiceImpl implements ProxyService {
                 deferredResult.setErrorResult(new ProxyServiceFailException(failure));
             }
         });
+    }
+
+    private boolean checkContentType(HttpFields responseHeaders) {
+        if (responseHeaders.contains(HttpHeader.CONTENT_TYPE)) {
+            String contentTypeValue = responseHeaders.get(HttpHeader.CONTENT_TYPE);
+            return contentTypeValue.split(Constant.CONTENT_TYPE_EXTRACT_DELIMITER)[0]
+                    .equals(responseInfo.getRequestAccept().split(Constant.CONTENT_TYPE_EXTRACT_DELIMITER)[0])
+        }
+
+        return false;
     }
 
     /**
@@ -144,13 +159,11 @@ public class ProxyServiceImpl implements ProxyService {
      * @param responseInput An inputStream containing the response body received by the outbound service.
      * @return The jsonNode object with the response body changed to json format.
      */
-    private static JsonNode InputStreamToJsonObj(InputStream responseInput) {
-        try {
-            InputStreamReader responseInputStreamReader = new InputStreamReader(responseInput, Charset.forName(Constant.SERVER_DEFAULT_ENCODING_TYPE));
-            return JsonUtil.getObjectMapper().readTree(responseInputStreamReader);
-        } catch (IOException ex) {
-            throw new ProxyServiceFailException(ERROR_MESSAGE_WRONG_CONTENT_TYPE);
-        }
+    private static JsonNode InputStreamToJsonObj(InputStream responseInput) throws IOException {
+
+        InputStreamReader responseInputStreamReader = new InputStreamReader(responseInput, Charset.forName(Constant.SERVER_DEFAULT_ENCODING_TYPE));
+        return JsonUtil.getObjectMapper().readTree(responseInputStreamReader);
+        
     }
 
 }
