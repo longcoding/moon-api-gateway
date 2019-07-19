@@ -1,12 +1,15 @@
 package com.longcoding.moon.controllers.internal;
 
 import com.longcoding.moon.models.ehcache.AppInfo;
+import com.longcoding.moon.models.ehcache.AppMetaInfo;
 import com.longcoding.moon.models.internal.EnrollApp;
 import com.longcoding.moon.models.internal.EnrollWhitelistIp;
 import com.longcoding.moon.services.internal.AppService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Internal API for managing Application information.
@@ -101,5 +104,14 @@ public class AppController {
      */
     @RequestMapping(value = "{appId}/whitelist", method = RequestMethod.DELETE)
     public boolean removeWhitelistIps(@RequestBody EnrollWhitelistIp enrollWhitelistIps) { return appService.removeWhiteIps(enrollWhitelistIps); }
+
+    /**
+     * query all application information.
+     *
+     * @return An application information model list for internal processing.
+     */
+    @RequestMapping(method = RequestMethod.GET)
+    public List<AppMetaInfo> getAppInfo() { return appService.getAllAppInfo(); }
+
 
 }

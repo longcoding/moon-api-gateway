@@ -110,9 +110,7 @@ public class ApiService {
                 apiInfo.getOutboundURL(),
                 apiInfo.getInboundMethod(),
                 apiInfo.getOutboundMethod(),
-                apiInfo.isOpenApi(),
-                apiInfo.getCreatedAt(),
-                apiInfo.getUpdatedAt()
+                apiInfo.isOpenApi()
         )).collect(Collectors.toList());
     }
 
