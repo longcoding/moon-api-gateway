@@ -1,5 +1,6 @@
 package com.longcoding.moon.helpers;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -19,8 +20,9 @@ import java.util.Map;
 
 public class JsonUtil {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final TypeFactory typeFactory = TypeFactory.defaultInstance();
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 
     public static JsonNode toJsonNode(final String object) {

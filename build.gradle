@@ -62,7 +62,7 @@ dependencies {
 	compileOnly ('org.springframework.boot:spring-boot-configuration-processor')
 
 	// redis(jedis client)
-	compile('redis.clients:jedis:3.0.0')
+	compile('redis.clients:jedis:3.0.1')
 
 	compile('org.apache.httpcomponents:httpclient:4.5.6')
 	compile('org.eclipse.jetty:jetty-client:9.4.14.v20181114')

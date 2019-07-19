@@ -10,6 +10,8 @@ public interface IClusterRepository {
 
     boolean setApiInfo(ApiInfo apiInfo);
 
+    boolean modifyApiInfo(ApiInfo apiInfo);
+
     ApiInfo getApiInfo(int apiId);
 
     List<ApiInfo> getAllApiInfo();
@@ -26,7 +28,9 @@ public interface IClusterRepository {
 
     boolean modifyAppInfo(AppInfo appInfo);
 
-    boolean setServiceInfo(ServiceInfo serviceInfo);
+    ServiceInfo setServiceInfo(ServiceInfo serviceInfo);
+
+    boolean modifyServiceInfo(ServiceInfo serviceInfo);
 
     ServiceInfo getServiceInfo(int serviceId);
 

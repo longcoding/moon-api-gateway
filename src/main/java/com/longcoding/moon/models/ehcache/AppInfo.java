@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -45,5 +47,13 @@ public class AppInfo implements Serializable, Cloneable {
     private List<String> appIpAcl;
 
     private boolean valid;
+
+    @CreatedBy
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Long createdAt;
+
+    @LastModifiedBy
+    @Column(name = "updated_at", nullable = false)
+    private Long updatedAt;
 
 }

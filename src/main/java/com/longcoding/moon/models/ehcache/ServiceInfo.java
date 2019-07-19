@@ -6,11 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -39,5 +38,13 @@ public class ServiceInfo implements Serializable, Cloneable {
 
     private String minutelyCapacity;
     private String dailyCapacity;
+
+    @CreatedBy
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Long createdAt;
+
+    @LastModifiedBy
+    @Column(name = "updated_at", nullable = false)
+    private Long updatedAt;
 
 }

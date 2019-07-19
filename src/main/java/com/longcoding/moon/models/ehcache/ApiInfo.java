@@ -10,6 +10,9 @@ import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -59,9 +62,17 @@ public class ApiInfo implements Serializable, Cloneable {
     private List<ProtocolType> protocol;
 
     @Fetch(FetchMode.SELECT)
-    @OneToMany(cascade=CascadeType.ALL, targetEntity = TransformData.class, fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<TransformData> transformData;
 
     private boolean isOpenApi;
+
+    @CreatedBy
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Long createdAt;
+
+    @LastModifiedBy
+    @Column(name = "updated_at", nullable = false)
+    private Long updatedAt;
 
 }

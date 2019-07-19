@@ -62,6 +62,11 @@ public class RedisClusterRepository implements IClusterRepository {
     }
 
     @Override
+    public boolean modifyApiInfo(ApiInfo apiInfo) {
+        return hset(Constant.REDIS_KEY_INTERNAL_API_INFO, String.valueOf(apiInfo.getApiId()), JsonUtil.fromJson(apiInfo)) == 0;
+    }
+
+    @Override
     public ApiInfo getApiInfo(int apiId) {
         String apiInfoInString = hget(Constant.REDIS_KEY_INTERNAL_API_INFO, String.valueOf(apiId));
         return JsonUtil.fromJson(apiInfoInString, ApiInfo.class);
@@ -114,10 +119,18 @@ public class RedisClusterRepository implements IClusterRepository {
     }
 
     @Override
-    public boolean setServiceInfo(ServiceInfo serviceInfo) {
+    public ServiceInfo setServiceInfo(ServiceInfo serviceInfo) {
         try (Jedis jedis = jedisFactory.getInstance()) {
-            return jedis.hsetnx(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO, String.valueOf(serviceInfo.getServiceId()), JsonUtil.fromJson(serviceInfo)) == 1;
+            String totalServices = jedis.hlen(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO).toString();
+            serviceInfo.setServiceId(Integer.valueOf(totalServices));
+            jedis.hsetnx(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO, String.valueOf(serviceInfo.getServiceId()), JsonUtil.fromJson(serviceInfo));
         }
+        return serviceInfo;
+    }
+
+    @Override
+    public boolean modifyServiceInfo(ServiceInfo serviceInfo) {
+        return hset(Constant.REDIS_KEY_INTERNAL_SERVICE_INFO, String.valueOf(serviceInfo.getServiceId()), JsonUtil.fromJson(serviceInfo)) == 0;
     }
 
     @Override

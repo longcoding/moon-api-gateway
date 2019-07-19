@@ -1,5 +1,6 @@
 package com.longcoding.moon.services.sync;
 
+import com.longcoding.moon.models.cluster.ServiceSync;
 import com.longcoding.moon.models.cluster.WhitelistIpSync;
 import com.longcoding.moon.helpers.APIExposeSpecification;
 import com.longcoding.moon.helpers.HttpHelper;
@@ -8,6 +9,7 @@ import com.longcoding.moon.models.cluster.AppSync;
 import com.longcoding.moon.models.ehcache.ApiInfo;
 import com.longcoding.moon.models.ehcache.AppInfo;
 import com.longcoding.moon.models.ehcache.ServiceInfo;
+import com.longcoding.moon.models.ehcache.ServiceRoutingInfo;
 import com.longcoding.moon.models.enumeration.MethodType;
 import com.longcoding.moon.models.enumeration.SyncType;
 import lombok.extern.slf4j.Slf4j;
@@ -223,6 +225,33 @@ public class SyncService {
         apiInfoCache.remove(apiInfo.getApiId());
 
         apiExposeSpec.getRoutingPathCache(MethodType.of(apiInfo.getInboundMethod())).remove(apiInfo.getApiId());
+
+        return true;
+    }
+
+    public boolean syncServiceInfoToCache(ServiceSync serviceSyncInfo) {
+
+        SyncType crudType = serviceSyncInfo.getType();
+        if (SyncType.CREATE == crudType) {
+            return createOrUpdateService(SyncType.CREATE, serviceSyncInfo.getServiceInfo());
+        } else if (SyncType.UPDATE == crudType) {
+            return createOrUpdateService(SyncType.UPDATE, serviceSyncInfo.getServiceInfo());
+        }
+
+        return false;
+    }
+
+    private boolean createOrUpdateService(SyncType syncType, ServiceInfo serviceInfo) {
+
+        String servicePath = serviceInfo.getServicePath().startsWith("/")? serviceInfo.getServicePath().substring(1) : serviceInfo.getServicePath();
+
+        if (SyncType.CREATE == syncType) {
+            apiExposeSpec.getServiceTypeCache().put(servicePath, new ServiceRoutingInfo(serviceInfo.getServiceId(), serviceInfo.getRoutingType()));
+            apiExposeSpec.getServiceInfoCache().put(serviceInfo.getServiceId(), serviceInfo);
+        } else if (SyncType.UPDATE == syncType) {
+            apiExposeSpec.getServiceTypeCache().replace(servicePath, new ServiceRoutingInfo(serviceInfo.getServiceId(), serviceInfo.getRoutingType()));
+            apiExposeSpec.getServiceInfoCache().replace(serviceInfo.getServiceId(), serviceInfo);
+        }
 
         return true;
     }

@@ -43,6 +43,12 @@ public class DBClusterRepository implements IClusterRepository {
     }
 
     @Override
+    public boolean modifyApiInfo(ApiInfo apiInfo) {
+        apiInfoRepository.saveAndFlush(apiInfo);
+        return true;
+    }
+
+    @Override
     public ApiInfo getApiInfo(int apiId) {
         Optional<ApiInfo> apiInfoOpt = apiInfoRepository.findById(apiId);
         return apiInfoOpt.orElseThrow(() -> new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND));
@@ -90,13 +96,19 @@ public class DBClusterRepository implements IClusterRepository {
     }
 
     @Override
-    public boolean setServiceInfo(ServiceInfo serviceInfo) {
+    public ServiceInfo setServiceInfo(ServiceInfo serviceInfo) {
         boolean exists = serviceInfoRepository.existsById(serviceInfo.getServiceId());
-        if (!exists) serviceInfoRepository.saveAndFlush(serviceInfo);
-        return true;
+        if (!exists) return serviceInfoRepository.saveAndFlush(serviceInfo);
+        else return serviceInfo;
     }
 
     @Override
+    public boolean modifyServiceInfo(ServiceInfo serviceInfo) {
+        serviceInfoRepository.saveAndFlush(serviceInfo);
+        return true;
+    }
+
+        @Override
     public ServiceInfo getServiceInfo(int serviceId) {
         Optional<ServiceInfo> serviceInfoOpt = serviceInfoRepository.findById(serviceId);
         return serviceInfoOpt.orElseThrow(() -> new GeneralException(ExceptionType.E_1004_RESOURCE_NOT_FOUND));

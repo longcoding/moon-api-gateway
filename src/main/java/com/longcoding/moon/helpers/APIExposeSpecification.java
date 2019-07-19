@@ -54,7 +54,7 @@ public class APIExposeSpecification implements DisposableBean {
     /**
      * Using the cache, you can see whether the requested service needs to be analyzed or immediately routed.
      */
-    private static Cache<String, ServiceRoutingInfo> serviceRoutngTypeCache;
+    private static Cache<String, ServiceRoutingInfo> serviceRoutingTypeCache;
 
     /**
      * Using the cache, you can get all the information of the application with the appId.
@@ -93,7 +93,7 @@ public class APIExposeSpecification implements DisposableBean {
                 .disk(1000000, MemoryUnit.MB, false);
 
         appDistinctionCache = cacheManager.createCache(CACHE_APP_DISTINCTION, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Integer.class, resourcePoolsBuilder).build());
-        serviceRoutngTypeCache = cacheManager.createCache(CACHE_SERVICE_ROUTING_TYPE, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceRoutingInfo.class, resourcePoolsBuilder).build());
+        serviceRoutingTypeCache = cacheManager.createCache(CACHE_SERVICE_ROUTING_TYPE, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, ServiceRoutingInfo.class, resourcePoolsBuilder).build());
 
         appInfoCache = cacheManager.createCache(CACHE_APP_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, AppInfo.class, resourcePoolsBuilder).build());
         apiInfoCache = cacheManager.createCache(CACHE_API_INFO, CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, ApiInfo.class, resourcePoolsBuilder).build());
@@ -158,7 +158,7 @@ public class APIExposeSpecification implements DisposableBean {
      *
      * @return EhCache Object about ServiceId-ServiceRoutingInfo
      */
-    public Cache<String, ServiceRoutingInfo> getServiceTypeCache() { return serviceRoutngTypeCache; }
+    public Cache<String, ServiceRoutingInfo> getServiceTypeCache() { return serviceRoutingTypeCache; }
 
     /**
      * A method that takes a cache with path information that identifies which api the client requested.

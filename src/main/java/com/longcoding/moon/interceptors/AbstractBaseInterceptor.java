@@ -52,7 +52,7 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
 
     protected void generateException(ExceptionType exceptionType, String message) {
         logger.error("error occur in [{}]", getClass().getName());
-        throw new GeneralException(exceptionType);
+        throw new GeneralException(exceptionType, message);
     }
 
     /**
