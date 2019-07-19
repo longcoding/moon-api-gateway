@@ -8,6 +8,7 @@ import com.longcoding.moon.helpers.cluster.IClusterRepository;
 import com.longcoding.moon.models.cluster.AppSync;
 import com.longcoding.moon.models.cluster.WhitelistIpSync;
 import com.longcoding.moon.models.ehcache.AppInfo;
+import com.longcoding.moon.models.ehcache.AppMetaInfo;
 import com.longcoding.moon.models.enumeration.SyncType;
 import com.longcoding.moon.models.internal.EnrollApp;
 import com.longcoding.moon.models.internal.EnrollWhitelistIp;
@@ -18,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * When a request is received, the request is reflected in the persistence layer first.
@@ -157,4 +160,13 @@ public class AppService {
                 .build();
     }
 
+
+    public List<AppMetaInfo> getAllAppInfo() {
+        return clusterRepository.getAllAppInfo().stream().map(appInfo -> new AppMetaInfo(
+                appInfo.getAppId(),
+                appInfo.getApiKey(),
+                appInfo.getAppName(),
+                appInfo.isValid()
+        )).collect(Collectors.toList());
+    }
 }
