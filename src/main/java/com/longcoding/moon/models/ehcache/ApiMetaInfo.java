@@ -25,12 +25,4 @@ public class ApiMetaInfo implements Serializable, Cloneable {
 
     private boolean isOpenApi;
 
-    @CreatedBy
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Long createdAt;
-
-    @LastModifiedBy
-    @Column(name = "updated_at", nullable = false)
-    private Long updatedAt;
-
 }
