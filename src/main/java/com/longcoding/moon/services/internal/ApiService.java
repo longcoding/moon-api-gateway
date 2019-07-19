@@ -6,6 +6,7 @@ import com.longcoding.moon.helpers.cluster.ClusterSyncUtil;
 import com.longcoding.moon.helpers.cluster.IClusterRepository;
 import com.longcoding.moon.models.cluster.ApiSync;
 import com.longcoding.moon.models.ehcache.ApiInfo;
+import com.longcoding.moon.models.ehcache.ApiMetaInfo;
 import com.longcoding.moon.models.enumeration.ProtocolType;
 import com.longcoding.moon.models.enumeration.SyncType;
 import com.longcoding.moon.models.internal.EnrollApi;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -98,6 +100,20 @@ public class ApiService {
      */
     public ApiInfo selectApi(int apiId) {
         return clusterRepository.getApiInfo(apiId);
+    }
+
+    public List<ApiMetaInfo> getAllApiInfo() {
+        return clusterRepository.getAllApiInfo().stream().map(apiInfo -> new ApiMetaInfo(
+                apiInfo.getApiId(),
+                apiInfo.getApiName(),
+                apiInfo.getInboundURL(),
+                apiInfo.getOutboundURL(),
+                apiInfo.getInboundMethod(),
+                apiInfo.getOutboundMethod(),
+                apiInfo.isOpenApi(),
+                apiInfo.getCreatedAt(),
+                apiInfo.getUpdatedAt()
+        )).collect(Collectors.toList());
     }
 
 }

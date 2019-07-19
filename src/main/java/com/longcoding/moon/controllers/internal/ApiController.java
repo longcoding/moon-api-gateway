@@ -1,12 +1,15 @@
 package com.longcoding.moon.controllers.internal;
 
 import com.longcoding.moon.models.ehcache.ApiInfo;
+import com.longcoding.moon.models.ehcache.ApiMetaInfo;
 import com.longcoding.moon.models.enumeration.SyncType;
 import com.longcoding.moon.models.internal.EnrollApi;
 import com.longcoding.moon.services.internal.ApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Internal API for managing API specifications
@@ -57,7 +60,7 @@ public class ApiController {
     @RequestMapping(value = "{apiId}", method = RequestMethod.PUT)
     public ApiInfo updateApi(@PathVariable int apiId, @RequestBody EnrollApi enrollApi) { return apiService.createOrModifyApi(SyncType.UPDATE, enrollApi); }
 
-    /**
+       /**
      * Query the corresponding api specification.
      *
      * @param apiId Application Id.
@@ -65,5 +68,13 @@ public class ApiController {
      */
     @RequestMapping(value = "{apiId}", method = RequestMethod.GET)
     public ApiInfo getApi(@PathVariable int apiId) { return apiService.selectApi(apiId); }
+
+    /**
+     * Query the all apis specification.
+     *
+     * @return API specification model list for internal processing.
+     */
+    @RequestMapping(method = RequestMethod.GET)
+    public List<ApiMetaInfo> getAllApiInfo() { return apiService.getAllApiInfo(); }
 
 }
