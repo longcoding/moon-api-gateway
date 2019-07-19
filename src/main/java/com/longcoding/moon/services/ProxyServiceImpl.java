@@ -114,7 +114,7 @@ public class ProxyServiceImpl implements ProxyService {
         if (responseHeaders.contains(HttpHeader.CONTENT_TYPE)) {
             String contentTypeValue = responseHeaders.get(HttpHeader.CONTENT_TYPE);
             return contentTypeValue.split(Constant.CONTENT_TYPE_EXTRACT_DELIMITER)[0]
-                    .equals(responseInfo.getRequestAccept().split(Constant.CONTENT_TYPE_EXTRACT_DELIMITER)[0])
+                    .equals(responseInfo.getRequestAccept().split(Constant.CONTENT_TYPE_EXTRACT_DELIMITER)[0]);
         }
 
         return false;
@@ -163,7 +163,7 @@ public class ProxyServiceImpl implements ProxyService {
 
         InputStreamReader responseInputStreamReader = new InputStreamReader(responseInput, Charset.forName(Constant.SERVER_DEFAULT_ENCODING_TYPE));
         return JsonUtil.getObjectMapper().readTree(responseInputStreamReader);
-        
+
     }
 
 }
