@@ -2,7 +2,6 @@ package com.longcoding.moon.services;
 
 import com.longcoding.moon.MoonApplication;
 import com.longcoding.moon.helpers.APIExposeSpecification;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -10,30 +9,30 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.ByteArrayOutputStream;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Created by longcoding on 16. 4. 14..
  * Updated by longcoding on 18. 12. 27..
  */
-@Slf4j
-@RunWith(SpringJUnit4ClassRunner.class)
-@Configuration
-//@ContextConfiguration(classes = MoonInitializer.class, inheritInitializers = true)
-@SpringBootTest(classes = MoonApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-//@ComponentScan(basePackages = { "com.longcoding.moon" },
-//        excludeFilters = {@ComponentScan.Filter(value = JedisFactory.class)})
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {MoonApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("local")
 public class ProxyServiceTest {
 
     protected final Logger logger = LogManager.getLogger(ProxyServiceTest.class);
@@ -74,21 +73,9 @@ public class ProxyServiceTest {
     @Autowired
     APIExposeSpecification apiExposeSpecification;
 
+
     @Before
     public final void setUp() throws Exception {
-        //input redis data
-        //this action is not needed. just for understanding.
-        /*
-        JedisPool jedisPool = new JedisPool("127.0.0.1", 6379);
-        Jedis jedis = jedisPool.getResource();
-        Pipeline pipeline = jedis.pipelined();
-        pipeline.hset(Constant.REDIS_SERVICE_CAPACITY_DAILY, "300", "10000");
-        pipeline.hset(Constant.REDIS_SERVICE_CAPACITY_MINUTELY, "300", "2000");
-        pipeline.hset(Constant.REDIS_APP_RATELIMIT_DAILY, "100", "10000");
-        pipeline.hset(Constant.REDIS_APP_RATELIMIT_MINUTELY, "100", "1500");
-        pipeline.sync();
-        jedis.close();
-        */
     }
 
     @Test
@@ -122,11 +109,8 @@ public class ProxyServiceTest {
         response.getEntity().writeTo(outputStream);
         logger.info("Response: {}", outputStream);
 
-        Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
-
-        //if redis is not existing
-        Assert.assertEquals(401, response.getStatusLine().getStatusCode());
-
+        assertThat(response.containsHeader(HttpHeaders.CONTENT_TYPE), is(true));
+        assertThat(response.getStatusLine().getStatusCode(), equalTo(200));
     }
 
     @Test
@@ -160,10 +144,8 @@ public class ProxyServiceTest {
         response.getEntity().writeTo(outputStream);
         logger.info("Response: {}", outputStream);
 
-        Assert.assertTrue(response.containsHeader(HttpHeaders.CONTENT_TYPE));
-
-        //if redis is not existing
-        Assert.assertEquals(401, response.getStatusLine().getStatusCode());
+        assertThat(response.containsHeader(HttpHeaders.CONTENT_TYPE), is(true));
+        assertThat(response.getStatusLine().getStatusCode(), equalTo(200));
 
     }
 }

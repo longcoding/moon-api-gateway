@@ -1,4 +1,4 @@
-package com.longcoding.moon.helpers.cluster;
+package com.longcoding.moon.helpers;
 
 import com.longcoding.moon.models.ehcache.ApiInfo;
 import com.longcoding.moon.models.ehcache.AppInfo;

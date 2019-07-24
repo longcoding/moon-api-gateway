@@ -14,6 +14,8 @@ moon:
       isasync: true
       async.thread.count: 100
     proxy-timeout: 20000
+    api-ratelimit:
+      enable: false
 
 ################################################################################
 # Jedis Config
@@ -31,7 +33,7 @@ jedis-client:
   test-on-return: true
   test-while-idle: true
   host: '127.0.0.1'
-  port: 6379
+  port: 63799898
   timeout: 1000
   database: 0
 

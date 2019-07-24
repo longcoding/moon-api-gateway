@@ -50,18 +50,17 @@ public class ExecuteRedisValidationInterceptor<T> extends AbstractBaseIntercepto
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandler(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
         RedisValidator redisValidator = (RedisValidator) request.getAttribute(Constant.OBJECT_GET_REDIS_VALIDATION);
 
-        try {
+        try (Jedis jedis = jedisFactory.getInstance()){
+            redisValidator.getJedisMulti().setClient(jedis.getClient());
             redisValidator.getJedisMulti().exec();
             redisValidator.getJedisMulti().close();
         } catch (JedisConnectionException e) {
             log.error("{}", e);
             generateException(ExceptionType.E_1101_API_GATEWAY_IS_EXHAUSTED);
-        } finally {
-            redisValidator.getJedis().close();
         }
 
         LinkedHashMap<String, T> futureMethodQueue = redisValidator.getFutureMethodQueue();

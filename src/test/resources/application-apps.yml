@@ -1,25 +1,3 @@
-server:
-  port: 8080
-
-# spring
-spring:
-  profiles.include: 'local, apis-local, apps-local'
-
-  http:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
-    log-request-details: true
-
-# SpringBoot default error page disable
-error:
-  whitelabel:
-    enabled: false
-
-moon:
-  service:proxy-timeout: 20000
-
 init-apps:
   init-enable: true
   apps:
@@ -39,7 +17,3 @@ init-apps:
       app-daily-ratelimit: 50000
       app-service-contract: [1, 2]
       app-ip-acl: ['127.0.0.1']
-
----
-spring.profiles: dev
-spring.profiles.include: 'dev, apps-dev, apis-dev'

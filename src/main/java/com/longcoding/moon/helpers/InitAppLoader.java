@@ -3,7 +3,6 @@ package com.longcoding.moon.helpers;
 import com.longcoding.moon.configs.InitAppConfig;
 import com.longcoding.moon.exceptions.ExceptionType;
 import com.longcoding.moon.exceptions.GeneralException;
-import com.longcoding.moon.helpers.cluster.IClusterRepository;
 import com.longcoding.moon.models.cluster.AppSync;
 import com.longcoding.moon.models.ehcache.AppInfo;
 import com.longcoding.moon.models.enumeration.SyncType;
@@ -17,7 +16,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 /**
  * A class that takes application information and loads it into the cache.
@@ -58,9 +56,7 @@ public class InitAppLoader implements InitializingBean {
         if (enableCluster) {
             try {
                 clusterRepository.getAllAppInfo()
-                        .forEach(appInfo -> {
-                            syncService.syncAppInfoToCache(new AppSync(SyncType.CREATE, appInfo));
-                        });
+                        .forEach(appInfo -> syncService.syncAppInfoToCache(new AppSync(SyncType.CREATE, appInfo)));
             } catch (Exception ex) {
                 throw new GeneralException(ExceptionType.E_1203_FAIL_CLUSTER_SYNC, ex);
             }
@@ -88,9 +84,9 @@ public class InitAppLoader implements InitializingBean {
                             .build();
 
                     appInfoCaches.put(app.getAppId(), appInfo);
-
-                    clusterRepository.setAppInfo(appInfo);
                     aclIpChecker.enrolledInitAclIp(app.getAppId(), app.getAppIpAcl());
+
+                    if (enableCluster) clusterRepository.setAppInfo(appInfo);
                 });
 
             } catch (Exception ex) {

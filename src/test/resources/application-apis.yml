@@ -1,0 +1,77 @@
+api-spec:
+  init-enable: true
+  services:
+    -
+      service-id: 1
+      service-name: stackoverflow
+      service-minutely-capacity: 10000
+      service-daily-capacity: 240000
+      service-path: /stackoverflow
+      outbound-service-host: api.stackexchange.com
+      apis:
+        -
+          api-id: 101
+          api-name: getInfo
+          protocol: http, https
+          method: get
+          inbound-url: /2.2/question/:first
+          outbound-url: /2.2/questions
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
+        -
+          api-id: 102
+          api-name: getQuestions
+          protocol: https
+          method: put
+          inbound-url: /2.2/question/:first
+          outbound-url: /2.2/questions
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
+    -
+      service-id: 2
+      service-name: stackoverflow2
+      service-minutely-capacity: 5000
+      service-daily-capacity: 100000
+      service-path: /another
+      outbound-service-host: api.stackexchange.com
+      apis:
+        -
+          api-id: 201
+          api-name: getList
+          protocol: http, https
+          method: get
+          inbound-url: /2.2/question/:first
+          outbound-url: /2.2/questions
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
+          transform:
+            page: [header, param_query]
+            site: [param_path, header]
+        -
+          api-id: 202
+          api-name: transformTest
+          protocol: http, https
+          method: get
+          inbound-url: /2.2/haha/question/:site
+          outbound-url: /:page/:site
+          header: page, votes
+          header-required: ""
+          query-param: version, site
+          query-param-required: site
+          transform:
+            page: [header, param_path]
+            site: [param_path, header]
+    -
+      service-id: 3
+      service-name: service3
+      service-minutely-capacity: 5000
+      service-daily-capacity: 100000
+      service-path: /service3
+      outbound-service-host: api.stackexchange.com
+      only-pass-request-without-transform: true

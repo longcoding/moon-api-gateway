@@ -2,8 +2,8 @@ package com.longcoding.moon.services.internal;
 
 import com.longcoding.moon.helpers.Constant;
 import com.longcoding.moon.helpers.JsonUtil;
-import com.longcoding.moon.helpers.cluster.ClusterSyncUtil;
-import com.longcoding.moon.helpers.cluster.IClusterRepository;
+import com.longcoding.moon.helpers.ClusterSyncUtil;
+import com.longcoding.moon.helpers.IClusterRepository;
 import com.longcoding.moon.models.cluster.ApiSync;
 import com.longcoding.moon.models.ehcache.ApiInfo;
 import com.longcoding.moon.models.ehcache.ApiMetaInfo;

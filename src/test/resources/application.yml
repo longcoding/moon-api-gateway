@@ -1,0 +1,6 @@
+server:
+  port: 8080
+
+# spring
+spring:
+  profiles.include: 'apis, apps'

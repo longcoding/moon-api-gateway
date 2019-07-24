@@ -15,9 +15,9 @@ before_script:
   - "chmod +x gradlew"
 script:
   - "./gradlew clean build"
-  #- "./gradlew clean jacocoTestReport"
+  - "./gradlew clean jacocoTestReport"
 after_success:
-  #:- "bash <(curl -s https://codecov.io/bash) -t 173de125-e3f2-41eb-ab59-afca23c26c40"
+  :- "bash <(curl -s https://codecov.io/bash) -t 173de125-e3f2-41eb-ab59-afca23c26c40"
 
 notifications:
   email:

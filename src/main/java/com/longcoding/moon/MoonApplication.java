@@ -32,8 +32,6 @@ public class MoonApplication {
                 .properties("spring.config.location:classpath:/apps/, classpath:/apis/, classpath:/")
                 .build().run(args);
 
-
-
     }
 
 }

@@ -30,9 +30,6 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
     MessageManager messageManager;
 
     @Autowired
-    JedisFactory jedisFactory;
-
-    @Autowired
     APIExposeSpecification apiExposeSpec;
 
     @Override
@@ -82,7 +79,6 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         requestInfo.setOutboundURL(outboundUrl);
         requestInfo.setRoutingType(routingInfo.getRoutingType());
 
-        prepareRedisInterceptors(request);
         return true;
     }
 
@@ -107,9 +103,6 @@ public class PathAndAppAndPrepareRedisInterceptor extends AbstractBaseIntercepto
         return category[index];
     }
 
-    private void prepareRedisInterceptors(HttpServletRequest request) {
-        RedisValidator redisValidator = new RedisValidator(jedisFactory);
-        request.setAttribute(Constant.OBJECT_GET_REDIS_VALIDATION, redisValidator);
-    }
+
 
 }

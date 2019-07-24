@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
  */
 @Getter
 @EqualsAndHashCode
-public class RedisValidator<T> implements DisposableBean {
+public class RedisValidator<T> {
 
     private Jedis jedis;
     private Transaction jedisMulti;
@@ -32,8 +32,8 @@ public class RedisValidator<T> implements DisposableBean {
 
     private RedisValidator() {}
 
-    public RedisValidator(JedisFactory jedisFactory) {
-        this.jedis = jedisFactory.getInstance();
+    public RedisValidator(Jedis jedis) {
+        this.jedis = jedis;
         this.jedisMulti = jedis.multi();
         this.futureMethodQueue = new LinkedHashMap<>();
     }
@@ -47,8 +47,4 @@ public class RedisValidator<T> implements DisposableBean {
      */
     public void offerFutureMethodQueue(String className, T responseValue) { futureMethodQueue.put(className, responseValue); }
 
-    @Override
-    public void destroy() throws Exception {
-        this.jedis.close();
-    }
 }

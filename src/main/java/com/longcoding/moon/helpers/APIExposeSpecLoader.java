@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.longcoding.moon.configs.APIExposeSpecConfig;
 import com.longcoding.moon.exceptions.ExceptionType;
 import com.longcoding.moon.exceptions.GeneralException;
-import com.longcoding.moon.helpers.cluster.IClusterRepository;
 import com.longcoding.moon.models.apis.TransformData;
 import com.longcoding.moon.models.cluster.ApiSync;
 import com.longcoding.moon.models.ehcache.ApiInfo;
@@ -108,7 +107,8 @@ public class APIExposeSpecLoader implements InitializingBean {
                         .routingType(serviceRoutingType)
                         .build();
                 apiExposeSpecification.getServiceInfoCache().put(service.getServiceId(), serviceInfo);
-                clusterRepository.setServiceInfo(serviceInfo);
+
+                if (enableCluster) clusterRepository.setServiceInfo(serviceInfo);
             });
         } catch (Exception ex) {
             throw new GeneralException(ExceptionType.E_1200_FAIL_SERVICE_INFO_CONFIGURATION_INIT, ex);
@@ -158,9 +158,9 @@ public class APIExposeSpecLoader implements InitializingBean {
                             .transformData(transformRequests)
                             .build();
 
-                    clusterRepository.setApiInfo(apiInfo);
                     apiExposeSpecification.getApiInfoCache().put(apiSpec.getApiId(), apiInfo);
 
+                    if (enableCluster) clusterRepository.setApiInfo(apiInfo);
                 });
             });
 

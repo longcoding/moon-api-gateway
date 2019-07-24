@@ -1,6 +1,7 @@
 package com.longcoding.moon.interceptors;
 
 import com.google.common.base.CaseFormat;
+import com.longcoding.moon.helpers.JedisFactory;
 import com.longcoding.moon.interceptors.impl.ExecuteRedisValidationInterceptor;
 import com.longcoding.moon.interceptors.impl.PathAndAppAndPrepareRedisInterceptor;
 import com.longcoding.moon.helpers.APIExposeSpecification;
@@ -12,6 +13,7 @@ import redis.clients.jedis.Transaction;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 /**
  * An abstract class for an interceptor that uses RedisValidator.
@@ -27,9 +29,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInterceptor {
 
-
     @Autowired
     protected APIExposeSpecification apiExposeSpec;
+
+    @Autowired
+    JedisFactory jedisFactory;
 
     private volatile T futureValue;
     private RedisValidator redisValidator;
@@ -65,10 +69,10 @@ public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInte
     @Override
     @SuppressWarnings("unchecked")
     public boolean preHandler(HttpServletRequest request,
-                                          HttpServletResponse response, Object handler) throws Exception {
+                                          HttpServletResponse response, Object handler) {
 
         this.requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
-        this.redisValidator = (RedisValidator) request.getAttribute(Constant.OBJECT_GET_REDIS_VALIDATION);
+        this.redisValidator = getRedisValidator(request);
         this.futureValue = setJedisMultiCommand(redisValidator.getJedisMulti());
         redisValidator.offerFutureMethodQueue(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, getClass().getSimpleName()), futureValue);
 
@@ -81,6 +85,16 @@ public abstract class RedisBaseValidationInterceptor<T> extends AbstractBaseInte
      */
     public boolean executeJudge(T storedValue, Transaction jedisMulti) {
         return setCondition(storedValue)? onSuccess(storedValue, jedisMulti) : onFailure(storedValue, jedisMulti);
+    }
+
+    private RedisValidator getRedisValidator(HttpServletRequest request) {
+        RedisValidator redisValidator = (RedisValidator) request.getAttribute(Constant.OBJECT_GET_REDIS_VALIDATION);
+        if (Objects.isNull(redisValidator)) {
+            redisValidator = new RedisValidator(jedisFactory.getInstance());
+            request.setAttribute(Constant.OBJECT_GET_REDIS_VALIDATION, redisValidator);
+        }
+
+        return redisValidator;
     }
 
 }

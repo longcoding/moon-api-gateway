@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.Lists;
+import com.longcoding.moon.interceptors.AbstractBaseInterceptor;
 import com.longcoding.moon.interceptors.impl.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -37,6 +39,10 @@ public class MoonServletConfig implements WebMvcConfigurer {
      * The internal API and swagger require settings to avoid interceptors for the rest api.
      * The internal api and swagger settings are likely to change.
      */
+
+    @Value("${moon.service.api-ratelimit.enable}")
+    boolean useApiRatelimit;
+
 
     private static final List<String> EXCLUDE_PATH_INTERNAL_API = Arrays.asList("/internal/**", "/");
     private static final List<String> EXCLUDE_PATH_SWAGGER_UI = Arrays.asList("/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs", "/webjars/**", "/error", "/csrf", "/");
@@ -81,14 +87,14 @@ public class MoonServletConfig implements WebMvcConfigurer {
      * It is aimed to prevent load of outbound service.
      */
     @Bean
-    public ServiceCapacityInterceptor serviceCapacityInterceptor() { return new ServiceCapacityInterceptor(); }
+    public AbstractBaseInterceptor serviceCapacityInterceptor() { return useApiRatelimit? new ServiceCapacityInterceptor() : new NoRatelimitInterceptor(); }
 
     /**
      * ServiceCapacity interceptor and ApplicationRatelimitInterceptor are preliminary tasks to execute executeRedisValidation.
      * Execute the stored job at once and determine whether the request can be passed to the outbound service.
      * */
     @Bean
-    public ExecuteRedisValidationInterceptor executeRedisValidationInterceptor() { return new ExecuteRedisValidationInterceptor(); }
+    public AbstractBaseInterceptor executeRedisValidationInterceptor() { return useApiRatelimit? new ExecuteRedisValidationInterceptor(): new NoRatelimitInterceptor(); }
 
     /**
      * Split the request path by '/' and save it.
@@ -117,7 +123,7 @@ public class MoonServletConfig implements WebMvcConfigurer {
      * Later, it may lead to a billing model.
      */
     @Bean
-    public ApplicationRatelimitInterceptor applicationRatelimitInterceptor() { return new ApplicationRatelimitInterceptor(); }
+    public AbstractBaseInterceptor applicationRatelimitInterceptor() { return useApiRatelimit? new ApplicationRatelimitInterceptor(): new NoRatelimitInterceptor(); }
 
     /**
      * Also check the service contract.
