@@ -7,6 +7,8 @@ import org.springframework.beans.factory.DisposableBean;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 
 /**
@@ -20,7 +22,7 @@ import java.util.LinkedHashMap;
  */
 @Getter
 @EqualsAndHashCode
-public class RedisValidator<T> {
+public class RedisValidator<T> implements DisposableBean, Closeable {
 
     private Jedis jedis;
     private Transaction jedisMulti;
@@ -47,4 +49,13 @@ public class RedisValidator<T> {
      */
     public void offerFutureMethodQueue(String className, T responseValue) { futureMethodQueue.put(className, responseValue); }
 
+    @Override
+    public void close() throws IOException {
+        jedis.close();
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        jedis.close();
+    }
 }
