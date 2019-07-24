@@ -2,7 +2,8 @@ package com.longcoding.moon.interceptors.impl;
 
 import com.longcoding.moon.helpers.Constant;
 import com.longcoding.moon.models.RequestInfo;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -10,11 +11,12 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.util.MimeTypeUtils;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
-@Slf4j
 public class InitializeInterceptorTest {
+
+    private final Logger log = LogManager.getLogger(getClass());
 
     private MockHttpServletRequest request = new MockHttpServletRequest("POST", "/stackoverflow/2.2/question/coding");
     private MockHttpServletResponse response = new MockHttpServletResponse();
