@@ -3,12 +3,15 @@ package com.longcoding.moon.interceptors.impl;
 import com.longcoding.moon.helpers.Constant;
 import com.longcoding.moon.models.RequestInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.util.MimeTypeUtils;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
 
 @Slf4j
 public class InitializeInterceptorTest {
@@ -31,7 +34,7 @@ public class InitializeInterceptorTest {
         log.info("Initializes the request. And Check apiKey");
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
-        Assert.assertEquals("5000-5000-5000-5000", requestInfo.getHeaders().get("apikey"));
+        assertThat(requestInfo.getHeaders().get("apikey"), equalTo("5000-5000-5000-5000"));
     }
 
     @Test
@@ -39,15 +42,15 @@ public class InitializeInterceptorTest {
         log.info("Initializes the request. And Check headers");
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
-        Assert.assertEquals(2, requestInfo.getHeaders().size());
+        assertThat(requestInfo.getHeaders().size(), equalTo(2));
     }
 
     @Test
     public void initializeRequestWithHttpMethod() {
-        log.info("Initializes the request. And Check headers");
+        log.info("Initializes the request. And Check http Method");
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
-        Assert.assertEquals("POST", requestInfo.getRequestMethod());
+        assertThat(requestInfo.getRequestMethod(), equalTo("POST"));
     }
 
     @Test
@@ -55,7 +58,7 @@ public class InitializeInterceptorTest {
         log.info("Initializes the request. And Check query parameters");
 
         RequestInfo requestInfo = (RequestInfo) request.getAttribute(Constant.REQUEST_INFO_DATA);
-        Assert.assertTrue(requestInfo.getQueryStringMap().containsKey("version"));
+        assertThat(requestInfo.getQueryStringMap().containsKey("version"), is(true));
     }
 
 }
