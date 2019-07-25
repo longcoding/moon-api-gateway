@@ -45,13 +45,18 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
         return result;
     }
 
+    protected void generateException(String requestId, ExceptionType exceptionType) {
+        logger.error("An error occurred. Request Id: {}, Exception Type: {}, Exception Code: {}, Http Status: {}", requestId, exceptionType.name(), exceptionType.getCode(), exceptionType.getHttpStatus());
+        throw new GeneralException(exceptionType);
+    }
+
     protected void generateException(ExceptionType exceptionType) {
-        logger.error("error occur in [{}]", getClass().getName());
+        logger.error("An error occurred. Exception Type: {}, Exception Code: {}, Http Status: {}", exceptionType.name(), exceptionType.getCode(), exceptionType.getHttpStatus());
         throw new GeneralException(exceptionType);
     }
 
     protected void generateException(ExceptionType exceptionType, String message) {
-        logger.error("error occur in [{}]", getClass().getName());
+        logger.error("An error occurred. Exception Type: {}, Exception Code: {}, Http Status: {}", exceptionType.name(), exceptionType.getCode(), exceptionType.getHttpStatus());
         throw new GeneralException(exceptionType, message);
     }
 
