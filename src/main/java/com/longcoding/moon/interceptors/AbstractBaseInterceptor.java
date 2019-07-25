@@ -2,6 +2,7 @@ package com.longcoding.moon.interceptors;
 
 import com.longcoding.moon.exceptions.ExceptionType;
 import com.longcoding.moon.exceptions.GeneralException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -38,9 +39,7 @@ public abstract class AbstractBaseInterceptor<T> extends HandlerInterceptorAdapt
 
         boolean result = preHandler(request, response, handler);
 
-        if ( logger.isDebugEnabled() ) {
-            logger.debug("Time : " + (System.currentTimeMillis() - startTime));
-        }
+        logger.log(Level.DEBUG, () -> "Time : " + (System.currentTimeMillis() - startTime));
 
         return result;
     }
