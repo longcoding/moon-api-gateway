@@ -17,7 +17,7 @@
     </appender>
 
     <appender name="AccessFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/access.log</file>
+        <file>${LOG_PATH}/access.log</file>
         <append>true</append>
         <encoder>
             <pattern>%msg\n</pattern>
@@ -25,14 +25,14 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>log/access.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/access.log.%d{yyyy-MM-dd}</fileNamePattern>
             <!-- keep 30 days' worth of history capped at 3GB total size -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
     <appender name="ApplicationFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/application.log</file>
+        <file>${LOG_PATH}/application.log</file>
         <append>true</append>
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
@@ -40,7 +40,7 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>log/application.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/application.log.%d{yyyy-MM-dd}</fileNamePattern>
             <!-- keep 30 days' worth of history capped at 3GB total size -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>

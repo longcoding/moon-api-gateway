@@ -20,6 +20,8 @@ error:
 moon:
   service:proxy-timeout: 20000
 
+logging:
+  path: logs
 ---
 spring.profiles: dev
 spring.profiles.include: 'dev, apps-dev, apis-dev'
