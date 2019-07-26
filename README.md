@@ -286,7 +286,7 @@ Service And API Expose Specification for stackoverflow
 - 6) When you call the API, the gateway will route the call to api.stackexchange.com set to outbound-service-host.
 - 7) When calling the API, the domain is api.stackexchange.com and the destination url path is '/2.2/questions' set to outbound-url.
 
-##### 1) Run MOON-API_GATEWAY using DOCKER
+##### 1) Run MOON-API-GATEWAY using DOCKER
 
     ./docker run -p 8080:8080 longcoding/moon-api-gateway
     
