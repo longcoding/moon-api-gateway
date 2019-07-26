@@ -20,26 +20,6 @@ error:
 moon:
   service:proxy-timeout: 20000
 
-init-apps:
-  init-enable: true
-  apps:
-    -
-      app-id: 0
-      app-name: TestApp
-      api-key: 1000-1000-1000-1000
-      app-minutely-ratelimit: 2000
-      app-daily-ratelimit: 10000
-      app-service-contract: [1, 2, 3]
-      app-ip-acl: ['192.168.0.1', '127.0.0.1']
-    -
-      app-id: 1
-      app-name: BestApp
-      api-key: e3938427-1e27-3a37-a854-0ac5a40d84a8
-      app-minutely-ratelimit: 1000
-      app-daily-ratelimit: 50000
-      app-service-contract: [1, 2]
-      app-ip-acl: ['127.0.0.1']
-
 ---
 spring.profiles: dev
 spring.profiles.include: 'dev, apps-dev, apis-dev'

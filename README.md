@@ -2,10 +2,10 @@
 
 [![Build Status](https://travis-ci.org/longcoding/moon-api-gateway.svg?branch=master&maxAge=2592000)](https://travis-ci.org/longcoding/moon-api-gateway.svg?branch=master)
 [![codecov](https://codecov.io/gh/longcoding/moon-api-gateway/branch/master/graph/badge.svg?maxAge=2592000)](https://codecov.io/gh/longcoding/moon-api-gateway/branch/master/graph/badge.svg)
-[![Release](https://img.shields.io/github/release/longcoding/moon-api-gateway.svg?maxAge=2592000)](https://img.shields.io/github/release/longcoding/moon-api-gateway.svg)
-[![HitCount](http://hits.dwyl.io/longcoding@gmail.com/longcoding/moon-api-gateway.svg)](http://hits.dwyl.io/longcoding@gmail.com/longcoding/moon-api-gateway.svg)
-[![LastCommit](https://img.shields.io/github/last-commit/longcoding/moon-api-gateway.svg)](https://img.shields.io/github/last-commit/longcoding/moon-api-gateway.svg)
-[![TotalCommit](https://img.shields.io/github/commit-activity/y/longcoding/moon-api-gateway.svg)](https://img.shields.io/github/commit-activity/y/longcoding/moon-api-gateway.svg)
+[![Release](https://img.shields.io/github/release/longcoding/moon-api-gateway.svg)](https://github.com/longcoding/moon-api-gateway)
+[![HitCount](http://hits.dwyl.io/longcoding@gmail.com/longcoding/moon-api-gateway.svg)](https://github.com/longcoding/moon-api-gateway)
+[![LastCommit](https://img.shields.io/github/last-commit/longcoding/moon-api-gateway.svg)](https://github.com/longcoding/moon-api-gateway)
+[![TotalCommit](https://img.shields.io/github/commit-activity/y/longcoding/moon-api-gateway.svg)](https://github.com/longcoding/moon-api-gateway)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?maxAge=2592000)]()
 
 ### Other Language Guide
@@ -21,11 +21,10 @@ The Gateway is a network gateway created to provide a single access point for re
 * Lightweight API Gateway
 * High Performance/Scalability
 
-## New Feature(June-2019)
-* Management API
-    - Service, Service Contract API
-* Supported Server Cluster
-    - Improved cluster synchronization
+## New Feature(August-2019)
+* Supported Docker
+* 1.0 Official Version is released 
+* rdb repository type is added for synchronizing services, apis, apps information
 
 ## Features
 Moon API Gateway offers a powerful, yet lightweight feature.
@@ -69,7 +68,10 @@ moon:
     cluster:
       enable: false
       sync-interval: 300000       
+      repository-type: rdb
     proxy-timeout: 20000
+    api-ratelimit:
+      enable: false
 
 jedis-client:      
   host: '127.0.0.1'
@@ -80,8 +82,10 @@ jedis-client:
 - ip-acl-enable: Enable the ip whitelisting feature. It operates on APP basis.
 - cluster/enable: If you enable a server cluster, the daemon thread continues to fetch services, apps, and apis information.
 - cluster/sync-interval: This option allows you to set the interval for the cluster synchronization operation.
+- cluster/repository-type: (redis, rdb) There are two storage options for syncing services, apps, and API information.
 - proxy-timeout: This option allows you to set the timeout for the Rotating service.
-- **jedis-client**: Redis is an essential infrastructure for moon-api-gateway.
+- api-ratelimit/enable: If you enable the api-ratelimit feature, moon-api-gateway will count and block api requests. (api ratelimit, service capacity)
+- **jedis-client**: If you enable the api-ratelimit feature, Redis is an essential infrastructure for moon-api-gateway.
 - jedis-client/host: Host information for Redis.
 - jedis-client/port: Port information for Redis.
 
@@ -135,7 +139,8 @@ api-spec:
           api-id: 101
           api-name: getInfo
           protocol: http, https
-          method: get
+          inbound-method: get
+          outbound-method: get
           inbound-url: /2.2/question/:first
           outbound-url: /2.2/questions
           header: page, votes
@@ -146,7 +151,8 @@ api-spec:
           api-id: 202
           api-name: getQuestions
           protocol: https
-          method: put
+          inbound-method: put
+          outbound-method: put
           inbound-url: /2.2/question/:first
           outbound-url: /2.2/questions
           header: page, votes
@@ -220,8 +226,16 @@ Cluster nodes also work together to calculate the correct API Ratelimiting, Serv
 ## Management REST API
 The Management API helps manage a single gateway or cluster group.
 
+**SERVICE Management**
+  - **SERVICE Register** - [POST] /internal/services
+  - **GET SERVICE Info** - [GET] /internal/services/{serviceId}
+  - **SERVICE Update** - [PUT] /internal/services/{serviceId}
+  - **GET ALL SERVICE Infos** - [GET] /internal/services
+
 **APP Management**
   - **APP Register** - [POST] /internal/apps
+  - **GET APP Info** - [GET] /internal/apps/{appId}
+  - **GET ALL APP Infos** - [GET] /internal/apps
   - **APP UnRegister** - [DELETE] /internal/apps/{appId}
   - **APP Update** - [Future Feature]
   - **API Key Expiry** - [DELETE] /internal/apps/{appId}/apikey
@@ -233,10 +247,8 @@ The Management API helps manage a single gateway or cluster group.
   - **New API Register** - [POST] /internal/apis
   - **API UnRegister** - [DELETE] /internal/apis/{apiId}
   - **API Update** - [PUT] /internal/apis/{apiId}
-
-**Service Group API Will be updated**
-
-
+  - **GET API Spec** - [GET] /internal/apis/{apiId}
+  - **GET All API Specs** - [GET] /internal/apis
 
 ## Usage/Test
 
@@ -256,7 +268,8 @@ Service And API Expose Specification for stackoverflow
               api-id: '0101'
               api-name: getInfo
               protocol: http, https
-              method: get
+              inbound-method: get
+              outbound-method: get
               inbound-url: /2.2/question/:first
               outbound-url: /2.2/questions
               header: page, votes
