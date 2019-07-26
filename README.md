@@ -286,11 +286,21 @@ Service And API Expose Specification for stackoverflow
 - 6) When you call the API, the gateway will route the call to api.stackexchange.com set to outbound-service-host.
 - 7) When calling the API, the domain is api.stackexchange.com and the destination url path is '/2.2/questions' set to outbound-url.
 
-##### 1) Use Test Case - Run moon-api-gateway by gradle
+##### 1) Run MOON-API_GATEWAY using DOCKER
+
+    ./docker run -p 8080:8080 longcoding/moon-api-gateway
+    
+    // Use curl or rest-client
+    ./curl -X GET -H "Content-type: application/json" -H "apikey: 1000-1000-1000-1000" -H "page: 5" -H "votes: 1" http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
+
+- Run moon-api-gateway as the most basic option.
+- To use api-ratelimit, service capacity or cluster mode, you can modify the config file. (application.yml)
+
+##### 2) Use Test Case - Run moon-api-gateway by gradle
 
     ./gradlew test
 
-##### 2) Use rest-client like Postman.
+##### 3) Use rest-client like Postman.
 To set method and scheme.
 
     GET, http
@@ -315,14 +325,12 @@ and then input header fields. ( apikey is mandatory header.(or Query Parameter) 
 
 Execute request and check response code and content.
 
-##### 3) Use cUrl.
+##### 4) Use cUrl.
 
     curl -X GET -H "Content-type: application/json" -H "apikey: 1000-1000-1000-1000" -H "page: 5" -H "votes: 1" http://localhost:8080/stackoverflow/2.2/question/test?site=stackoverflow
 
 ## Future update
 * Authentication for Private API
-* Docker-Compose
-    - Easy To Run
 
 ## Contact
 For any inquiries, you can reach me at longcoding@gmail.com
